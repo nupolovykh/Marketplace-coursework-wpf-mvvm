@@ -10,16 +10,17 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace AppWPF
+namespace AppWPF.CustomControls
 {
     /// <summary>
-    /// Логика взаимодействия для Main.xaml
+    /// Логика взаимодействия для Header.xaml
     /// </summary>
-    public partial class Main : Window
+    public partial class Header : UserControl
     {
-        public Main()
+        public Header()
         {
             InitializeComponent();
         }

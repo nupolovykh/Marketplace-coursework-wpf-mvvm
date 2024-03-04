@@ -12,14 +12,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace AppWPF
+namespace AppWPF.CustomControls
 {
     /// <summary>
-    /// Логика взаимодействия для Registration.xaml
+    /// Interaction logic for Profile.xaml
     /// </summary>
-    public partial class Registration : Window
+    public partial class Profile : UserControl
     {
-        public Registration()
+        public Profile()
         {
             InitializeComponent();
         }

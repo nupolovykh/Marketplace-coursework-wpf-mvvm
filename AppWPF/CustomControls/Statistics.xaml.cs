@@ -12,14 +12,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace AppWPF
+namespace AppWPF.CustomControls
 {
     /// <summary>
-    /// Interaction logic for YourDeliveryInfo.xaml
+    /// Interaction logic for Statistics.xaml
     /// </summary>
-    public partial class YourDeliveryInfo : Window
+    public partial class Statistics : UserControl
     {
-        public YourDeliveryInfo()
+        public Statistics()
         {
             InitializeComponent();
         }

@@ -10,16 +10,17 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace AppWPF
+namespace AppWPF.CustomControls
 {
     /// <summary>
-    /// Interaction logic for Profile.xaml
+    /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class Profile : Window
+    public partial class Authorization : UserControl
     {
-        public Profile()
+        public Authorization()
         {
             InitializeComponent();
         }

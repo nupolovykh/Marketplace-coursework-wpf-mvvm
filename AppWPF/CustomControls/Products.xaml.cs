@@ -12,14 +12,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace AppWPF
+namespace AppWPF.CustomControls
 {
     /// <summary>
-    /// Interaction logic for Cart.xaml
+    /// Interaction logic for Products.xaml
     /// </summary>
-    public partial class Cart : Window
+    public partial class Products : UserControl
     {
-        public Cart()
+        public Products()
         {
             InitializeComponent();
         }
