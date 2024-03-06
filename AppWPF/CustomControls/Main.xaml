@@ -4,17 +4,23 @@
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:local="clr-namespace:AppWPF.CustomControls"
+		xmlns:model="clr-namespace:AppWPF.ViewModels"
 		mc:Ignorable="d"
 		MinHeight="450" MinWidth="800">
-    <Grid>
-        <DataGrid d:ItemsSource="{d:SampleData ItemCount=15}" Margin="0,85,0,60"/>
 
-        <Label Content="Вы вошли как: xxxxxx" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" Height="30" Width="180"
+    <UserControl.DataContext>
+		<model:MainVM/>
+	</UserControl.DataContext>
+
+	<Grid>
+        <DataGrid AutoGenerateColumns="True" d:ItemsSource="{d:SampleData ItemCount=15}" Margin="0,85,0,60"/>
+
+		<Label Content="Вы вошли как: xxxxxx" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" Height="30" Width="180"
 		   FontSize="16" HorizontalContentAlignment="Left"/>
 
-        <Button Content="Начало" HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom" Height="30" Width="55"
+		<Button Content="Начало" HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom" Height="30" Width="55"
 			Background="White" />
-        <Button Content="Конец" HorizontalAlignment="Left" Margin="70,0,0,10" VerticalAlignment="Bottom" Height="30" Width="55"
+		<Button Content="Конец" HorizontalAlignment="Left" Margin="70,0,0,10" VerticalAlignment="Bottom" Height="30" Width="55"
 			Background="White"/>
 	</Grid>
 </UserControl>

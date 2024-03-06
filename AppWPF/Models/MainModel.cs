@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace AppWPF.Models
 {
-    public class AuthorizationModel
-    {
-        public string LoginEmail { get; set; }
-        public string Password { get; set; }
-    }
+	public class MainModel
+	{
+		
+	}
 }

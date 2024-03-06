@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AppWPF.database
 {
-    class ProductAndOrder
+	public class ProductAndOrder
     {
         public int Id { get; set; }
         public int ProductId { get; set; }

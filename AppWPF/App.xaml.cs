@@ -1,4 +1,5 @@
-﻿using AppWPF.ViewModels;
+﻿using AppWPF.CustomControls;
+using AppWPF.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -6,6 +7,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace AppWPF
 {
@@ -17,11 +19,14 @@ namespace AppWPF
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            var window = new WinARL()
-            {
-                DataContext = new AuthorizationVM()
-            };
-            this.MainWindow = window;
+
+
+            var window = new WinARP();
+            window.Grid.Children.Clear();
+			window.Grid.Children.Add(new Cart());
+			window.Grid.Children.Add(new Header());
+
+			this.MainWindow = window;
             window.Show();
         }
     }

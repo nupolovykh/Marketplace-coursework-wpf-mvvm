@@ -1,4 +1,4 @@
-﻿<Window x:Class="AppWPF.WinARL"
+﻿<Window x:Class="AppWPF.WinARP"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,8 +6,9 @@
         xmlns:local="clr-namespace:AppWPF"
         xmlns:view="clr-namespace:AppWPF.CustomControls"
         mc:Ignorable="d"
-        Title="WinARL" Height="450" Width="800">
-    <Grid>
-        <view:Authorization/>
+        Title="WinARP" Height="500" Width="900">
+    
+    <Grid x:Name="Grid">
+        <view:Registration/>
     </Grid>
 </Window>

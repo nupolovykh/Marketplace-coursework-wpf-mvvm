@@ -4,24 +4,42 @@
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:local="clr-namespace:AppWPF.CustomControls"
+        xmlns:model="clr-namespace:AppWPF.ViewModels"
 		mc:Ignorable="d"
 		Height="450" Width="800">
+
+    <UserControl.Resources>
+        <Style TargetType="TextBox">
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Width" Value="250"/>
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+    </UserControl.Resources>
+
+    <UserControl.DataContext>
+        <model:ProfileVM/>
+    </UserControl.DataContext>
+
     <Grid>
         <Label Content="Настройки" HorizontalAlignment="Center" Margin="0,92,0,0" VerticalAlignment="Top" Height="50" Width="300"
 		   FontSize="28" HorizontalContentAlignment="Center"/>
-        <TextBox HorizontalAlignment="Center" Margin="0,150,0,0" TextWrapping="Wrap" Text="Введите новый логин" VerticalAlignment="Top" Width="250" Height="30"
-			 HorizontalContentAlignment="Left" VerticalContentAlignment="Center" FontSize="16"/>
-		<TextBox HorizontalAlignment="Center" Margin="0,190,0,0" TextWrapping="Wrap" Text="Введите новый адрес эл.почты" VerticalAlignment="Top" Width="250" Height="30"
-			 HorizontalContentAlignment="Left" VerticalContentAlignment="Center" FontSize="16"/>
-		<TextBox HorizontalAlignment="Center" Margin="0,230,0,0" TextWrapping="Wrap" Text="Введите новый номер телефона" VerticalAlignment="Top" Width="250" Height="30"
-			 HorizontalContentAlignment="Left" VerticalContentAlignment="Center" FontSize="16"/>
-		<TextBox HorizontalAlignment="Center" Margin="0,270,0,0" TextWrapping="Wrap" Text="Введите новый пароль" VerticalAlignment="Top" Width="250" Height="30"
-			 HorizontalContentAlignment="Left" VerticalContentAlignment="Center" FontSize="16"/>
-        <TextBox HorizontalAlignment="Center" Margin="0,310,0,0" TextWrapping="Wrap" Text="Повторите новый пароль" VerticalAlignment="Top" Width="250" Height="30"
-			 HorizontalContentAlignment="Left" VerticalContentAlignment="Center" FontSize="16"/>
-        <Button Content="Принять" HorizontalAlignment="Center" Margin="0,360,0,0" VerticalAlignment="Top" Height="30" Width="150"/>
+
+        <TextBox x:Name="login" Margin="0,150,0,0" Text="{Binding Login}" ToolTip="Введите новый логин"/>
+        <TextBox x:Name="email" Margin="0,190,0,0" Text="{Binding Email}" ToolTip="Введите новый адрес эл.почты"/>
+        <TextBox x:Name="phone" Margin="0,230,0,0" Text="{Binding Phone}" ToolTip="Введите новый номер телефона"/>
+        <TextBox x:Name="password1" Margin="0,270,0,0" Text="{Binding Password1}" ToolTip="Введите новый пароль"/>
+        <TextBox x:Name="password2" Margin="0,310,0,0" Text="{Binding Password2}" ToolTip="Повторите новый пароль"/>
+
+        <Button Content="Принять" Command="{Binding ApplyChanges}" HorizontalAlignment="Center" Margin="0,360,0,0" VerticalAlignment="Top"
+                Height="30" Width="150"/>
         
         <Button Content="Вернуться" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Height="30" Width="85"
-			Background="White"/>
+			    Background="White"/>
+        
     </Grid>
 </UserControl>

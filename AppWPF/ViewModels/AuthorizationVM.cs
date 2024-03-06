@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
+using System.Windows;
 using System.Windows.Input;
 using AppWPF.Models;
 
@@ -12,20 +14,20 @@ namespace AppWPF.ViewModels
 	{
 		private AuthorizationModel _authorizationModel;
 
-		public string Login
+		public string LoginEmail
 		{
 			get 
 			{ 
-				return _authorizationModel.Login; 
+				return _authorizationModel.LoginEmail; 
 			}
 			set
-			{ 
-				_authorizationModel.Login = value;
-				OnPropertyChanged(nameof(Login));
+			{
+				_authorizationModel.LoginEmail = value;
+				OnPropertyChanged(nameof(LoginEmail));
 			}
 		}
 
-        public string Password 
+        public string Password
 		{
             get
             {
@@ -40,8 +42,7 @@ namespace AppWPF.ViewModels
 
 		public ICommand AuthorizationCommand { get; set; }
 
-
-        public AuthorizationVM() {
+		public AuthorizationVM() {
 			_authorizationModel = new AuthorizationModel();
 		}
 	}

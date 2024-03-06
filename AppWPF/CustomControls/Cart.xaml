@@ -4,21 +4,25 @@
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:local="clr-namespace:AppWPF.CustomControls"
+		xmlns:model="clr-namespace:AppWPF.ViewModels"
 		mc:Ignorable="d"
 		MinHeight="450" MinWidth="800">
-	<Grid>
-		<StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Orientation="Horizontal" MinHeight="50" MinWidth="800">
-			<Label Content="MyMarket" Height="50" Width="150" FontSize="28" HorizontalContentAlignment="Center"/>
-			<Button Content="Профиль" Height="30" Width="85" Background="White" />
-			<Button Content="Вход" Height="30" Width="85" Background="White" />
-			<Button Content="Регистрация" Height="30" Width="85" Background="White" />
-			<Button Content="Корзина" Height="30" Width="85" Background="White" />
-			<Button Content="Ваш ПВЗ" Height="30" Width="85" Background="White" />
-			<Button Content="Товары" Height="30" Width="85" Background="White" />
-			<Button Content="Статистика" Height="30" Width="85" Background="White" />
-		</StackPanel>
 
-		<Grid ShowGridLines="True" Margin="0,55,0,0">
+    <UserControl.Resources>
+        <Style TargetType="TextBox">
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+    </UserControl.Resources>
+
+    <UserControl.DataContext>
+        <model:CartVM/>
+    </UserControl.DataContext>
+
+    <Grid>
+        <Grid ShowGridLines="True" Margin="0,55,0,0">
             <Grid.RowDefinitions>
                 <RowDefinition></RowDefinition>
                 <RowDefinition></RowDefinition>
@@ -33,16 +37,21 @@
 			</Grid.ColumnDefinitions>
 
             <Label Content="Данные карты" Height="35" Width="180" FontSize="20" HorizontalContentAlignment="Center" Grid.Row="0" Grid.Column="1" />
-            <TextBox TextWrapping="Wrap" Text="Контактные данные" Width="300" Height="30" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" FontSize="16" Grid.Row="1" Grid.Column="1"/>
-            <TextBox TextWrapping="Wrap" Text="Номер карты"  Width="300" Height="30" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" FontSize="16" Grid.Row="2" Grid.Column="1"/>
-            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Grid.Row="3" Grid.Column="1">
-                <TextBox TextWrapping="Wrap" Text="Дата" Width="150" Height="30" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" FontSize="16"/>
-                <TextBox TextWrapping="Wrap" Text="CVC" Width="150" Height="30" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" FontSize="16"/>
-            </StackPanel>
-            <Button Content="Оплатить" Height="30" Width="150" Grid.Row="4" Grid.Column="1"/>
 
-            <Label Content="Корзина" Height="40" Width="110" FontSize="20" HorizontalContentAlignment="Center" Grid.Row="0" Grid.Column="0"/>
-            <ListBox d:ItemsSource="{d:SampleData ItemCount=10}" Grid.Row="1" Grid.RowSpan="5" Grid.Column="0" FontSize="16" HorizontalContentAlignment="Center"/>
+            <TextBox TextWrapping="Wrap" Text="{Binding PersonalData}" ToolTip="Контактные данные" Width="300" Height="30" Grid.Row="1" Grid.Column="1"/>
+            <TextBox TextWrapping="Wrap" Text="{Binding CardNumber}" ToolTip="Номер карты"  Width="300" Height="30" Grid.Row="2" Grid.Column="1"/>
+            
+            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Grid.Row="3" Grid.Column="1">
+                <TextBox TextWrapping="Wrap" Text="{Binding Date}" ToolTip="Дата" Width="150" Height="30" />
+                <TextBox TextWrapping="Wrap" Text="{Binding CodeCVC}" ToolTip="CVC" Width="150" Height="30" />
+            </StackPanel>
+            <Button Content="Оплатить" Command="{Binding Pay}" Height="30" Width="150" Grid.Row="4" Grid.Column="1"/>
+
+            <Label Content="Корзина" Height="40" Width="110" FontSize="20" HorizontalContentAlignment="Center"
+                   Grid.Row="0" Grid.Column="0"/>
+
+            <ListBox d:ItemsSource="{Binding Products}" Grid.Row="1" Grid.RowSpan="5" Grid.Column="0"
+                     FontSize="16" HorizontalContentAlignment="Center"/>
 		</Grid>
 
         <Button Content="Вернуться" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Height="30" Width="85" Background="White"/>

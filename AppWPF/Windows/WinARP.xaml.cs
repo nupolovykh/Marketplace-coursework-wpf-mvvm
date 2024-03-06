@@ -17,9 +17,9 @@ namespace AppWPF
     /// <summary>
     /// Логика взаимодействия для WinARL.xaml
     /// </summary>
-    public partial class WinARL : Window
+    public partial class WinARP : Window
     {
-        public WinARL()
+        public WinARP()
         {
             InitializeComponent();
         }

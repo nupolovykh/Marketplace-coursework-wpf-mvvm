@@ -6,16 +6,26 @@
              xmlns:local="clr-namespace:AppWPF.CustomControls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Height" Value="30" />
+            <Setter Property="Width" Value="85" />
+            <Setter Property="Background" Value="White"/>
+        </Style>
+    </UserControl.Resources>
+
     <Grid>
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Orientation="Horizontal" MinHeight="50" MinWidth="800">
+            
             <Label Content="MyMarket" Height="50" Width="150" FontSize="28" HorizontalContentAlignment="Center"/>
-            <Button Content="Профиль" Height="30" Width="85" Background="White" />
-            <Button Content="Вход" Height="30" Width="85" Background="White" />
-            <Button Content="Регистрация" Height="30" Width="85" Background="White" />
-            <Button Content="Корзина" Height="30" Width="85" Background="White" />
-            <Button Content="Ваш ПВЗ" Height="30" Width="85" Background="White" />
-            <Button Content="Товары" Height="30" Width="85" Background="White" />
-            <Button Content="Статистика" Height="30" Width="85" Background="White" />
+            <Button Content="Профиль"/>
+            <Button Content="Вход"/>
+            <Button Content="Регистрация"/>
+            <Button Content="Корзина"/>
+            <Button Content="Ваш ПВЗ"/>
+            <Button Content="Товары"/>
+            <Button Content="Статистика"/>
         </StackPanel>
     </Grid>
 </UserControl>

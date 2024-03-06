@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AppWPF.database
 {
-    class DeliveryPoint
+	public class DeliveryPoint
     {
         public int Id { get; set; }
         public string Address { get; set; }

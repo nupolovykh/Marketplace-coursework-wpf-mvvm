@@ -6,8 +6,8 @@
         xmlns:local="clr-namespace:AppWPF"
         xmlns:custom="clr-namespace:AppWPF.CustomControls"
         mc:Ignorable="d"
-        Title="Main" Height="450" Width="800">
-    <Grid>
+        Title="Main" Height="500" Width="900">
+    <Grid x:Name="Grid">
         <custom:Header></custom:Header>
         <custom:Main></custom:Main>
     </Grid>
