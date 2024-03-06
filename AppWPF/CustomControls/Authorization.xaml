@@ -27,7 +27,7 @@
 
     <Grid>
 		<Label Content="Авторизация" HorizontalAlignment="Center" Margin="0,150,0,0" VerticalAlignment="Top" Height="50" Width="200"
-			FontSize="28" HorizontalContentAlignment="Center"/>
+			    FontSize="28" HorizontalContentAlignment="Center"/>
         
         <TextBox x:Name="login" Margin="0,220,0,0" Text="{Binding LoginEmail}" ToolTip="Введите логин или почту"/>
         <TextBox x:Name="password" Margin="0,270,0,0" Text="{Binding Password}" ToolTip="Введите пароль"/>
@@ -36,6 +36,6 @@
                 VerticalAlignment="Top" Height="30" Width="150"/>
 
         <Button x:Name="return" Content="Вернуться" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Height="30" Width="85"
-		Background="White"/>
+		        Background="White"/>
 	</Grid>
 </UserControl>

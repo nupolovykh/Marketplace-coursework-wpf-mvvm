@@ -50,8 +50,7 @@
             <Label Content="Корзина" Height="40" Width="110" FontSize="20" HorizontalContentAlignment="Center"
                    Grid.Row="0" Grid.Column="0"/>
 
-            <ListBox d:ItemsSource="{Binding Products}" Grid.Row="1" Grid.RowSpan="5" Grid.Column="0"
-                     FontSize="16" HorizontalContentAlignment="Center"/>
+            <DataGrid AutoGenerateColumns="True" d:ItemsSource="{Binding Products}" Grid.Row="1" Grid.RowSpan="5" Grid.Column="0"/>
 		</Grid>
 
         <Button Content="Вернуться" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Height="30" Width="85" Background="White"/>

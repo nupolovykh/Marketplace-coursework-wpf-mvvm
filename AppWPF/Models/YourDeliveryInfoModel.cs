@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace AppWPF.Models
 {
-	public class MainModel
-	{
-		public string Search { get; set; }
-		public List<Category> Categories { get; set; }
+    public class YourDeliveryInfoModel
+    {
+        public string Search { get; set; }
 		public List<Product> Products { get; set; }
+		public List<Order> Orders { get; set; }
 	}
 }

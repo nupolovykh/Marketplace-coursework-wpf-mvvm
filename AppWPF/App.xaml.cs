@@ -21,10 +21,10 @@ namespace AppWPF
             base.OnStartup(e);
 
 
-            var window = new WinARP();
+            var window = new WinMain();
             window.Grid.Children.Clear();
-			window.Grid.Children.Add(new Cart());
-			window.Grid.Children.Add(new Header());
+			window.Grid.Children.Add(new Profile());
+			//window.Grid.Children.Add(new Header());
 
 			this.MainWindow = window;
             window.Show();

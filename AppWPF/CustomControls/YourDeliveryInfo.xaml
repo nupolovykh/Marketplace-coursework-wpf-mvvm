@@ -4,19 +4,34 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AppWPF.CustomControls"
+        xmlns:model="clr-namespace:AppWPF.ViewModels"
         mc:Ignorable="d"
-        Height="450" Width="800">
+        MinHeight="450" MinWidth="800">
+
+    <UserControl.DataContext>
+        <model:YourDeliveryInfoVM/>
+    </UserControl.DataContext>
+
+    <UserControl.Resources>
+        <Style TargetType="TextBox">
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        <Style TargetType="Label">
+            <Setter Property="Height" Value="35" />
+            <Setter Property="Width" Value="200" />
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="White"/>
+        </Style>
+    </UserControl.Resources>
+
     <Grid>
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Orientation="Horizontal" MinHeight="50" MinWidth="800">
-            <Label Content="MyMarket" Height="50" Width="150" FontSize="28" HorizontalContentAlignment="Center"/>
-            <Button Content="Профиль" Height="30" Width="85" Background="White" />
-            <Button Content="Вход" Height="30" Width="85" Background="White" />
-            <Button Content="Регистрация" Height="30" Width="85" Background="White" />
-            <Button Content="Корзина" Height="30" Width="85" Background="White" />
-            <Button Content="Ваш ПВЗ" Height="30" Width="85" Background="White" />
-            <Button Content="Товары" Height="30" Width="85" Background="White" />
-            <Button Content="Статистика" Height="30" Width="85" Background="White" />
-        </StackPanel>
 
         <Grid ShowGridLines="True" Margin="0,55,0,0">
             <Grid.RowDefinitions>
@@ -32,17 +47,17 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
-                <TextBox TextWrapping="Wrap" Text="Поиск" Width="180" Height="30" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" FontSize="20"/>
-                <Button Content="Применить"  Height="30" Width="65" Background="White"/>
+                <TextBox TextWrapping="Wrap" Text="{Binding Search}" Width="180" Height="30" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" FontSize="20"/>
+                <Button Content="Применить" Command="{Binding SearchBtn}" Height="30" Width="65" Background="White"/>
             </StackPanel>
 
             <Label Content="Заказы" Height="35" Width="200" FontSize="20" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1"/>
-            <DataGrid d:ItemsSource="{d:SampleData ItemCount=15}" Grid.Column="0" Grid.Row="2"/>
-            <Button Content="Выбрать" Height="30" Width="85" Background="White" Grid.Column="0" Grid.Row="3"/>
+            <DataGrid d:ItemsSource="{Binding Orders}" Grid.Column="0" Grid.Row="2"/>
+            <Button Content="Выбрать" Command="{Binding SelectOrder}" Height="30" Width="85" Background="White" Grid.Column="0" Grid.Row="3"/>
 
             <Label Content="Состав заказа" Height="35" Width="200" FontSize="20" HorizontalContentAlignment="Center" Grid.Column="1" Grid.Row="1"/>
-            <DataGrid d:ItemsSource="{d:SampleData ItemCount=15}" Grid.Column="1" Grid.Row="2"/>
-            <Button Content="Применить" Height="30" Width="85" Background="White" Grid.Column="1" Grid.Row="3"/>
+            <DataGrid d:ItemsSource="{Binding Products}" Grid.Column="1" Grid.Row="2"/>
+            <Button Content="Применить" Command="{Binding SelectProduct}" Height="30" Width="85" Background="White" Grid.Column="1" Grid.Row="3"/>
         </Grid>
 
         <Button Content="Вернуться" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Height="30" Width="85" Background="White"/>
