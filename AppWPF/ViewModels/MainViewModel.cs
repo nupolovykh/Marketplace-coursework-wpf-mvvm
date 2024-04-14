@@ -33,21 +33,21 @@ namespace AppWPF.ViewModels
 			_viewModelStore = viewModelStore;
 			_viewModelStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
 
-			PathToProfile = new NavigateCommand(viewModelStore, new ProfileVM());
+			PathToProfile = new NavigateCommand(viewModelStore, new ProfileVM(viewModelStore));
 
-			PathToAuthorization = new NavigateCommand(viewModelStore, new AuthorizationVM());
+			PathToAuthorization = new NavigateCommand(viewModelStore, new AuthorizationVM(viewModelStore));
 
-			PathToRegistration = new NavigateCommand(viewModelStore, new RegistrationVM());
+			PathToRegistration = new NavigateCommand(viewModelStore, new RegistrationVM(viewModelStore));
 
-			PathToCart = new NavigateCommand(viewModelStore, new CartVM());
+			PathToCart = new NavigateCommand(viewModelStore, new CartVM(viewModelStore));
 
-			PathToYourDeliveryInfo = new NavigateCommand(viewModelStore, new YourDeliveryInfoVM());
+			PathToYourDeliveryInfo = new NavigateCommand(viewModelStore, new YourDeliveryInfoVM(viewModelStore));
 
-			PathToProducts = new NavigateCommand(viewModelStore, new ProductsVM());
+			PathToProducts = new NavigateCommand(viewModelStore, new ProductsVM(viewModelStore));
 
-			PathToStatistics = new NavigateCommand(viewModelStore, new StatisticsVM());
+			PathToStatistics = new NavigateCommand(viewModelStore, new StatisticsVM(viewModelStore));
 
-			Return = new NavigateCommand(viewModelStore, new MainVM());
+			Return = new NavigateCommand(viewModelStore, new MainVM(viewModelStore));
 		}
 
 		private void OnCurrentViewModelChanged()

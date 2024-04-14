@@ -7,6 +7,7 @@ namespace AppWPF.ViewModels.Pages
     public class ProfileVM : ViewModelBase
 	{
 		private ProfileModel _profileModel;
+		private ViewModelStore _viewModelStore;
 
 		public string Login
 		{
@@ -76,8 +77,9 @@ namespace AppWPF.ViewModels.Pages
 		public ICommand ApplyChanges { get; set; }
 
 
-		public ProfileVM()
+		public ProfileVM(ViewModelStore viewModelStore) 
 		{
+			_viewModelStore = viewModelStore;
 			_profileModel = new ProfileModel();
 		}
 	}

@@ -20,9 +20,9 @@
         </Style>
     </UserControl.Resources>
 
-    <UserControl.DataContext>
+    <!--<UserControl.DataContext>
         <model:ProfileVM/>
-    </UserControl.DataContext>
+    </UserControl.DataContext>-->
 
     <Grid>
         <Label Content="Настройки" HorizontalAlignment="Center" Margin="0,92,0,0" VerticalAlignment="Top" Height="50" Width="300"

@@ -8,6 +8,7 @@ namespace AppWPF.ViewModels.Pages
     public class AuthorizationVM : ViewModelBase
 	{
 		private AuthorizationModel _authorizationModel;
+		private ViewModelStore _viewModelStore;
 
 		public string LoginEmail
 		{
@@ -37,9 +38,11 @@ namespace AppWPF.ViewModels.Pages
 
 		public ICommand AuthorizationCommand { get; set; }
 
-		public AuthorizationVM() 
+		public AuthorizationVM(ViewModelStore viewModelStore) 
 		{
+			_viewModelStore = viewModelStore;
 			_authorizationModel = new AuthorizationModel();
+			//AuthorizationCommand = new LoginCommand(viewModelStore, employeeStore, this);
 		}
 	}
 }

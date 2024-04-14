@@ -7,9 +7,9 @@
 		mc:Ignorable="d"
 		Height="450" Width="800">
     
-    <UserControl.DataContext>
+    <!--<UserControl.DataContext>
         <model:AuthorizationVM/>
-    </UserControl.DataContext>
+    </UserControl.DataContext>-->
 
     <UserControl.Resources>
         <Style TargetType="TextBox">

@@ -9,6 +9,7 @@ namespace AppWPF.ViewModels.Pages
     public class StatisticsVM : ViewModelBase
 	{
 		private StatisticsModel _statisticsModel;
+		private ViewModelStore _viewModelStore;
 
 		public string Search
 		{
@@ -40,8 +41,9 @@ namespace AppWPF.ViewModels.Pages
 		public ICommand SelectDeliveryPoint { get; set; }
 		//public ICommand DrawTheGraph { get; set; }
 
-		public StatisticsVM() 
+		public StatisticsVM(ViewModelStore viewModelStore)
 		{
+			_viewModelStore = viewModelStore;
 			_statisticsModel = new StatisticsModel();
 		}
 	}

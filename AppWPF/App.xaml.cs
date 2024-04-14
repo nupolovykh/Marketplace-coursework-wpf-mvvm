@@ -12,7 +12,7 @@ namespace AppWPF
 		public App()
 		{
 			_viewModelStore = new ViewModelStore();
-			_viewModelStore.CurrentViewModel = new AuthorizationVM();
+			_viewModelStore.CurrentViewModel = new AuthorizationVM(_viewModelStore);
 		}
 
 		protected override void OnStartup(StartupEventArgs e)

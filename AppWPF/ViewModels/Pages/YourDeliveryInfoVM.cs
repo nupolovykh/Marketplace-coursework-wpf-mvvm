@@ -9,6 +9,7 @@ namespace AppWPF.ViewModels.Pages
     public class YourDeliveryInfoVM : ViewModelBase
 	{
         private YourDeliveryInfoModel _yourDeliveryModel;
+		private ViewModelStore _viewModelStore;
 
 		public string Search
 		{
@@ -53,8 +54,9 @@ namespace AppWPF.ViewModels.Pages
 		public ICommand SelectProduct { get; set; }
 		public ICommand SearchBtn { get; set; }
 
-		public YourDeliveryInfoVM() 
-        {
+		public YourDeliveryInfoVM(ViewModelStore viewModelStore)
+		{
+			_viewModelStore = viewModelStore;
 			_yourDeliveryModel = new YourDeliveryInfoModel();
 		}
     }

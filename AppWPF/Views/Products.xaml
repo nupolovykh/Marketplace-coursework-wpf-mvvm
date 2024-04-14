@@ -17,9 +17,9 @@
         </Style>
     </UserControl.Resources>
 
-    <UserControl.DataContext>
+    <!--<UserControl.DataContext>
         <model:ProductsVM/>
-    </UserControl.DataContext>
+    </UserControl.DataContext>-->
 
     <Grid>
 		<Grid ShowGridLines="True" Margin="0,55,0,0">

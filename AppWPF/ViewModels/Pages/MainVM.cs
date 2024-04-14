@@ -9,6 +9,7 @@ namespace AppWPF.ViewModels.Pages
     public class MainVM : ViewModelBase
     {
 		private MainModel _mainModel;
+		private ViewModelStore _viewModelStore;
 
 		public string Search
 		{
@@ -55,9 +56,10 @@ namespace AppWPF.ViewModels.Pages
 		public ICommand SelectProduct { get; set; }
 		public ICommand SearchBtn { get; set; }
 
-		public MainVM()
-        {
-            _mainModel = new MainModel();
+		public MainVM(ViewModelStore viewModelStore)
+		{
+			_viewModelStore = viewModelStore;
+			_mainModel = new MainModel();
         }
     }
 }

@@ -9,6 +9,7 @@ namespace AppWPF.ViewModels.Pages
     public class ProductsVM : ViewModelBase
 	{
 		private ProductsModel _productsModel;
+		private ViewModelStore _viewModelStore;
 
 		public string Search {
 			get
@@ -52,8 +53,9 @@ namespace AppWPF.ViewModels.Pages
 		public ICommand SelectProduct { get; set; }
 		public ICommand SelectProductInstance { get; set; }
 
-		public ProductsVM()
+		public ProductsVM(ViewModelStore viewModelStore)
 		{
+			_viewModelStore = viewModelStore;
 			_productsModel = new ProductsModel();
 		}
 	}

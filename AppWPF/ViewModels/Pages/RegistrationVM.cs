@@ -7,6 +7,7 @@ namespace AppWPF.ViewModels.Pages
     public class RegistrationVM : ViewModelBase
 	{
 		private RegistrationModel _registrationVM;
+		private ViewModelStore _viewModelStore;
 
 		public string Login
 		{
@@ -63,8 +64,9 @@ namespace AppWPF.ViewModels.Pages
 		public ICommand RegistrationCommand { get; set; }
 
 
-		public RegistrationVM()
+		public RegistrationVM(ViewModelStore viewModelStore)
 		{
+			_viewModelStore = viewModelStore;
 			_registrationVM = new RegistrationModel();
 		}
 

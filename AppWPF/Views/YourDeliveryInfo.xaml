@@ -8,9 +8,9 @@
         mc:Ignorable="d"
         MinHeight="450" MinWidth="800">
 
-    <UserControl.DataContext>
+    <!--<UserControl.DataContext>
         <model:YourDeliveryInfoVM/>
-    </UserControl.DataContext>
+    </UserControl.DataContext>-->
 
     <UserControl.Resources>
         <Style TargetType="TextBox">

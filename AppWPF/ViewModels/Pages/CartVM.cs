@@ -9,6 +9,7 @@ namespace AppWPF.ViewModels.Pages
     public class CartVM : ViewModelBase
 	{
 		private CartModel _cartModel;
+		private ViewModelStore _viewModelStore;
 
 		public string PersonalData
 		{
@@ -77,8 +78,9 @@ namespace AppWPF.ViewModels.Pages
 
 		public ICommand Pay { get; set; }
 
-		public CartVM()
+		public CartVM(ViewModelStore viewModelStore)
 		{
+			_viewModelStore = viewModelStore;
 			_cartModel = new CartModel();
 		}
 	}
