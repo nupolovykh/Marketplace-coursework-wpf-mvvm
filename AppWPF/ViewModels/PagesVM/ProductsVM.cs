@@ -1,13 +1,10 @@
 ﻿using AppWPF.Database;
 using AppWPF.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
+using AppWPF.ViewModels.BaseClasses;
 
-namespace AppWPF.ViewModels
+namespace AppWPF.ViewModels.Pages
 {
 	public class ProductsVM : ViewModelBase
 	{

@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using AppWPF.Models;
+using AppWPF.ViewModels.BaseClasses;
 
-namespace AppWPF.ViewModels
+namespace AppWPF.ViewModels.Pages
 {
 	public class AuthorizationVM : ViewModelBase
 	{

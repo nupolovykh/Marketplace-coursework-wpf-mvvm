@@ -1,33 +1,29 @@
-﻿using AppWPF.CustomControls;
-using AppWPF.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AppWPF.ViewModels;
+using AppWPF.ViewModels.BaseClasses;
+using AppWPF.ViewModels.Pages;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace AppWPF
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
     public partial class App : Application
     {
-        protected override void OnStartup(StartupEventArgs e)
+		private readonly ViewModelStore _viewModelStore;
+
+		public App()
+		{
+			_viewModelStore = new ViewModelStore();
+			_viewModelStore.CurrentViewModel = new MainVM();
+		}
+
+		protected override void OnStartup(StartupEventArgs e)
         {
-            base.OnStartup(e);
+			MainWindow = new WinMain()
+			{
+				DataContext = new GenericViewModel(_viewModelStore)
+			};
+			MainWindow.Show();
 
-
-            var window = new WinMain();
-            window.Grid.Children.Clear();
-			window.Grid.Children.Add(new Profile());
-			//window.Grid.Children.Add(new Header());
-
-			this.MainWindow = window;
-            window.Show();
-        }
+			base.OnStartup(e);
+		}
     }
 }

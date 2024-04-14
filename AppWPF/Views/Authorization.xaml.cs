@@ -10,18 +10,20 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static System.Net.Mime.MediaTypeNames;
 
-namespace AppWPF.CustomControls
+namespace AppWPF.Views
 {
     /// <summary>
-    /// Логика взаимодействия для Main.xaml
+    /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class Main : UserControl
+    public partial class Authorization : UserControl
     {
-        public Main()
+        public Authorization()
         {
             InitializeComponent();
         }
-    }
+	}
 }

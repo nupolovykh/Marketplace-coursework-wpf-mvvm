@@ -10,16 +10,17 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace AppWPF.CustomControls
+namespace AppWPF.Views
 {
     /// <summary>
-    /// Interaction logic for Cart.xaml
+    /// Логика взаимодействия для Header.xaml
     /// </summary>
-    public partial class Cart : UserControl
+    public partial class Header : UserControl
     {
-        public Cart()
+        public Header()
         {
             InitializeComponent();
         }

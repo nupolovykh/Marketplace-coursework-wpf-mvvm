@@ -10,20 +10,18 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
-using static System.Net.Mime.MediaTypeNames;
 
-namespace AppWPF.CustomControls
+namespace AppWPF.Views
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for Profile.xaml
     /// </summary>
-    public partial class Authorization : UserControl
+    public partial class Profile : UserControl
     {
-        public Authorization()
+        public Profile()
         {
             InitializeComponent();
         }
-	}
+    }
 }

@@ -12,14 +12,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace AppWPF.CustomControls
+namespace AppWPF.Views
 {
     /// <summary>
-    /// Interaction logic for Profile.xaml
+    /// Логика взаимодействия для Main.xaml
     /// </summary>
-    public partial class Profile : UserControl
+    public partial class Main : UserControl
     {
-        public Profile()
+        public Main()
         {
             InitializeComponent();
         }

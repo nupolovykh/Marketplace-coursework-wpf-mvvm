@@ -12,14 +12,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace AppWPF.CustomControls
+namespace AppWPF.Views
 {
     /// <summary>
-    /// Логика взаимодействия для Registration.xaml
+    /// Interaction logic for Cart.xaml
     /// </summary>
-    public partial class Registration : UserControl
+    public partial class Cart : UserControl
     {
-        public Registration()
+        public Cart()
         {
             InitializeComponent();
         }
