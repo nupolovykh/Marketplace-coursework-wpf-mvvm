@@ -1,4 +1,4 @@
-﻿using AppWPF.database;
+﻿using AppWPF.Database;
 using AppWPF.Models;
 using System;
 using System.Collections.Generic;
@@ -43,7 +43,7 @@ namespace AppWPF.ViewModels
 		{
 			get
 			{
-				return _cartModel.Date;
+				return _cartModel.Date!;
 			}
 			set
 			{

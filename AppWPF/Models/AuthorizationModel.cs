@@ -8,7 +8,7 @@ namespace AppWPF.Models
 {
     public class AuthorizationModel
     {
-        public string LoginEmail { get; set; }
-        public string Password { get; set; }
-    }
+        public string? LoginEmail { get; set; }
+		public string? Password { get; set; }
+	}
 }

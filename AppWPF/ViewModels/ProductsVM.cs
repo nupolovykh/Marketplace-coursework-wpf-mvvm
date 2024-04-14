@@ -1,4 +1,4 @@
-﻿using AppWPF.database;
+﻿using AppWPF.Database;
 using AppWPF.Models;
 using System;
 using System.Collections.Generic;
@@ -38,7 +38,7 @@ namespace AppWPF.ViewModels
 			}
 		}
 
-		public List<ProductInstance> ProductInstances
+		public List<ProductsInstance> ProductInstances
 		{
 			get
 			{

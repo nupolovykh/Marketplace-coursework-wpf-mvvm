@@ -1,19 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace AppWPF.database
+namespace AppWPF.Database
 {
-	public class DeliveryPoint
+    public partial class DeliveryPoint
     {
-        public int Id { get; set; }
-        public string Address { get; set; }
-        public string City { get; set; }
-        public decimal Rating { get; set; }
-        public string ZipCode { get; set; }
-        public IEnumerable<Order> Orders { get; set; }
-        public IEnumerable<Employee> Employees { get; set; }
+        public DeliveryPoint()
+        {
+            Employees = new HashSet<Employee>();
+            Orders = new HashSet<Order>();
+        }
+
+        public int DeliveryPointId { get; set; }
+        public string? Address { get; set; }
+        public string? City { get; set; }
+        public decimal? Rating { get; set; }
+        public string? Zipcode { get; set; }
+
+        public virtual ICollection<Employee> Employees { get; set; }
+        public virtual ICollection<Order> Orders { get; set; }
     }
 }

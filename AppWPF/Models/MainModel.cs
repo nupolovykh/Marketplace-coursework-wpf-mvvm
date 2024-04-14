@@ -1,4 +1,4 @@
-﻿using AppWPF.database;
+﻿using AppWPF.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +9,8 @@ namespace AppWPF.Models
 {
 	public class MainModel
 	{
-		public string Search { get; set; }
-		public List<Category> Categories { get; set; }
-		public List<Product> Products { get; set; }
+		public string? Search { get; set; }
+		public List<Category>? Categories { get; set; }
+		public List<Product>? Products { get; set; }
 	}
 }

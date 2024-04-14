@@ -42,7 +42,8 @@ namespace AppWPF.ViewModels
 
 		public ICommand AuthorizationCommand { get; set; }
 
-		public AuthorizationVM() {
+		public AuthorizationVM() 
+		{
 			_authorizationModel = new AuthorizationModel();
 		}
 	}

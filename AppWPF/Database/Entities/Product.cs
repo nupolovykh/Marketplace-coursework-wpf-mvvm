@@ -1,21 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace AppWPF.database
+namespace AppWPF.Database
 {
-	public class Product
+    public partial class Product
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public decimal Rating { get; set; } 
-        public decimal Price { get; set; }
-        public int ProductInstanceId { get; set; }
-        public ProductInstance ProductInstance { get; set; }
-        public int MarketId { get; set; }
-        public Market Market { get; set; }
-        public IEnumerable<ProductAndOrder> ProductAndOrders { get; set; }
+        public Product()
+        {
+            OrdersItems = new HashSet<OrdersItem>();
+        }
+
+        public int ProductId { get; set; }
+        public int? ProductInstanceId { get; set; }
+        public int? MarketId { get; set; }
+        public decimal? Price { get; set; }
+        public decimal? Rating { get; set; }
+
+        public virtual Market? Market { get; set; }
+        public virtual ProductsInstance? ProductInstance { get; set; }
+        public virtual ICollection<OrdersItem> OrdersItems { get; set; }
     }
 }

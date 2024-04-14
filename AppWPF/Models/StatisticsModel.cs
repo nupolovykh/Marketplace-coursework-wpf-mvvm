@@ -1,4 +1,4 @@
-﻿using AppWPF.database;
+﻿using AppWPF.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ namespace AppWPF.Models
 {
     public class StatisticsModel
     {
-        public string Search { get; set; }
-        public List<DeliveryPoint> DeliveryPoints {  get; set; }
+        public string? Search { get; set; }
+		public List<DeliveryPoint>? DeliveryPoints { get; set; }
     }
 }

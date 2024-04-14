@@ -1,4 +1,4 @@
-﻿using AppWPF.database;
+﻿using AppWPF.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +9,10 @@ namespace AppWPF.Models
 {
 	public class CartModel
 	{
-		public string PersonalData { get; set; }
-		public string CardNumber { get; set; }
-		public string Date { get; set; }
-		public string CodeCVC { get; set; }
-		public List<Product> Products { get; set; }
+		public string? PersonalData { get; set; }
+		public string? CardNumber { get; set; }
+		public string? Date { get; set; }
+		public string? CodeCVC { get; set; }
+		public List<Product>? Products { get; set; }
 	}
 }
