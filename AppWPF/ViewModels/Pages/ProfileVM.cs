@@ -1,10 +1,10 @@
-﻿using AppWPF.Models;
-using System.Windows.Input;
-using AppWPF.ViewModels.BaseClasses;
+﻿using System.Windows.Input;
+using AppWPF.ViewModels.Additional;
+using AppWPF.ViewModels.Models;
 
 namespace AppWPF.ViewModels.Pages
 {
-	public class ProfileVM : ViewModelBase
+    public class ProfileVM : ViewModelBase
 	{
 		private ProfileModel _profileModel;
 

@@ -5,11 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AppWPF.Models
+namespace AppWPF.ViewModels.Models
 {
-    public class StatisticsModel
+    public class ProductsModel
     {
         public string? Search { get; set; }
-		public List<DeliveryPoint>? DeliveryPoints { get; set; }
+        public List<ProductsInstance>? ProductInstances { get; set; }
+        public List<Product>? Products { get; set; }
     }
 }

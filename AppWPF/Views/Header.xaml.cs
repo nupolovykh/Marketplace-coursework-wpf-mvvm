@@ -1,4 +1,6 @@
-﻿using System;
+﻿using AppWPF.ViewModels.Additional;
+using AppWPF.ViewModels.Commands;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,5 +26,40 @@ namespace AppWPF.Views
         {
             InitializeComponent();
         }
-    }
+
+		private void Profile_Click(object sender, RoutedEventArgs e)
+		{
+		
+		}
+
+		private void Entance_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
+
+		private void Registration_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
+
+		private void Cart_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
+
+		private void YourDeliveryInfo_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
+
+		private void Products_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
+
+		private void Statistics_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
+	}
 }

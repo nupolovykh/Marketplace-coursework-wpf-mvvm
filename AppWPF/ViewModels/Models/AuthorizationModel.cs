@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AppWPF.Models
+namespace AppWPF.ViewModels.Models
 {
     public class AuthorizationModel
     {
         public string? LoginEmail { get; set; }
-		public string? Password { get; set; }
-	}
+        public string? Password { get; set; }
+    }
 }

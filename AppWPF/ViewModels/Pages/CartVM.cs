@@ -1,12 +1,12 @@
 ﻿using AppWPF.Database;
-using AppWPF.Models;
 using System.Collections.Generic;
 using System.Windows.Input;
-using AppWPF.ViewModels.BaseClasses;
+using AppWPF.ViewModels.Additional;
+using AppWPF.ViewModels.Models;
 
 namespace AppWPF.ViewModels.Pages
 {
-	public class CartVM : ViewModelBase
+    public class CartVM : ViewModelBase
 	{
 		private CartModel _cartModel;
 

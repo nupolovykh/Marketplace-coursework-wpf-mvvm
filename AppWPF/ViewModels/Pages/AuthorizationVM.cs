@@ -1,10 +1,11 @@
 ﻿using System.Windows.Input;
-using AppWPF.Models;
-using AppWPF.ViewModels.BaseClasses;
+using AppWPF.ViewModels.Additional;
+using AppWPF.ViewModels.Commands;
+using AppWPF.ViewModels.Models;
 
 namespace AppWPF.ViewModels.Pages
 {
-	public class AuthorizationVM : ViewModelBase
+    public class AuthorizationVM : ViewModelBase
 	{
 		private AuthorizationModel _authorizationModel;
 

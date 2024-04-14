@@ -49,6 +49,5 @@
             <Button Content="Применить" Command="{Binding SelectProduct}" Height="30" Width="85" Background="White" Grid.Column="1" Grid.Row="3"/>
 		</Grid>
 
-		<Button Content="Вернуться" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Height="30" Width="85" Background="White"/>
 	</Grid>
 </UserControl>

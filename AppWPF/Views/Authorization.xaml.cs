@@ -1,4 +1,6 @@
-﻿using System;
+﻿using AppWPF.ViewModels.Additional;
+using AppWPF.ViewModels.Commands;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +14,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace AppWPF.Views
 {
@@ -22,8 +23,8 @@ namespace AppWPF.Views
     public partial class Authorization : UserControl
     {
         public Authorization()
-        {
-            InitializeComponent();
-        }
+		{
+			InitializeComponent();
+		}
 	}
 }

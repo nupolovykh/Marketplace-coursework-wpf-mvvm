@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AppWPF.ViewModels.BaseClasses
+namespace AppWPF.ViewModels.Additional
 {
 	public class ViewModelStore
 	{
