@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Input;
-using AppWPF.Models.Database.Entities;
-using AppWPF.Models.PlainModels;
+using MyWpfAppForDb.Models.Database.Entities;
+using MyWpfAppForDb.Models.PlainModels;
 using MyWpfAppForDb.ViewModels;
 
-namespace AppWPF.ViewModels
+namespace MyWpfAppForDb.ViewModels
 {
     public class MainVM : ViewModelBase
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AppWPF.Models.PlainModels
+namespace MyWpfAppForDb.Models.PlainModels
 {
     public class AuthorizationModel
     {

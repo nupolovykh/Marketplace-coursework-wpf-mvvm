@@ -1,8 +1,8 @@
-﻿using AppWPF.Models.Database.Entities;
+﻿using MyWpfAppForDb.Models.Database.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 
-namespace AppWPF.Models.Database.EachEntityBuilder
+namespace MyWpfAppForDb.Models.Database.EachEntityBuilder
 {
     internal static class OrderBuilder
     {

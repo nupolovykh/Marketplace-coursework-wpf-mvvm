@@ -1,8 +1,8 @@
 ﻿using System.Windows.Input;
-using AppWPF.Commands;
+using MyWpfAppForDb.Commands;
 using MyWpfAppForDb.ViewModels;
 
-namespace AppWPF.ViewModels
+namespace MyWpfAppForDb.ViewModels
 {
     public class MainViewModel : ViewModelBase
 	{

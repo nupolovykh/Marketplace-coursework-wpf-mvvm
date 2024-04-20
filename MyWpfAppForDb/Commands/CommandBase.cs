@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace AppWPF.Commands
+namespace MyWpfAppForDb.Commands
 {
     public abstract class CommandBase : ICommand
     {

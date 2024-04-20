@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace AppWPF.Models.Database.Entities
+namespace MyWpfAppForDb.Models.Database.Entities
 {
     public partial class Market
     {

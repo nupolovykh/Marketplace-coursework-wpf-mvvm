@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace AppWPF.Views
+namespace MyWpfAppForDb.Views
 {
     /// <summary>
     /// Interaction logic for Cart.xaml

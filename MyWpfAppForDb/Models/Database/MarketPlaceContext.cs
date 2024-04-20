@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using AppWPF.Models.Database.EachEntityBuilder;
-using AppWPF.Models.Database.Entities;
+using MyWpfAppForDb.Models.Database.EachEntityBuilder;
+using MyWpfAppForDb.Models.Database.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace AppWPF.Models.Database
+namespace MyWpfAppForDb.Models.Database
 {
     public partial class MarketPlaceContext : DbContext
     {
@@ -15,7 +15,11 @@ namespace AppWPF.Models.Database
             Database.EnsureCreated();
         }
 
-        public MarketPlaceContext(DbContextOptions<MarketPlaceContext> options) : base(options) { }
+        public MarketPlaceContext(DbContextOptions<MarketPlaceContext> options) : base(options) 
+        {
+            Database.EnsureDeleted();
+            Database.EnsureCreated();
+        }
 
         public virtual DbSet<Category> Categories { get; set; } = null!;
         public virtual DbSet<Client> Clients { get; set; } = null!;
@@ -31,7 +35,9 @@ namespace AppWPF.Models.Database
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=.;Database=MarketPlace;Trusted_Connection=True;TrustServerCertificate=true;");
+                //optionsBuilder.UseSqlServer("Server=.;Database=MarketPlace;Trusted_Connection=True;TrustServerCertificate=true;");
+
+                optionsBuilder.UseSqlite("Data Source=app.db");
             }
         }
 

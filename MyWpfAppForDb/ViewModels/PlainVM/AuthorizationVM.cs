@@ -1,9 +1,9 @@
 ﻿using System.Windows.Input;
-using AppWPF.Models.PlainModels;
-using AppWPF.Commands;
+using MyWpfAppForDb.Models.PlainModels;
+using MyWpfAppForDb.Commands;
 using MyWpfAppForDb.ViewModels;
 
-namespace AppWPF.ViewModels
+namespace MyWpfAppForDb.ViewModels
 {
     public class AuthorizationVM : ViewModelBase
     {

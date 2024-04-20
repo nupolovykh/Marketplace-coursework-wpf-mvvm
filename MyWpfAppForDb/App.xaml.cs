@@ -1,11 +1,11 @@
-﻿using AppWPF.Models.Database;
-using AppWPF.ViewModels;
+﻿using MyWpfAppForDb.Models.Database;
+using MyWpfAppForDb.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using MyWpfAppForDb.ViewModels;
 using System;
 using System.Windows;
 
-namespace AppWPF
+namespace MyWpfAppForDb
 {
     public partial class App : Application
     {

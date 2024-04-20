@@ -1,4 +1,4 @@
-﻿namespace AppWPF.Commands
+﻿namespace MyWpfAppForDb.Commands
 {
     internal class DefaultCommand : CommandBase
     {

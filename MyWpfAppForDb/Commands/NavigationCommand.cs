@@ -1,6 +1,6 @@
 ﻿using MyWpfAppForDb.ViewModels;
 
-namespace AppWPF.Commands
+namespace MyWpfAppForDb.Commands
 {
     public class NavigateCommand : CommandBase
     {

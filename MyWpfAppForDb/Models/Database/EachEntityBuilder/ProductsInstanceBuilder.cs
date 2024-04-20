@@ -1,4 +1,4 @@
-﻿using AppWPF.Models.Database.Entities;
+﻿using MyWpfAppForDb.Models.Database.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AppWPF.Models.Database.EachEntityBuilder
+namespace MyWpfAppForDb.Models.Database.EachEntityBuilder
 {
     internal static class ProductsInstanceBuilder
     {
