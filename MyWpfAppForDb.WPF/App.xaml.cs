@@ -1,26 +1,20 @@
 ﻿using System;
 using System.Windows;
-using MyWpfAppForDb.EntityFramework;
 using MyWpfAppForDb.WPF.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using MyWpfAppForDb.WPF.HostBuilders;
+using MyWpfAppForDb.WPF.Inspectors;
 
 namespace MyWpfAppForDb.WPF
 {
     public partial class App : Application
     {
-        private readonly ViewModelStore _viewModelStore;
-
-        private readonly IServiceProvider? _serviceProvider;
         private readonly IHost _host;
 
         public App()
         {
-            _viewModelStore = new ViewModelStore();
-            _viewModelStore.CurrentViewModel = new AuthorizationVM(_viewModelStore);
-
             _host = CreateHostBuilder().Build();
         }
 
@@ -31,6 +25,7 @@ namespace MyWpfAppForDb.WPF
                 .AddDbContext()
                 .AddServices()
                 .AddViewModels()
+                .AddMapping()
                 .AddViews();
         }
 
@@ -47,30 +42,6 @@ namespace MyWpfAppForDb.WPF
             window.Show();
 
             base.OnStartup(e);
-        }
-    }
-
-    public static class DatabaseInspector
-    {
-        public static Exception DatabaseValidation(IHost host, out Exception exeption)
-        {
-            try
-            {
-                var db = host.Services.GetService<MarketPlaceContext>()!;
-                if (!db.Database.CanConnect())
-                {
-                    throw new Exception("Have no connection");
-                }
-            }
-
-            catch (Exception ex)
-            {
-                exeption = ex;
-                return ex;
-            }
-
-            exeption = null!;
-            return null!;
         }
     }
 }

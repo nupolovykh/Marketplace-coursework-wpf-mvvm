@@ -1,48 +1,48 @@
 ﻿using System.Windows.Input;
 using MyWpfAppForDb.WPF.Models;
-using MyWpfAppForDb.WPF.Commands;
-using MyWpfAppForDb.WPF.ViewModels;
+using Microsoft.Extensions.Hosting;
+using MyWpfAppForDb.EntityFramework;
+using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
 
 namespace MyWpfAppForDb.WPF.ViewModels
 {
     public class AuthorizationVM : ViewModelBase
     {
         private AuthorizationModel _authorizationModel;
-        private ViewModelStore _viewModelStore;
 
         public string LoginEmail
         {
-            get
-            {
-                return _authorizationModel.LoginEmail;
-            }
+            get => _authorizationModel.LoginEmail;
             set
             {
                 _authorizationModel.LoginEmail = value;
-                OnPropertyChanged(nameof(LoginEmail));
+                OnPropertyChanged();
             }
         }
 
         public string Password
         {
-            get
-            {
-                return _authorizationModel.Password;
-            }
+            get => _authorizationModel.Password;
             set
             {
                 _authorizationModel.Password = value;
-                OnPropertyChanged(nameof(Password));
+                OnPropertyChanged();
             }
         }
 
         public ICommand AuthorizationCommand { get; set; }
 
-        public AuthorizationVM(ViewModelStore viewModelStore)
+        public AuthorizationVM(IHost host)
         {
-            _viewModelStore = viewModelStore;
             _authorizationModel = new AuthorizationModel();
-            //AuthorizationCommand = new LoginCommand(viewModelStore, employeeStore, this);
+
+            var db = host.Services.GetRequiredService<MarketPlaceContext>();
+
+            var user = db.Categories.FirstOrDefault()!;
+
+            LoginEmail = user.Name;
+            Password = user.Name;
         }
     }
 }

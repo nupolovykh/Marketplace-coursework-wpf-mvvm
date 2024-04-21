@@ -11,7 +11,7 @@ namespace MyWpfAppForDb.WPF.HostBuilders
             host.ConfigureServices(services =>
                 {
                     services.AddTransient<MainViewModel>();
-                    services.AddTransient<ViewModelStore>();
+                    services.AddSingleton<ViewModelStore>();
 
                     services.AddTransient<AuthorizationVM>();
                     services.AddTransient<HomeVM>();

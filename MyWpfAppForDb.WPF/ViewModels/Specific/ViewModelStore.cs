@@ -8,10 +8,7 @@ namespace MyWpfAppForDb.WPF.ViewModels
 
         public ViewModelBase CurrentViewModel
         {
-            get
-            {
-                return _currentViewModel;
-            }
+            get =>_currentViewModel;
             set
             {
                 _currentViewModel = value;

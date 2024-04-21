@@ -13,40 +13,31 @@ namespace MyWpfAppForDb.WPF.ViewModels
 
         public string Search
         {
-            get
-            {
-                return _yourDeliveryModel.Search;
-            }
+            get => _yourDeliveryModel.Search;
             set
             {
                 _yourDeliveryModel.Search = value;
-                OnPropertyChanged(nameof(Search));
+                OnPropertyChanged();
             }
         }
 
         public List<Product> Products
         {
-            get
-            {
-                return _yourDeliveryModel.Products;
-            }
+            get => _yourDeliveryModel.Products;
             set
             {
                 _yourDeliveryModel.Products = value;
-                OnPropertyChanged(nameof(Products));
+                OnPropertyChanged();
             }
         }
 
         public List<Order> Orders
         {
-            get
-            {
-                return _yourDeliveryModel.Orders;
-            }
+            get => _yourDeliveryModel.Orders;
             set
             {
                 _yourDeliveryModel.Orders = value;
-                OnPropertyChanged(nameof(Orders));
+                OnPropertyChanged();
             }
         }
 

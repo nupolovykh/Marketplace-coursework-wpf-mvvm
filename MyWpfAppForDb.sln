@@ -5,7 +5,7 @@ VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyWpfAppForDb.WPF", "MyWpfAppForDb.WPF\MyWpfAppForDb.WPF.csproj", "{1187547A-DC6E-487C-A29D-813BBD07BA93}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyWpfAppForDb.EntityFramework", "MyWpfAppForDb.EntityFramework\MyWpfAppForDb.EntityFramework.csproj", "{A932CA01-CFDE-4536-B701-F295751A0101}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyWpfAppForDb.EntityFramework", "MyWpfAppForDb.EntityFramework\MyWpfAppForDb.EntityFramework.csproj", "{A932CA01-CFDE-4536-B701-F295751A0101}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

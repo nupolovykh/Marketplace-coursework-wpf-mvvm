@@ -12,27 +12,21 @@ namespace MyWpfAppForDb.WPF.ViewModels
 
         public string Search
         {
-            get
-            {
-                return _statisticsModel.Search;
-            }
+            get => _statisticsModel.Search;
             set
             {
                 _statisticsModel.Search = value;
-                OnPropertyChanged(nameof(Search));
+                OnPropertyChanged();
             }
         }
 
         public List<DeliveryPoint> DeliveryPoints
         {
-            get
-            {
-                return _statisticsModel.DeliveryPoints;
-            }
+            get => _statisticsModel.DeliveryPoints;
             set
             {
                 _statisticsModel.DeliveryPoints = value;
-                OnPropertyChanged(nameof(DeliveryPoints));
+                OnPropertyChanged();
             }
         }
 

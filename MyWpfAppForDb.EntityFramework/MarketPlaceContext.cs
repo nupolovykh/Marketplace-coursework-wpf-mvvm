@@ -28,15 +28,10 @@ namespace MyWpfAppForDb.EntityFramework
         public virtual DbSet<Product> Products { get; set; } = null!;
         public virtual DbSet<ProductsInstance> ProductsInstances { get; set; } = null!;
 
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    if (!optionsBuilder.IsConfigured)
-        //    {
-        //        //optionsBuilder.UseSqlServer("Server=.;Database=MarketPlace;Trusted_Connection=True;TrustServerCertificate=true;");
-
-        //        optionsBuilder.UseSqlite("Data Source=app.db");
-        //    }
-        //}
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured) {}
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

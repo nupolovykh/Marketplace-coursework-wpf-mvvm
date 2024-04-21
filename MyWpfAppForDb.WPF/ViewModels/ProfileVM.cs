@@ -11,66 +11,51 @@ namespace MyWpfAppForDb.WPF.ViewModels
 
         public string Login
         {
-            get
-            {
-                return _profileModel.Login;
-            }
+            get => _profileModel.Login;
             set
             {
                 _profileModel.Login = value;
-                OnPropertyChanged(nameof(Login));
+                OnPropertyChanged();
             }
         }
 
         public string Email
         {
-            get
-            {
-                return _profileModel.Email;
-            }
+            get => _profileModel.Email;
             set
             {
                 _profileModel.Email = value;
-                OnPropertyChanged(nameof(Email));
+                OnPropertyChanged();
             }
         }
 
         public string Phone
         {
-            get
-            {
-                return _profileModel.Phone;
-            }
+            get => _profileModel.Phone;
             set
             {
                 _profileModel.Phone = value;
-                OnPropertyChanged(nameof(Phone));
+                OnPropertyChanged();
             }
         }
 
         public string Password1
         {
-            get
-            {
-                return _profileModel.Password1;
-            }
+            get => _profileModel.Password1;
             set
             {
                 _profileModel.Password1 = value;
-                OnPropertyChanged(nameof(Password1));
+                OnPropertyChanged();
             }
         }
 
         public string Password2
         {
-            get
-            {
-                return _profileModel.Password2;
-            }
+            get => _profileModel.Password2;
             set
             {
                 _profileModel.Password2 = value;
-                OnPropertyChanged(nameof(Password2));
+                OnPropertyChanged();
             }
         }
 
