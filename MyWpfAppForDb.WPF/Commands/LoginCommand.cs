@@ -1,4 +1,5 @@
-﻿using MyWpfAppForDb.WPF.Models;
+﻿using MyWpfAppForDb.EntityFramework;
+using MyWpfAppForDb.WPF.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,33 +9,18 @@ using System.Windows;
 
 namespace MyWpfAppForDb.WPF.Commands
 {
-    //public class LoginCommand : CommandBase
-    //{
-    //	private ViewModelStore _viewModelStore;
-    //	private readonly EmployeeStore _employeeStore;
-    //	private LoginViewModel _loginViewModel;
+    public class LoginCommand : CommandBase
+    {
+        private MarketPlaceContext _marketPlaceContext;
 
-    //	public LoginCommand(ViewModelStore viewModelStore, EmployeeStore employeeStore, LoginViewModel loginViewModel)
-    //	{
-    //		_viewModelStore = viewModelStore;
-    //		_employeeStore = employeeStore;
-    //		_loginViewModel = loginViewModel;
-    //	}
+        public LoginCommand(MarketPlaceContext db)
+        {
+            _marketPlaceContext = db;
+        }
 
-    //	public override void Execute(object parameter)
-    //	{
-    //		try
-    //		{
-    //			_employeeStore.CurrentEmployee = DataWork.GetEmployee(_loginViewModel.Login, _loginViewModel.Password);
-    //			if (_employeeStore.CurrentEmployee.Position.Id == 3)
-    //				_viewModelStore.CurrentViewModel = new AdminProductViewModel(_viewModelStore, _employeeStore);
-    //			else
-    //				_viewModelStore.CurrentViewModel = new EmployeeProductViewModel(_viewModelStore, _employeeStore);
-    //		}
-    //		catch (Exception ex)
-    //		{
-    //			MessageBox.Show(ex.Message);
-    //		}
-    //	}
-    //}
+        public override void Execute(object parameter)
+        {
+            _marketPlaceContext.SaveChanges();
+        }
+    }
 }

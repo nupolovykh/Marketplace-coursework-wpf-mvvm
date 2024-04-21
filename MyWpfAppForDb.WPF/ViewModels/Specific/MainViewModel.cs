@@ -28,7 +28,7 @@ namespace MyWpfAppForDb.WPF.ViewModels
         public MainViewModel(IHost host)
         {
             _viewModelStore = host.Services.GetRequiredService<ViewModelStore>();
-            if (_viewModelStore!.CurrentViewModel is null) _viewModelStore!.CurrentViewModel = host.Services.GetRequiredService<AuthorizationVM>();
+            _viewModelStore!.CurrentViewModel = host.Services.GetRequiredService<AuthorizationVM>();
 
             _viewModelStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
 

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Hosting;
 using MyWpfAppForDb.EntityFramework;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
+using MyWpfAppForDb.WPF.Commands;
 
 namespace MyWpfAppForDb.WPF.ViewModels
 {
@@ -43,6 +44,8 @@ namespace MyWpfAppForDb.WPF.ViewModels
 
             LoginEmail = user.Name;
             Password = user.Name;
+
+            AuthorizationCommand = new LoginCommand(db);
         }
     }
 }
