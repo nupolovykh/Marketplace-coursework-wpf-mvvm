@@ -1,12 +1,14 @@
 ﻿using MyWpfAppForDb.EntityFramework.Entities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace MyWpfAppForDb.WPF.Models.ModelEntities
 {
-    public partial class CategoryDisplay : ModelEntityBase
+    public partial class CategoryGto : INotifyPropertyChanged
     {
-        public CategoryDisplay()
+        public CategoryGto()
         {
             ProductsInstances = new HashSet<ProductsInstanceDisplay>();
         }
@@ -36,5 +38,13 @@ namespace MyWpfAppForDb.WPF.Models.ModelEntities
         }
 
         public virtual ICollection<ProductsInstanceDisplay> ProductsInstances { get; set; }
+
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(prop));
+        }
     }
 }

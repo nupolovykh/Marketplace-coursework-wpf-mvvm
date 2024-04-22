@@ -9,10 +9,10 @@ namespace MyWpfAppForDb.WPF.HostBuilders
         public static IHostBuilder AddServices(this IHostBuilder host)
         {
             host.ConfigureServices(c =>
-                {
-                    
-                }
-            );
+            {
+                //dbservices
+            });
+
             return host;
         }
     }

@@ -16,17 +16,17 @@ namespace MyWpfAppForDb.WPF.ViewModels
             set
             {
                 _statisticsModel.Search = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(Search));
             }
         }
-
+        //
         public List<DeliveryPoint> DeliveryPoints
         {
             get => _statisticsModel.DeliveryPoints;
             set
             {
                 _statisticsModel.DeliveryPoints = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(SelectDeliveryPoint));
             }
         }
 

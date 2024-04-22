@@ -17,7 +17,7 @@ namespace MyWpfAppForDb.WPF.ViewModels
             set
             {
                 _yourDeliveryModel.Search = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(Search));
             }
         }
 
@@ -27,7 +27,7 @@ namespace MyWpfAppForDb.WPF.ViewModels
             set
             {
                 _yourDeliveryModel.Products = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(Products));
             }
         }
 
@@ -37,7 +37,7 @@ namespace MyWpfAppForDb.WPF.ViewModels
             set
             {
                 _yourDeliveryModel.Orders = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(Orders));
             }
         }
 

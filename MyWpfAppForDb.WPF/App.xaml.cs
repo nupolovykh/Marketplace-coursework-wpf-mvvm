@@ -23,6 +23,7 @@ namespace MyWpfAppForDb.WPF
             return Host.CreateDefaultBuilder(args)
                 .AddConfiguration()
                 .AddDbContext()
+                .AddStores()
                 .AddServices()
                 .AddViewModels()
                 .AddMapping()

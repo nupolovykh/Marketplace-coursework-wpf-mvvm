@@ -17,7 +17,7 @@ namespace MyWpfAppForDb.WPF.Models.ModelEntities
         public string Status { get; set; }
         public decimal? TotalAmount { get; set; }
 
-        public virtual ClientDisplay Client { get; set; }
+        public virtual ClientGto Client { get; set; }
         public virtual DeliveryPointDisplay DeliveryPoint { get; set; }
         public virtual ICollection<OrdersItemDisplay> OrdersItems { get; set; }
     }

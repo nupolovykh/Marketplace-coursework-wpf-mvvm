@@ -1,55 +1,39 @@
 ﻿using System.Windows.Input;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using MyWpfAppForDb.WPF.Commands;
+using MyWpfAppForDb.WPF.State.Navigators;
+using MyWpfAppForDb.WPF.ViewModels.Factories;
 
 namespace MyWpfAppForDb.WPF.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
-        private readonly ViewModelStore _viewModelStore;
+        private readonly IAppViewModelFactory _appViewModelFactory;
+        private readonly INavigator _navigator;
 
-        public ViewModelBase CurrentViewModel => _viewModelStore.CurrentViewModel;
+        public ViewModelBase CurrentViewModel => _navigator.CurrentViewModel;
+        public ICommand UpdateCurrentVMCommand { get; }
 
-        public ICommand PathToProfile { get; set; }
-
-        public ICommand PathToAuthorization { get; set; }
-
-        public ICommand PathToRegistration { get; set; }
-
-        public ICommand PathToYourDeliveryInfo { get; set; }
-
-        public ICommand PathToProducts { get; set; }
-
-        public ICommand PathToStatistics { get; set; }
-
-        public ICommand Return { get; set; }
-
-        public MainViewModel(IHost host)
+        public MainViewModel(INavigator navigator, IAppViewModelFactory appViewModelFactory)
         {
-            _viewModelStore = host.Services.GetRequiredService<ViewModelStore>();
-            _viewModelStore!.CurrentViewModel = host.Services.GetRequiredService<AuthorizationVM>();
+            _navigator = navigator;
+            _appViewModelFactory = appViewModelFactory;
 
-            _viewModelStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
+            _navigator.StateChanged += Navigator_StateChanged;
 
-            PathToProfile = new NavigateCommand(_viewModelStore, host.Services.GetRequiredService<ProfileVM>());
-
-            PathToAuthorization = new NavigateCommand(_viewModelStore, host.Services.GetRequiredService<AuthorizationVM>());
-
-            PathToRegistration = new NavigateCommand(_viewModelStore, host.Services.GetRequiredService<RegistrationVM>());
-
-            PathToYourDeliveryInfo = new NavigateCommand(_viewModelStore, host.Services.GetRequiredService<YourDeliveryInfoVM>());
-
-            PathToProducts = new NavigateCommand(_viewModelStore, host.Services.GetRequiredService<ProductsVM>());
-
-            PathToStatistics = new NavigateCommand(_viewModelStore, host.Services.GetRequiredService<StatisticsVM>());
-
-            Return = new NavigateCommand(_viewModelStore, host.Services.GetRequiredService<HomeVM>());
+            UpdateCurrentVMCommand = new UpdateCurrentVMCommand(navigator, _appViewModelFactory);
+            UpdateCurrentVMCommand.Execute(ViewType.Authorization);
         }
 
-        private void OnCurrentViewModelChanged()
+        private void Navigator_StateChanged()
         {
             OnPropertyChanged(nameof(CurrentViewModel));
+        }
+
+        public override void Dispose()
+        {
+            _navigator.StateChanged -= Navigator_StateChanged;
+            
+            base.Dispose();
         }
     }
 

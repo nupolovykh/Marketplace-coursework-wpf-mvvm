@@ -8,36 +8,36 @@ namespace MyWpfAppForDb.WPF.ViewModels
 {
     public class HomeVM : ViewModelBase
     {
-        private MainModel _mainModel;
+        private HomeModel _homeModel;
         private ViewModelStore _viewModelStore;
 
         public string Search
         {
-            get => _mainModel.Search;
+            get => _homeModel.Search;
             set
             {
-                _mainModel.Search = value;
-                OnPropertyChanged();
+                _homeModel.Search = value;
+                OnPropertyChanged(nameof(Search));
             }
         }
 
         public List<Product> Products
         {
-            get => _mainModel.Products;
+            get => _homeModel.Products;
             set
             {
-                _mainModel.Products = value;
-                OnPropertyChanged();
+                _homeModel.Products = value;
+                OnPropertyChanged(nameof(Products));
             }
         }
 
         public List<Category> Categories
         {
-            get => _mainModel.Categories;
+            get => _homeModel.Categories;
             set
             {
-                _mainModel.Categories = value;
-                OnPropertyChanged();
+                _homeModel.Categories = value;
+                OnPropertyChanged(nameof(Categories));
             }
         }
 
@@ -50,7 +50,7 @@ namespace MyWpfAppForDb.WPF.ViewModels
         public HomeVM(ViewModelStore viewModelStore)
         {
             _viewModelStore = viewModelStore;
-            _mainModel = new MainModel();
+            _homeModel = new HomeModel();
         }
     }
 }

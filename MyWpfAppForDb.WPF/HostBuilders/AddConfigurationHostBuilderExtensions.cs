@@ -8,11 +8,11 @@ namespace MyWpfAppForDb.WPF.HostBuilders
         public static IHostBuilder AddConfiguration(this IHostBuilder host)
         {
             host.ConfigureAppConfiguration(c =>
-                {
-                    c.AddJsonFile("appsettings.json");
-                    c.AddEnvironmentVariables();
-                }
-            );
+            {
+                c.AddJsonFile("appsettings.json");
+                c.AddEnvironmentVariables();
+            });
+
             return host;
         }
     }

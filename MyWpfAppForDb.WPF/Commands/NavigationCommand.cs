@@ -1,21 +1,39 @@
-﻿using MyWpfAppForDb.WPF.ViewModels;
+﻿using Microsoft.EntityFrameworkCore.Metadata;
+using MyWpfAppForDb.WPF.State.Navigators;
+using MyWpfAppForDb.WPF.ViewModels;
+using MyWpfAppForDb.WPF.ViewModels.Factories;
+using System;
+using System.Reflection.Metadata;
+using System.Windows.Input;
 
 namespace MyWpfAppForDb.WPF.Commands
 {
-    public class NavigateCommand : CommandBase
+    public class UpdateCurrentVMCommand : ICommand
     {
-        private readonly ViewModelStore _viewModelStore;
-        private readonly ViewModelBase _newViewModel;
+        public event EventHandler CanExecuteChanged;
 
-        public NavigateCommand(ViewModelStore viewModelStore, ViewModelBase newViewModel)
+        private readonly INavigator _navigator;
+        private readonly IAppViewModelFactory _appViewModelFactory;
+
+        public UpdateCurrentVMCommand(INavigator navigator,
+            IAppViewModelFactory appViewModelFactory)
         {
-            _viewModelStore = viewModelStore;
-            _newViewModel = newViewModel;
+            _navigator = navigator;
+            _appViewModelFactory = appViewModelFactory;
         }
 
-        public override void Execute(object parameter)
+        public bool CanExecute(object parametr)
         {
-            _viewModelStore.CurrentViewModel = _newViewModel;
+            return true;
+        }
+
+        public void Execute(object parameter)
+        {
+            if (parameter is ViewType)
+            {
+                ViewType viewType = (ViewType)parameter;
+                _navigator.CurrentViewModel = _appViewModelFactory.CreateViewModel(viewType);
+            }
         }
     }
 

@@ -12,12 +12,12 @@ namespace MyWpfAppForDb.WPF.HostBuilders
         public static IHostBuilder AddDbContext(this IHostBuilder host)
         {
             host.ConfigureServices((context, services) =>
-                {
-                    string connectionString = context.Configuration.GetConnectionString("sqlite");
-                    Action<DbContextOptionsBuilder> configureDbContext = (o) => o.UseSqlite(connectionString);
-                    services.AddDbContext<MarketPlaceContext>(configureDbContext);
-                }
-            );
+            {
+                string connectionString = context.Configuration.GetConnectionString("sqlite");
+                Action<DbContextOptionsBuilder> configureDbContext = (o) => o.UseSqlite(connectionString);
+                services.AddDbContext<MarketPlaceContext>(configureDbContext);
+            });
+
             return host;
         }
     }

@@ -14,7 +14,7 @@ namespace MyWpfAppForDb.WPF.ViewModels
             set
             {
                 _registrationVM.Login = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(Login));
             }
         }
 
@@ -24,7 +24,7 @@ namespace MyWpfAppForDb.WPF.ViewModels
             set
             {
                 _registrationVM.Email = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(Email));
             }
         }
 
@@ -34,7 +34,7 @@ namespace MyWpfAppForDb.WPF.ViewModels
             set
             {
                 _registrationVM.Password1 = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(Password1));
             }
         }
 
@@ -44,7 +44,7 @@ namespace MyWpfAppForDb.WPF.ViewModels
             set
             {
                 _registrationVM.Password2 = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(Password2));
             }
         }
 

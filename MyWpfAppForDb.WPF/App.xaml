@@ -1,5 +1,40 @@
 ﻿<Application x:Class="MyWpfAppForDb.WPF.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <Application.Resources/>
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:viewmodels="clr-namespace:MyWpfAppForDb.WPF.ViewModels"
+             xmlns:views="clr-namespace:MyWpfAppForDb.WPF.Views">
+
+    <Application.Resources>
+        <ResourceDictionary>
+
+            <DataTemplate DataType="{x:Type viewmodels:YourDeliveryInfoVM}">
+                <views:YourDeliveryInfo />
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewmodels:HomeVM}">
+                <views:Home />
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewmodels:ProductsVM}">
+                <views:Products />
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewmodels:AuthorizationVM}">
+                <views:Authorization />
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewmodels:RegistrationVM}">
+                <views:Registration/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewmodels:StatisticsVM}">
+                <views:Statistics />
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewmodels:ProfileVM}">
+                <views:Profile />
+            </DataTemplate>
+        </ResourceDictionary>
+
+    </Application.Resources>
 </Application>

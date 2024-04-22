@@ -13,18 +13,21 @@ namespace MyWpfAppForDb.WPF.HostBuilders
     {
         public static IHostBuilder AddMapping(this IHostBuilder host)
         {
-            Action<IMapperConfigurationExpression> action = (cnf) =>
-            {
-                cnf.CreateMap<Category, CategoryDisplay>();
-                cnf.CreateMap<Client, ClientDisplay>();
-            };
-
             host.ConfigureServices((services) =>
             {
-                services.AddAutoMapper(action);
+                services.AddAutoMapper(typeof(OrganizationProfile));
             });
 
             return host;
         }
     }
+
+    internal class OrganizationProfile : Profile
+    {
+        public OrganizationProfile()
+        {
+            CreateMap<Category, CategoryGto>();
+        }
+    }
+
 }
