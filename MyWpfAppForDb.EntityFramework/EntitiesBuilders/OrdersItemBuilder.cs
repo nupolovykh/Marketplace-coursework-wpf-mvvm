@@ -11,7 +11,7 @@ namespace MyWpfAppForDb.EntityFramework.EntitiesBuilders
             {
                 entity.ToTable("Orders_Items");
 
-                entity.Property(e => e.OrdersItemId)
+                entity.Property(e => e.Id)
                     .ValueGeneratedNever()
                     .HasColumnName("orders_item_id");
 
@@ -31,21 +31,21 @@ namespace MyWpfAppForDb.EntityFramework.EntitiesBuilders
             });
 
             modelBuilder.Entity<OrdersItem>().HasData(
-                new OrdersItem { OrdersItemId = 1, OrderId = 1, ProductId = 1 },
-                new OrdersItem { OrdersItemId = 2, OrderId = 1, ProductId = 2 },
-                new OrdersItem { OrdersItemId = 3, OrderId = 1, ProductId = 20 },
-                new OrdersItem { OrdersItemId = 4, OrderId = 1, ProductId = 4 },
-                new OrdersItem { OrdersItemId = 5, OrderId = 1, ProductId = 5 },
-                new OrdersItem { OrdersItemId = 6, OrderId = 2, ProductId = 19 },
-                new OrdersItem { OrdersItemId = 7, OrderId = 2, ProductId = 7 },
-                new OrdersItem { OrdersItemId = 8, OrderId = 2, ProductId = 8 },
-                new OrdersItem { OrdersItemId = 9, OrderId = 3, ProductId = 18 },
-                new OrdersItem { OrdersItemId = 10, OrderId = 3, ProductId = 10 },
-                new OrdersItem { OrdersItemId = 11, OrderId = 4, ProductId = 11 },
-                new OrdersItem { OrdersItemId = 12, OrderId = 5, ProductId = 12 },
-                new OrdersItem { OrdersItemId = 13, OrderId = 5, ProductId = 17 },
-                new OrdersItem { OrdersItemId = 14, OrderId = 5, ProductId = 14 },
-                new OrdersItem { OrdersItemId = 15, OrderId = 5, ProductId = 15 }
+                new OrdersItem { Id = 1, OrderId = 1, ProductId = 1 },
+                new OrdersItem { Id = 2, OrderId = 1, ProductId = 2 },
+                new OrdersItem { Id = 3, OrderId = 1, ProductId = 20 },
+                new OrdersItem { Id = 4, OrderId = 1, ProductId = 4 },
+                new OrdersItem { Id = 5, OrderId = 1, ProductId = 5 },
+                new OrdersItem { Id = 6, OrderId = 2, ProductId = 19 },
+                new OrdersItem { Id = 7, OrderId = 2, ProductId = 7 },
+                new OrdersItem { Id = 8, OrderId = 2, ProductId = 8 },
+                new OrdersItem { Id = 9, OrderId = 3, ProductId = 18 },
+                new OrdersItem { Id = 10, OrderId = 3, ProductId = 10 },
+                new OrdersItem { Id = 11, OrderId = 4, ProductId = 11 },
+                new OrdersItem { Id = 12, OrderId = 5, ProductId = 12 },
+                new OrdersItem { Id = 13, OrderId = 5, ProductId = 17 },
+                new OrdersItem { Id = 14, OrderId = 5, ProductId = 14 },
+                new OrdersItem { Id = 15, OrderId = 5, ProductId = 15 }
             );
         }
     }

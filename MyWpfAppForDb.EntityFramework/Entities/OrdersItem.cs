@@ -3,9 +3,8 @@ using System.Collections.Generic;
 
 namespace MyWpfAppForDb.EntityFramework.Entities
 {
-    public partial class OrdersItem
+    public partial class OrdersItem : EntityInstance
     {
-        public int OrdersItemId { get; set; }
         public int? OrderId { get; set; }
         public int? ProductId { get; set; }
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace MyWpfAppForDb.EntityFramework.Entities
 {
-    public partial class DeliveryPoint
+    public partial class DeliveryPoint : EntityInstance
     {
         public DeliveryPoint()
         {
@@ -11,7 +11,6 @@ namespace MyWpfAppForDb.EntityFramework.Entities
             Orders = new HashSet<Order>();
         }
 
-        public int DeliveryPointId { get; set; }
         public string Address { get; set; }
         public string City { get; set; }
         public decimal? Rating { get; set; }

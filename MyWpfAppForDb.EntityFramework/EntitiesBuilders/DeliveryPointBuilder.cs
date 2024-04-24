@@ -11,7 +11,7 @@ namespace MyWpfAppForDb.EntityFramework.EntitiesBuilders
             {
                 entity.ToTable("Delivery_Points");
 
-                entity.Property(e => e.DeliveryPointId)
+                entity.Property(e => e.Id)
                     .ValueGeneratedNever()
                     .HasColumnName("delivery_point_id");
 
@@ -33,11 +33,11 @@ namespace MyWpfAppForDb.EntityFramework.EntitiesBuilders
             });
 
             modelBuilder.Entity<DeliveryPoint>().HasData(
-                new DeliveryPoint { DeliveryPointId = 1, Address = "123 Main Street", City = "Anytown", Rating = 0.00m, Zipcode = "12345" },
-                new DeliveryPoint { DeliveryPointId = 2, Address = "456 Elm Street", City = "Othertown", Rating = 2.73m, Zipcode = "67890" },
-                new DeliveryPoint { DeliveryPointId = 3, Address = "789 Oak Street", City = "Anycity", Rating = 4.51m, Zipcode = "13579" },
-                new DeliveryPoint { DeliveryPointId = 4, Address = "321 Pine Avenue", City = "Sometown", Rating = 5.00m, Zipcode = "24680" },
-                new DeliveryPoint { DeliveryPointId = 5, Address = "555 Maple Drive", City = "Anyville", Rating = 3.56m, Zipcode = "97531" }
+                new DeliveryPoint { Id = 1, Address = "123 Main Street", City = "Anytown", Rating = 0.00m, Zipcode = "12345" },
+                new DeliveryPoint { Id = 2, Address = "456 Elm Street", City = "Othertown", Rating = 2.73m, Zipcode = "67890" },
+                new DeliveryPoint { Id = 3, Address = "789 Oak Street", City = "Anycity", Rating = 4.51m, Zipcode = "13579" },
+                new DeliveryPoint { Id = 4, Address = "321 Pine Avenue", City = "Sometown", Rating = 5.00m, Zipcode = "24680" },
+                new DeliveryPoint { Id = 5, Address = "555 Maple Drive", City = "Anyville", Rating = 3.56m, Zipcode = "97531" }
             );
 
         }

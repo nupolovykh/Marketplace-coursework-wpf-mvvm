@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNet.Identity.Core" Version="2.2.4" />
+    <ProjectReference Include="..\MyWpfAppForDb.EntityFramework\MyWpfAppForDb.EntityFramework.csproj" />
+   </ItemGroup>
+    
+</Project>

@@ -5,14 +5,14 @@ namespace MyWpfAppForDb.WPF.Models.DataTransferObjects
 {
     public partial class OrdersItemDto : ModelGtoBase
     {
-        private int _ordersItemId;
+        private int _id;
 
-        public int OrdersItemId
+        public int Id
         {
-            get => _ordersItemId;
+            get => _id;
             set
             {
-                _ordersItemId = value;
+                _id = value;
                 OnPropertyChanged();
             }
         }

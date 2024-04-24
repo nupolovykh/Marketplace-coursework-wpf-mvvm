@@ -10,14 +10,14 @@ namespace MyWpfAppForDb.WPF.Models.DataTransferObjects
             Products = new HashSet<ProductDto>();
         }
 
-        private int _marketId;
+        private int _id;
 
-        public int MarketId
+        public int Id
         {
-            get => _marketId;
+            get => _id;
             set
             {
-                _marketId = value;
+                _id = value;
                 OnPropertyChanged();
             }
         }

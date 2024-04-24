@@ -10,7 +10,7 @@ namespace MyWpfAppForDb.EntityFramework.EntitiesBuilders
         {
             modelBuilder.Entity<Market>(entity =>
             {
-                entity.Property(e => e.MarketId)
+                entity.Property(e => e.Id)
                     .ValueGeneratedNever()
                     .HasColumnName("market_id");
 
@@ -28,11 +28,11 @@ namespace MyWpfAppForDb.EntityFramework.EntitiesBuilders
             });
 
             modelBuilder.Entity<Market>().HasData(
-                new Market { MarketId = 1, Name = "City Central Market", City = "New York", Address = "123 Main Street" },
-                new Market { MarketId = 2, Name = "Fresh Fare Marketplace", City = "Los Angeles", Address = "456 Elm Street" },
-                new Market { MarketId = 3, Name = "Urban Gourmet Market", City = "Chicago", Address = "789 Oak Street" },
-                new Market { MarketId = 4, Name = "Pacific Coast Marketplace", City = "Houston", Address = "101 Pine Street" },
-                new Market { MarketId = 5, Name = "Sunrise Valley Market", City = "Miami", Address = "202 Maple Street" }
+                new Market { Id = 1, Name = "City Central Market", City = "New York", Address = "123 Main Street" },
+                new Market { Id = 2, Name = "Fresh Fare Marketplace", City = "Los Angeles", Address = "456 Elm Street" },
+                new Market { Id = 3, Name = "Urban Gourmet Market", City = "Chicago", Address = "789 Oak Street" },
+                new Market { Id = 4, Name = "Pacific Coast Marketplace", City = "Houston", Address = "101 Pine Street" },
+                new Market { Id = 5, Name = "Sunrise Valley Market", City = "Miami", Address = "202 Maple Street" }
             );
         }
     }

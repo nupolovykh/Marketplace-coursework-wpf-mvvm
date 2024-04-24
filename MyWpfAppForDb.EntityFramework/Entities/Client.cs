@@ -3,14 +3,12 @@ using System.Collections.Generic;
 
 namespace MyWpfAppForDb.EntityFramework.Entities
 {
-    public partial class Client
+    public partial class Client : EntityInstance
     {
         public Client()
         {
             Orders = new HashSet<Order>();
         }
-
-        public int ClientId { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }

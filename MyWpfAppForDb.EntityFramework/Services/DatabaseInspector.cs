@@ -3,7 +3,7 @@ using Microsoft.Extensions.Hosting;
 using MyWpfAppForDb.EntityFramework;
 using System;
 
-namespace MyWpfAppForDb.WPF.Inspectors
+namespace MyWpfAppForDb.EntityFramework.Services
 {
     public static class DatabaseInspector
     {

@@ -14,47 +14,50 @@ namespace MyWpfAppForDb.WPF.ViewModels
     public class AuthorizationVM : ViewModelBase
     {
         private AuthorizationModel _authorizationModel;
-        private CategoryDto _categoryDto;
+        //private CategoryDto _categoryDto;
 
         public string LoginEmail
         {
-            get => _categoryDto.Name;
+            get => _authorizationModel.LoginEmail!;
             set
             {
-                _categoryDto.Name = value;
-                OnPropertyChanged(nameof(Password));
+                _authorizationModel.LoginEmail = value;
                 OnPropertyChanged(nameof(LoginEmail));
+                OnPropertyChanged(nameof(CanLogin));
             }
         }
 
         public string Password
         {
-            get => _categoryDto.Name;
+            get => _authorizationModel.Password!;
             set
             {
-                _categoryDto.Name = value;
+                _authorizationModel.Password = value;
                 OnPropertyChanged(nameof(Password));
-                OnPropertyChanged(nameof(LoginEmail));
+                OnPropertyChanged(nameof(CanLogin));
             }
         }
 
-        public ICommand AuthorizationCommand { get; set; }
+        public bool CanLogin => !string.IsNullOrEmpty(LoginEmail) && !string.IsNullOrEmpty(Password);
+
+        public ICommand LoginCommand { get; set; }
 
         public AuthorizationVM(IHost host)
         {
             _authorizationModel = new AuthorizationModel();
 
-            var db = host.Services.GetRequiredService<AppDbContext>();
-            IMapper _mapper = host.Services.GetRequiredService<IMapper>();
+            //var db = host.Services.GetRequiredService<AppDbContext>();
+            //IMapper _mapper = host.Services.GetRequiredService<IMapper>();
 
-            var category = db.Categories.FirstOrDefault();
+            //var category = db.Categories.FirstOrDefault();
 
-            _categoryDto = _mapper.Map<CategoryDto>(category);
+            //_categoryDto = _mapper.Map<CategoryDto>(category);
 
-            LoginEmail = _categoryDto.Name;
-            Password = _categoryDto.Name;
+            //LoginEmail = _categoryDto.Name;
+            //Password = _categoryDto.Name;
 
-            AuthorizationCommand = new LoginCommand(db);
+            //LoginCommand = new LoginCommand(db);
+            //LoginCommand = new LoginCommand(this, authenticator, loginRenavigator);
         }
     }
 }

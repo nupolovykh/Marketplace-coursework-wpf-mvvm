@@ -3,14 +3,13 @@ using System.Collections.Generic;
 
 namespace MyWpfAppForDb.EntityFramework.Entities
 {
-    public partial class Order
+    public partial class Order : EntityInstance
     {
         public Order()
         {
             OrdersItems = new HashSet<OrdersItem>();
         }
 
-        public int OrderId { get; set; }
         public int? DeliveryPointId { get; set; }
         public int? ClientId { get; set; }
         public DateTime? OrderDate { get; set; }

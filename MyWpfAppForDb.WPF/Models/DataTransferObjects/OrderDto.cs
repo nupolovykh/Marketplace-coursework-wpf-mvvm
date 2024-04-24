@@ -10,14 +10,14 @@ namespace MyWpfAppForDb.WPF.Models.DataTransferObjects
             OrdersItems = new HashSet<OrdersItemDto>();
         }
 
-        private int _orderId;
+        private int _id;
 
-        public int OrderId
+        public int Id
         {
-            get => _orderId;
+            get => _id;
             set
             {
-                _orderId = value;
+                _id = value;
                 OnPropertyChanged();
             }
         }

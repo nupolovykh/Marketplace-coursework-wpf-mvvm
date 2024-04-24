@@ -1,5 +1,6 @@
 ﻿using MyWpfAppForDb.EntityFramework;
 using MyWpfAppForDb.WPF.Models;
+using MyWpfAppForDb.WPF.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,18 +10,22 @@ using System.Windows;
 
 namespace MyWpfAppForDb.WPF.Commands
 {
-    public class LoginCommand : CommandBase
+    public class LoginCommand : AsyncCommandBase
     {
-        private AppDbContext _marketPlaceContext;
+        private readonly AuthorizationVM _authorizationVM;
 
-        public LoginCommand(AppDbContext db)
+        public LoginCommand(AuthorizationVM viewModel)
         {
-            _marketPlaceContext = db;
+            _authorizationVM = viewModel;
         }
 
-        public override void Execute(object parameter)
+        public override bool CanExecute(object parameter) => 
+            _authorizationVM.CanLogin && base.CanExecute(parameter);
+
+        public override async Task ExecuteAsync(object parameter)
         {
-            _marketPlaceContext.SaveChanges();
+            
         }
+
     }
 }

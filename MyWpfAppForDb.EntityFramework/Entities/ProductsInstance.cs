@@ -3,14 +3,13 @@ using System.Collections.Generic;
 
 namespace MyWpfAppForDb.EntityFramework.Entities
 {
-    public partial class ProductsInstance
+    public partial class ProductsInstance : EntityInstance
     {
         public ProductsInstance()
         {
             Products = new HashSet<Product>();
         }
 
-        public int ProductInstanceId { get; set; }
         public int? CategoryId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }

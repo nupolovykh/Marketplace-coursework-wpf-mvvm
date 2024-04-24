@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using MyWpfAppForDb.WPF.HostBuilders;
-using MyWpfAppForDb.WPF.Inspectors;
+using MyWpfAppForDb.EntityFramework.Services;
 
 namespace MyWpfAppForDb.WPF
 {

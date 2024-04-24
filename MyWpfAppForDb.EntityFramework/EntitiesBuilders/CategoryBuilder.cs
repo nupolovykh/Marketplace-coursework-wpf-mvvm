@@ -10,7 +10,7 @@ namespace MyWpfAppForDb.EntityFramework.EntitiesBuilders
         {
             modelBuilder.Entity<Category>(entity =>
             {
-                entity.Property(e => e.CategoryId)
+                entity.Property(e => e.Id)
                     .ValueGeneratedNever()
                     .HasColumnName("category_id");
 
@@ -20,11 +20,11 @@ namespace MyWpfAppForDb.EntityFramework.EntitiesBuilders
             });
 
             modelBuilder.Entity<Category>().HasData(
-                new Category { CategoryId = 1, Name = "Electronic" },
-                new Category { CategoryId = 2, Name = "Clothing" },
-                new Category { CategoryId = 3, Name = "Books" },
-                new Category { CategoryId = 4, Name = "Toys & Games" },
-                new Category { CategoryId = 5, Name = "Home & Kitchen" }
+                new Category { Id = 1, Name = "Electronic" },
+                new Category { Id = 2, Name = "Clothing" },
+                new Category { Id = 3, Name = "Books" },
+                new Category { Id = 4, Name = "Toys & Games" },
+                new Category { Id = 5, Name = "Home & Kitchen" }
             );
         }
     }
