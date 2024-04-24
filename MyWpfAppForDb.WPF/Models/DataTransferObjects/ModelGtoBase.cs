@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace MyWpfAppForDb.WPF.Models.ModelEntities
+namespace MyWpfAppForDb.WPF.Models.DataTransferObjects
 {
-    public class ModelEntityBase : INotifyPropertyChanged
+    public class ModelGtoBase : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 

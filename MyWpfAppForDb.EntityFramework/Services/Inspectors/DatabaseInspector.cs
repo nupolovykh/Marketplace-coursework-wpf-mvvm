@@ -11,7 +11,7 @@ namespace MyWpfAppForDb.WPF.Inspectors
         {
             try
             {
-                var db = host.Services.GetRequiredService<MarketPlaceContext>();
+                var db = host.Services.GetRequiredService<AppDbContext>();
                 if (!db.Database.CanConnect())
                 {
                     throw new Exception("Have no connection");

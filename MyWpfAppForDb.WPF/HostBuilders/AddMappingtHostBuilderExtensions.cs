@@ -1,11 +1,8 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MyWpfAppForDb.EntityFramework.Entities;
-using MyWpfAppForDb.WPF.Models.ModelEntities;
-using System;
+using MyWpfAppForDb.WPF.Models.DataTransferObjects;
 
 namespace MyWpfAppForDb.WPF.HostBuilders
 {
@@ -26,7 +23,15 @@ namespace MyWpfAppForDb.WPF.HostBuilders
     {
         public OrganizationProfile()
         {
-            CreateMap<Category, CategoryGto>();
+            CreateMap<Category, CategoryDto>();
+            CreateMap<Client, ClientDto>();
+            CreateMap<DeliveryPoint, DeliveryPointDto>();
+            CreateMap<Employee, EmployeeDto>();
+            CreateMap<Market, MarketDto>();
+            CreateMap<Order, OrderDto>();
+            CreateMap<OrdersItem, OrdersItemDto>();
+            CreateMap<Product, ProductDto>();
+            CreateMap<ProductsInstance, ProductsInstanceDto>();
         }
     }
 

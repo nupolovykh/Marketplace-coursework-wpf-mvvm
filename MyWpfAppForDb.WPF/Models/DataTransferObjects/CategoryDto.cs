@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace MyWpfAppForDb.WPF.Models.ModelEntities
+namespace MyWpfAppForDb.WPF.Models.DataTransferObjects
 {
-    public partial class CategoryGto : INotifyPropertyChanged
+    public partial class CategoryDto : ModelGtoBase
     {
-        public CategoryGto()
+        public CategoryDto()
         {
-            ProductsInstances = new HashSet<ProductsInstanceDisplay>();
+            ProductsInstances = new HashSet<ProductsInstanceDto>();
         }
 
         private int _categoryId;
@@ -19,7 +19,7 @@ namespace MyWpfAppForDb.WPF.Models.ModelEntities
         {
             get => _categoryId;
             set 
-            { 
+            {
                 _categoryId = value;
                 OnPropertyChanged();
             }
@@ -37,14 +37,6 @@ namespace MyWpfAppForDb.WPF.Models.ModelEntities
             }
         }
 
-        public virtual ICollection<ProductsInstanceDisplay> ProductsInstances { get; set; }
-
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(prop));
-        }
+        public virtual ICollection<ProductsInstanceDto> ProductsInstances { get; set; }
     }
 }

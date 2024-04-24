@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace MyWpfAppForDb.WPF.Models.ModelEntities
+namespace MyWpfAppForDb.WPF.Models.DataTransferObjects
 {
-    public partial class ClientGto : INotifyPropertyChanged
+    public partial class ClientDto : ModelGtoBase
     {
-        public ClientGto()
+        public ClientDto()
         {
-            Orders = new HashSet<OrderDisplay>();
+            Orders = new HashSet<OrderDto>();
         }
 
         private int _clientId;
@@ -61,13 +61,6 @@ namespace MyWpfAppForDb.WPF.Models.ModelEntities
             }
         }
 
-        public virtual ICollection<OrderDisplay> Orders { get; set; }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(prop));
-        }
+        public virtual ICollection<OrderDto> Orders { get; set; }
     }
 }

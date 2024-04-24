@@ -5,8 +5,9 @@
              xmlns:views="clr-namespace:MyWpfAppForDb.WPF.Views">
 
     <Application.Resources>
-        <ResourceDictionary>
 
+        <ResourceDictionary>
+            
             <DataTemplate DataType="{x:Type viewmodels:YourDeliveryInfoVM}">
                 <views:YourDeliveryInfo />
             </DataTemplate>
@@ -34,6 +35,7 @@
             <DataTemplate DataType="{x:Type viewmodels:ProfileVM}">
                 <views:Profile />
             </DataTemplate>
+            
         </ResourceDictionary>
 
     </Application.Resources>

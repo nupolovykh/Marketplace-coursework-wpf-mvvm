@@ -5,7 +5,7 @@ using MyWpfAppForDb.EntityFramework;
 using Microsoft.Extensions.DependencyInjection;
 using MyWpfAppForDb.WPF.Commands;
 using MyWpfAppForDb.EntityFramework.Entities;
-using MyWpfAppForDb.WPF.Models.ModelEntities;
+using MyWpfAppForDb.WPF.Models.DataTransferObjects;
 using AutoMapper;
 using System.Linq;
 
@@ -14,7 +14,7 @@ namespace MyWpfAppForDb.WPF.ViewModels
     public class AuthorizationVM : ViewModelBase
     {
         private AuthorizationModel _authorizationModel;
-        private CategoryGto _categoryDto;
+        private CategoryDto _categoryDto;
 
         public string LoginEmail
         {
@@ -44,12 +44,12 @@ namespace MyWpfAppForDb.WPF.ViewModels
         {
             _authorizationModel = new AuthorizationModel();
 
-            var db = host.Services.GetRequiredService<MarketPlaceContext>();
+            var db = host.Services.GetRequiredService<AppDbContext>();
             IMapper _mapper = host.Services.GetRequiredService<IMapper>();
 
             var category = db.Categories.FirstOrDefault();
 
-            _categoryDto = _mapper.Map<CategoryGto>(category);
+            _categoryDto = _mapper.Map<CategoryDto>(category);
 
             LoginEmail = _categoryDto.Name;
             Password = _categoryDto.Name;

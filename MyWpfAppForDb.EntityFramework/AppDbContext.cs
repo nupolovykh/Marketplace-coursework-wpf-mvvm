@@ -4,15 +4,11 @@ using MyWpfAppForDb.EntityFramework.Entities;
 
 namespace MyWpfAppForDb.EntityFramework
 {
-    public partial class MarketPlaceContext : DbContext
+    public partial class AppDbContext : DbContext
     {
-        public MarketPlaceContext()
-        {
-            Database.EnsureDeleted();
-            Database.EnsureCreated();
-        }
+        public AppDbContext() {}
 
-        public MarketPlaceContext(DbContextOptions<MarketPlaceContext> options) : base(options)
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
             Database.EnsureDeleted();
             Database.EnsureCreated();

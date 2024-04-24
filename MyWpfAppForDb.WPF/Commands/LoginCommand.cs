@@ -11,9 +11,9 @@ namespace MyWpfAppForDb.WPF.Commands
 {
     public class LoginCommand : CommandBase
     {
-        private MarketPlaceContext _marketPlaceContext;
+        private AppDbContext _marketPlaceContext;
 
-        public LoginCommand(MarketPlaceContext db)
+        public LoginCommand(AppDbContext db)
         {
             _marketPlaceContext = db;
         }
