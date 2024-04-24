@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace MyWpfAppForDb.EntityFramework.Services.AuthenticationServices
 {
-    internal class AuthenticationService
+    public class AuthenticationService : IAuthenticationService
     {
         private readonly IAccountService _accountService;
         private readonly IPasswordHasher _passwordHasher;
@@ -50,11 +50,11 @@ namespace MyWpfAppForDb.EntityFramework.Services.AuthenticationServices
                 {
                     Email = email,
                     Name = username,
-                    Password = hashedPassword
+                    Password = hashedPassword,
+                    Salary = 1000
                 };
 
-
-                //await _accountService.Create(account);
+                await _accountService.Create(newEmployee);
             }
             return result;
         }

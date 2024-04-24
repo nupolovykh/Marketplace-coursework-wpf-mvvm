@@ -18,6 +18,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\MyWpfAppForDb.EntityFramework\MyWpfAppForDb.EntityFramework.csproj" />
+        <ProjectReference Include="..\MyWpfAppForDb.Domain\MyWpfAppForDb.Domain.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

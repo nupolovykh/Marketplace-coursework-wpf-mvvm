@@ -1,4 +1,5 @@
 ﻿using MyWpfAppForDb.EntityFramework.Entities;
+using MyWpfAppForDb.EntityFramework.Services.AuthenticationServices;
 using MyWpfAppForDb.WPF.Models.DataTransferObjects;
 using System;
 using System.Threading.Tasks;
@@ -13,9 +14,9 @@ namespace MyWpfAppForDb.WPF.State.Authenticators
 
         event Action StateChanged;
 
-        Task Register(string email, string username, string password, string confirmPassword);
-
         Task Login(string username, string password);
+
+        Task<RegistrationResult> Register(string email, string username, string password, string confirmPassword);
 
         void Logout();
     }

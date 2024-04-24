@@ -1,7 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MyWpfAppForDb.WPF.State.Authenticators;
+using MyWpfAppForDb.WPF.State.Navigators;
 using MyWpfAppForDb.WPF.ViewModels;
 using MyWpfAppForDb.WPF.ViewModels.Factories;
+using System;
 
 namespace MyWpfAppForDb.WPF.HostBuilders
 {
@@ -23,7 +26,7 @@ namespace MyWpfAppForDb.WPF.HostBuilders
                 services.AddTransient<YourDeliveryInfoVM>();
 
                 services.AddSingleton<CreateViewModel<HomeVM>>(services => () => services.GetRequiredService<HomeVM>());
-                services.AddSingleton<CreateViewModel<AuthorizationVM>>(services => () => services.GetRequiredService<AuthorizationVM>());
+                services.AddSingleton<CreateViewModel<AuthorizationVM>>(services => () => CreateAuthorizationVM(services));
                 services.AddSingleton<CreateViewModel<ProductsVM>>(services => () => services.GetRequiredService<ProductsVM>());
                 services.AddSingleton<CreateViewModel<ProfileVM>>(services => () => services.GetRequiredService<ProfileVM>());
                 services.AddSingleton<CreateViewModel<RegistrationVM>>(services => () => services.GetRequiredService<RegistrationVM>());
@@ -31,9 +34,29 @@ namespace MyWpfAppForDb.WPF.HostBuilders
                 services.AddSingleton<CreateViewModel<YourDeliveryInfoVM>>(services => () => services.GetRequiredService<YourDeliveryInfoVM>());
 
                 services.AddSingleton<IAppViewModelFactory, AppViewModelFactory>();
+
+                services.AddSingleton<ViewModelDelegateRenavigator<HomeVM>>();
+                services.AddSingleton<ViewModelDelegateRenavigator<AuthorizationVM>>();
+                services.AddSingleton<ViewModelDelegateRenavigator<RegistrationVM>>();
             });
 
             return host;
         }
+
+
+        private static AuthorizationVM CreateAuthorizationVM(IServiceProvider services)
+        {
+            return new AuthorizationVM(
+                services.GetRequiredService<IAuthenticator>(),
+                services.GetRequiredService<ViewModelDelegateRenavigator<RegistrationVM>>());
+        }
+
+        //private static RegisterViewModel CreateRegisterViewModel(IServiceProvider services)
+        //{
+        //    return new RegisterViewModel(
+        //        services.GetRequiredService<IAuthenticator>(),
+        //        services.GetRequiredService<ViewModelDelegateRenavigator<LoginViewModel>>(),
+        //        services.GetRequiredService<ViewModelDelegateRenavigator<LoginViewModel>>());
+        //}
     }
 }

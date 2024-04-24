@@ -1,20 +1,16 @@
 ﻿using System.Windows.Input;
 using MyWpfAppForDb.WPF.Models;
 using Microsoft.Extensions.Hosting;
-using MyWpfAppForDb.EntityFramework;
-using Microsoft.Extensions.DependencyInjection;
 using MyWpfAppForDb.WPF.Commands;
-using MyWpfAppForDb.EntityFramework.Entities;
-using MyWpfAppForDb.WPF.Models.DataTransferObjects;
-using AutoMapper;
-using System.Linq;
+using MyWpfAppForDb.WPF.State.Navigators;
+using MyWpfAppForDb.WPF.State.Authenticators;
+using System.Windows;
 
 namespace MyWpfAppForDb.WPF.ViewModels
 {
     public class AuthorizationVM : ViewModelBase
     {
         private AuthorizationModel _authorizationModel;
-        //private CategoryDto _categoryDto;
 
         public string LoginEmail
         {
@@ -42,7 +38,7 @@ namespace MyWpfAppForDb.WPF.ViewModels
 
         public ICommand LoginCommand { get; set; }
 
-        public AuthorizationVM(IHost host)
+        public AuthorizationVM(IAuthenticator authenticator, IRenavigator renavigator)
         {
             _authorizationModel = new AuthorizationModel();
 
@@ -56,8 +52,7 @@ namespace MyWpfAppForDb.WPF.ViewModels
             //LoginEmail = _categoryDto.Name;
             //Password = _categoryDto.Name;
 
-            //LoginCommand = new LoginCommand(db);
-            //LoginCommand = new LoginCommand(this, authenticator, loginRenavigator);
+            LoginCommand = new LoginCommand(this, authenticator, renavigator);
         }
     }
 }

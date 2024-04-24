@@ -5,7 +5,7 @@ using System;
 
 namespace MyWpfAppForDb.EntityFramework.Services
 {
-    public static class DatabaseInspector
+    public static class ConnectionChecker
     {
         public static Exception DatabaseValidation(IHost host, out Exception exeption)
         {

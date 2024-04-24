@@ -1,4 +1,6 @@
-﻿using MyWpfAppForDb.WPF.Models.DataTransferObjects;
+﻿using AutoMapper;
+using MyWpfAppForDb.EntityFramework.Services.AuthenticationServices;
+using MyWpfAppForDb.WPF.Models.DataTransferObjects;
 using MyWpfAppForDb.WPF.State.Accounts;
 using System;
 using System.Threading.Tasks;
@@ -8,10 +10,14 @@ namespace MyWpfAppForDb.WPF.State.Authenticators
     internal class Authenticator : IAuthenticator
     {
         private readonly IAccountStore _accountStore;
+        private readonly IAuthenticationService _authenticationService;
+        private readonly IMapper _mapper;
 
-        public Authenticator(IAccountStore accountStore)
+        public Authenticator(IAccountStore accountStore, IAuthenticationService authenticationService, IMapper mapper)
         {
             _accountStore = accountStore;
+            _authenticationService = authenticationService;
+            _mapper = mapper;
         }
 
         public EmployeeDto CurrentAccount
@@ -30,13 +36,12 @@ namespace MyWpfAppForDb.WPF.State.Authenticators
 
         public async Task Login(string username, string password)
         {
-            
+            var employee = await _authenticationService.Login(username, password);
+            CurrentAccount = _mapper.Map<EmployeeDto>(employee);
         }
 
-        public async Task Register(string email, string username, string password, string confirmPassword)
-        {
-            
-        }
+        public async Task<RegistrationResult> Register(string email, string username, string password, string confirmPassword)
+            => await _authenticationService.Register(email, username, password, confirmPassword);
 
         public void Logout()
         {

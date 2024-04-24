@@ -53,6 +53,18 @@ namespace MyWpfAppForDb.WPF.Models.DataTransferObjects
             }
         }
 
+        private string _paswword;
+
+        public string Password
+        {
+            get => _paswword;
+            set
+            {
+                _paswword = value;
+                OnPropertyChanged();
+            }
+        }
+
         private string _phone;
 
         public string Phone

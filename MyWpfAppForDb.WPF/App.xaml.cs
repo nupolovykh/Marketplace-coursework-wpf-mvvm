@@ -34,7 +34,7 @@ namespace MyWpfAppForDb.WPF
         {
             _host.Start();
 
-            if (DatabaseInspector.DatabaseValidation(_host, out var result) is not null)
+            if (ConnectionChecker.DatabaseValidation(_host, out var result) is not null)
             {
                 MessageBox.Show(result.Message);
             }

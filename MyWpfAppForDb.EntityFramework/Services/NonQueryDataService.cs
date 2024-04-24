@@ -9,7 +9,7 @@ namespace MyWpfAppForDb.EntityFramework.Services
     {
         private readonly AppDbContextFactory _contextFactory;
 
-        public NonQueryDataService(AppDbContextFactory contextfactory) 
+        public NonQueryDataService(AppDbContextFactory contextfactory)
         {
             _contextFactory = contextfactory;
         }
