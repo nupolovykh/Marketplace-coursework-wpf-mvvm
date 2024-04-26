@@ -8,6 +8,7 @@
         Height="450" Width="800">
 
     <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <Style TargetType="TextBox">
             <Setter Property="FontSize" Value="16" />
             <Setter Property="HorizontalAlignment" Value="Center" />
@@ -21,16 +22,29 @@
     </UserControl.Resources>
 
     <Grid>
-        <Label Content="Регистрация" HorizontalAlignment="Center" Margin="0,120,0,0" VerticalAlignment="Top" Height="50" Width="300"
-               FontSize="28" HorizontalContentAlignment="Center"/>
-        
-        <TextBox x:Name="login" Margin="0,180,0,0" Text="{Binding Login}" ToolTip="Введите логин"/>
-        <TextBox x:Name="email" Margin="0,220,0,0" Text="{Binding Email}" ToolTip="Введите вашу почту"/>
-        <TextBox x:Name="password1" Margin="0,260,0,0" Text="{Binding Password1}" ToolTip="Введите пароль"/>
-        <TextBox x:Name="password2" Margin="0,300,0,0" Text="{Binding Password2}" ToolTip="Повторите пароль"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="7*"/>
+        </Grid.RowDefinitions>
 
-        <Button Content="Зарегистрироваться" Command="{Binding RegistrationCommand}" HorizontalAlignment="Center" Margin="0,360,0,0"
-                VerticalAlignment="Top" Height="30" Width="150"/>
+        <TextBlock Grid.Row="0" Margin="0 10 0 0"
+            HorizontalAlignment="Center"
+            DataContext="{Binding ErrorMessageViewModel}"
+            Foreground="DarkRed"
+            Text="{Binding Message}"
+            Visibility="{Binding HasMessage, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
+        <Label Grid.Row="1" Content="Регистрация" HorizontalAlignment="Center" Margin="0,100,0,0" VerticalAlignment="Top" Height="50" Width="300"
+       FontSize="28" HorizontalContentAlignment="Center"/>
+
+        <TextBox Grid.Row="1" Margin="0,150,0,0" Text="{Binding Login}" ToolTip="Введите логин"/>
+        <TextBox Grid.Row="1" Margin="0,200,0,0" Text="{Binding Email}" ToolTip="Введите вашу почту"/>
+        <TextBox Grid.Row="1" Margin="0,250,0,0" Text="{Binding Password1}" ToolTip="Введите пароль"/>
+        <TextBox Grid.Row="1" Margin="0,300,0,0" Text="{Binding Password2}" ToolTip="Повторите пароль"/>
+
+        <Button Grid.Row="1" Content="Зарегистрироваться" Command="{Binding RegistrationCommand}" HorizontalAlignment="Center" Margin="0,350,0,0"
+            VerticalAlignment="Top" Height="30" Width="150"/>
     </Grid>
+
+
 </UserControl>

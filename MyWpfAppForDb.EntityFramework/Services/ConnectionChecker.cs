@@ -12,9 +12,10 @@ namespace MyWpfAppForDb.EntityFramework.Services
             try
             {
                 var db = host.Services.GetRequiredService<AppDbContext>();
+
                 if (!db.Database.CanConnect())
                 {
-                    throw new Exception("Have no connection");
+                    throw new Exception("The Application has not the connection with database. Reload the whole application.");
                 }
             }
 

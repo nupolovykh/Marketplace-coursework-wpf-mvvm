@@ -36,23 +36,28 @@ namespace MyWpfAppForDb.WPF.ViewModels
 
         public bool CanLogin => !string.IsNullOrEmpty(LoginEmail) && !string.IsNullOrEmpty(Password);
 
+        public MessageViewModel ErrorMessageViewModel { get;  }
+
+        public string ErrorMessage 
+        {   
+            set => ErrorMessageViewModel.Message = value;
+        }
+
         public ICommand LoginCommand { get; set; }
 
         public AuthorizationVM(IAuthenticator authenticator, IRenavigator renavigator)
         {
+            ErrorMessageViewModel = new MessageViewModel();
             _authorizationModel = new AuthorizationModel();
-
-            //var db = host.Services.GetRequiredService<AppDbContext>();
-            //IMapper _mapper = host.Services.GetRequiredService<IMapper>();
-
-            //var category = db.Categories.FirstOrDefault();
-
-            //_categoryDto = _mapper.Map<CategoryDto>(category);
-
-            //LoginEmail = _categoryDto.Name;
-            //Password = _categoryDto.Name;
 
             LoginCommand = new LoginCommand(this, authenticator, renavigator);
         }
+
+        public override void Dispose()
+        {
+            ErrorMessageViewModel.Dispose();
+            base.Dispose();
+        }
+
     }
 }

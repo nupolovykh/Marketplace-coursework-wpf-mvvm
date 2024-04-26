@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyWpfAppForDb.EntityFramework.EntitiesBuilders;
 using MyWpfAppForDb.EntityFramework.Entities;
+using System.Diagnostics;
 
 namespace MyWpfAppForDb.EntityFramework
 {
@@ -8,13 +9,14 @@ namespace MyWpfAppForDb.EntityFramework
     {
         public AppDbContext() {}
 
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) 
         {
-            Database.EnsureDeleted();
-            Database.EnsureCreated();
+            //Database.EnsureDeleted();
+            //Database.EnsureCreated();
         }
 
         public virtual DbSet<Category> Categories { get; set; } = null!;
+        public virtual DbSet<Role> Roles { get; set; } = null!;
         public virtual DbSet<Client> Clients { get; set; } = null!;
         public virtual DbSet<DeliveryPoint> DeliveryPoints { get; set; } = null!;
         public virtual DbSet<Employee> Employees { get; set; } = null!;
@@ -26,12 +28,15 @@ namespace MyWpfAppForDb.EntityFramework
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured) {}
+            optionsBuilder.EnableSensitiveDataLogging();
+            optionsBuilder.LogTo(s => Trace.WriteLine(s));
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.CategoryBuild();
+            CategoryBuilder.CategoryBuild(modelBuilder);
+
+            RoleBuilder.RoleBuild(modelBuilder);
 
             ClientBuilder.ClientBuild(modelBuilder);
 

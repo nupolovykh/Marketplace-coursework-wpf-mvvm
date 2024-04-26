@@ -29,7 +29,7 @@ namespace MyWpfAppForDb.WPF.HostBuilders
                 services.AddSingleton<CreateViewModel<AuthorizationVM>>(services => () => CreateAuthorizationVM(services));
                 services.AddSingleton<CreateViewModel<ProductsVM>>(services => () => services.GetRequiredService<ProductsVM>());
                 services.AddSingleton<CreateViewModel<ProfileVM>>(services => () => services.GetRequiredService<ProfileVM>());
-                services.AddSingleton<CreateViewModel<RegistrationVM>>(services => () => services.GetRequiredService<RegistrationVM>());
+                services.AddSingleton<CreateViewModel<RegistrationVM>>(services => () => CreateRegistrationVM(services));
                 services.AddSingleton<CreateViewModel<StatisticsVM>>(services => () => services.GetRequiredService<StatisticsVM>());
                 services.AddSingleton<CreateViewModel<YourDeliveryInfoVM>>(services => () => services.GetRequiredService<YourDeliveryInfoVM>());
 
@@ -48,15 +48,14 @@ namespace MyWpfAppForDb.WPF.HostBuilders
         {
             return new AuthorizationVM(
                 services.GetRequiredService<IAuthenticator>(),
-                services.GetRequiredService<ViewModelDelegateRenavigator<RegistrationVM>>());
+                services.GetRequiredService<ViewModelDelegateRenavigator<HomeVM>>());
         }
 
-        //private static RegisterViewModel CreateRegisterViewModel(IServiceProvider services)
-        //{
-        //    return new RegisterViewModel(
-        //        services.GetRequiredService<IAuthenticator>(),
-        //        services.GetRequiredService<ViewModelDelegateRenavigator<LoginViewModel>>(),
-        //        services.GetRequiredService<ViewModelDelegateRenavigator<LoginViewModel>>());
-        //}
+        private static RegistrationVM CreateRegistrationVM(IServiceProvider services)
+        {
+            return new RegistrationVM(
+                services.GetRequiredService<IAuthenticator>(),
+                services.GetRequiredService<ViewModelDelegateRenavigator<HomeVM>>());
+        }
     }
 }

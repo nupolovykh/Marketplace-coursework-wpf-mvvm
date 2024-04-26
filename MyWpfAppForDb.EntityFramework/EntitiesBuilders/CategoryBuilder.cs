@@ -6,7 +6,7 @@ namespace MyWpfAppForDb.EntityFramework.EntitiesBuilders
 
     internal static class CategoryBuilder
     {
-        public static void CategoryBuild(this ModelBuilder modelBuilder)
+        public static void CategoryBuild(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Category>(entity =>
             {

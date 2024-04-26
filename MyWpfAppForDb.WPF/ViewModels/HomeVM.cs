@@ -9,11 +9,10 @@ namespace MyWpfAppForDb.WPF.ViewModels
     public class HomeVM : ViewModelBase
     {
         private HomeModel _homeModel;
-        private ViewModelStore _viewModelStore;
 
         public string Search
         {
-            get => _homeModel.Search;
+            get => _homeModel.Search!;
             set
             {
                 _homeModel.Search = value;
@@ -23,7 +22,7 @@ namespace MyWpfAppForDb.WPF.ViewModels
 
         public List<Product> Products
         {
-            get => _homeModel.Products;
+            get => _homeModel.Products!;
             set
             {
                 _homeModel.Products = value;
@@ -33,7 +32,7 @@ namespace MyWpfAppForDb.WPF.ViewModels
 
         public List<Category> Categories
         {
-            get => _homeModel.Categories;
+            get => _homeModel.Categories!;
             set
             {
                 _homeModel.Categories = value;
@@ -47,9 +46,8 @@ namespace MyWpfAppForDb.WPF.ViewModels
         public ICommand SelectProduct { get; set; }
         public ICommand SearchBtn { get; set; }
 
-        public HomeVM(ViewModelStore viewModelStore)
+        public HomeVM()
         {
-            _viewModelStore = viewModelStore;
             _homeModel = new HomeModel();
         }
     }

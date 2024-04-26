@@ -18,60 +18,36 @@
     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Orientation="Horizontal" MinHeight="50" MinWidth="800">
 
         <Label Content="MyMarket" Height="50" Width="150" FontSize="28" HorizontalContentAlignment="Center"/>
-
-        <Button 
-            Content="Профиль" 
-            Command="{Binding UpdateCurrentVMCommand}"
-            CommandParameter="{x:Static nav:ViewType.Profile}"/>
-        <!--IsChecked="{Binding CurrentViewModel, Mode=OneWay,
-                    Converter={StaticResource EqualValueToParameterConverter},
-                        ConverterParameter={x:Type vm:ProfileVM}}"
-            />-->
-
+        
         <Button 
             Content="Вход" 
             Command="{Binding UpdateCurrentVMCommand}"
             CommandParameter="{x:Static nav:ViewType.Authorization}"/>
-        <!--IsChecked="{Binding CurrentViewModel, Mode=OneWay,
-                Converter={StaticResource EqualValueToParameterConverter},
-                    ConverterParameter={x:Type vm:HomeVM}}"
-        />-->
 
         <Button 
             Content="Регистрация" 
             Command="{Binding UpdateCurrentVMCommand}"
             CommandParameter="{x:Static nav:ViewType.Registration}"/>
-        <!--IsChecked="{Binding CurrentViewModel, Mode=OneWay,
-                Converter={StaticResource EqualValueToParameterConverter},
-                    ConverterParameter={x:Type vm:RegistrationVM}}"
-        />-->
+
+        <Button 
+            Content="Профиль" 
+            Command="{Binding UpdateCurrentVMCommand}"
+            CommandParameter="{x:Static nav:ViewType.Profile}"/>
 
         <Button 
             Content="Ваш ПВЗ" 
             Command="{Binding UpdateCurrentVMCommand}"
             CommandParameter="{x:Static nav:ViewType.YourDeliveryInfo}"/>
-        <!--IsChecked="{Binding CurrentViewModel, Mode=OneWay,
-                Converter={StaticResource EqualValueToParameterConverter},
-                    ConverterParameter={x:Type vm:YourDeliveryInfoVM}}"
-        />-->
 
         <Button 
             Content="Товары" 
             Command="{Binding UpdateCurrentVMCommand}"
             CommandParameter="{x:Static nav:ViewType.Products}"/>
-        <!--IsChecked="{Binding CurrentViewModel, Mode=OneWay,
-                Converter={StaticResource EqualValueToParameterConverter},
-                    ConverterParameter={x:Type vm:ProductsVM}}"
-        />-->
 
         <Button 
             Content="Статистика"
             Command="{Binding UpdateCurrentVMCommand}"
             CommandParameter="{x:Static nav:ViewType.Statistics}"/>
-        <!--IsChecked="{Binding CurrentViewModel, Mode=OneWay,
-                Converter={StaticResource EqualValueToParameterConverter},
-                    ConverterParameter={x:Type vm:StatisticsVM}}"
-        />-->
 
     </StackPanel>
     

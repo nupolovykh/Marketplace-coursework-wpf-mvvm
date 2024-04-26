@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.Identity;
+using MyWpfAppForDb.Domain.Exceptions;
 using MyWpfAppForDb.EntityFramework.Entities;
 using System.Security.Principal;
 using System.Threading.Tasks;
@@ -20,11 +21,11 @@ namespace MyWpfAppForDb.EntityFramework.Services.AuthenticationServices
         {
             Employee employee = await _accountService.GetByUsername(username);
 
-            if (employee == null) return null;
+            if (employee is null) throw new UserNotFoundException(username);
 
             PasswordVerificationResult passwordResult = _passwordHasher.VerifyHashedPassword(employee.Password, password);
 
-            if (passwordResult != PasswordVerificationResult.Success) return null;
+            if (passwordResult != PasswordVerificationResult.Success) throw new InvalidPasswordException(username, password);
 
             return employee;
         }
@@ -37,7 +38,7 @@ namespace MyWpfAppForDb.EntityFramework.Services.AuthenticationServices
 
             Employee employee = await _accountService.GetByUsername(username);
             
-            if(username != null)
+            if(employee != null)
             {
                 result = RegistrationResult.UsernameAlreadyExists;
             }
@@ -48,14 +49,15 @@ namespace MyWpfAppForDb.EntityFramework.Services.AuthenticationServices
 
                 Employee newEmployee = new Employee()
                 {
+                    RoleId = 2,
                     Email = email,
                     Name = username,
-                    Password = hashedPassword,
-                    Salary = 1000
+                    Password = hashedPassword
                 };
 
                 await _accountService.Create(newEmployee);
             }
+
             return result;
         }
     }

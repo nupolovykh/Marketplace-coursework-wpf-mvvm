@@ -26,7 +26,7 @@ namespace MyWpfAppForDb.WPF.State.Authenticators
             private set
             {
                 _accountStore.CurrentEmployee = value;
-                StateChanged.Invoke();
+                StateChanged?.Invoke();
             }
         }
 
@@ -37,7 +37,11 @@ namespace MyWpfAppForDb.WPF.State.Authenticators
         public async Task Login(string username, string password)
         {
             var employee = await _authenticationService.Login(username, password);
-            CurrentAccount = _mapper.Map<EmployeeDto>(employee);
+            if (employee is null) return;
+
+            var dto = _mapper.Map<EmployeeDto>(employee);
+
+            CurrentAccount = dto;
         }
 
         public async Task<RegistrationResult> Register(string email, string username, string password, string confirmPassword)

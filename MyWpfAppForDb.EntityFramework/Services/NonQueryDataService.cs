@@ -18,6 +18,8 @@ namespace MyWpfAppForDb.EntityFramework.Services
         {
             using (AppDbContext context = _contextFactory.CreateDbContext())
             {
+                entity.Id = await context.Set<T>().CountAsync() + 1;
+
                 EntityEntry<T> createdResult = await context.Set<T>().AddAsync(entity);
                 await context.SaveChangesAsync();
 
