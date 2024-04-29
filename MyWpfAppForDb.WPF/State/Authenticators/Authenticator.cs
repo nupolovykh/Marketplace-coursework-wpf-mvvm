@@ -7,49 +7,49 @@ using System.Threading.Tasks;
 
 namespace MyWpfAppForDb.WPF.State.Authenticators
 {
-    internal class Authenticator : IAuthenticator
-    {
-        private readonly IAccountStore _accountStore;
-        private readonly IAuthenticationService _authenticationService;
-        private readonly IMapper _mapper;
+	internal class Authenticator : IAuthenticator
+	{
+		private readonly IAccountStore _accountStore;
+		private readonly IAuthenticationService _authenticationService;
+		private readonly IMapper _mapper;
 
-        public Authenticator(IAccountStore accountStore, IAuthenticationService authenticationService, IMapper mapper)
-        {
-            _accountStore = accountStore;
-            _authenticationService = authenticationService;
-            _mapper = mapper;
-        }
+		public Authenticator(IAccountStore accountStore, IAuthenticationService authenticationService, IMapper mapper)
+		{
+			_accountStore = accountStore;
+			_authenticationService = authenticationService;
+			_mapper = mapper;
+		}
 
-        public EmployeeDto CurrentAccount
-        {
-            get => _accountStore.CurrentEmployee;
-            private set
-            {
-                _accountStore.CurrentEmployee = value;
-                StateChanged?.Invoke();
-            }
-        }
+		public EmployeeDto CurrentAccount
+		{
+			get => _accountStore.CurrentEmployee;
+			private set
+			{
+				_accountStore.CurrentEmployee = value;
+				StateChanged?.Invoke();
+			}
+		}
 
-        public bool IsLoggedIn => CurrentAccount != null;
+		public bool IsLoggedIn => CurrentAccount != null;
 
-        public event Action StateChanged;
+		public event Action StateChanged;
 
-        public async Task Login(string username, string password)
-        {
-            var employee = await _authenticationService.Login(username, password);
-            if (employee is null) return;
+		public async Task Login(string username, string password)
+		{
+			var employee = await _authenticationService.Login(username, password);
+			if (employee is null) return;
 
-            var dto = _mapper.Map<EmployeeDto>(employee);
+			var dto = _mapper.Map<EmployeeDto>(employee);
 
-            CurrentAccount = dto;
-        }
+			CurrentAccount = dto;
+		}
 
-        public async Task<RegistrationResult> Register(string email, string username, string password, string confirmPassword)
-            => await _authenticationService.Register(email, username, password, confirmPassword);
+		public async Task<RegistrationResult> Register(string email, string username, string password, string confirmPassword)
+			=> await _authenticationService.Register(email, username, password, confirmPassword);
 
-        public void Logout()
-        {
-            CurrentAccount = null!;
-        }
-    }
+		public void Logout()
+		{
+			CurrentAccount = null!;
+		}
+	}
 }

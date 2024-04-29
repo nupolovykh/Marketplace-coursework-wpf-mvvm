@@ -16,14 +16,14 @@ using System.Windows.Shapes;
 
 namespace MyWpfAppForDb.WPF.Views
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class Authorization : UserControl
-    {
-        public Authorization()
-        {
-            InitializeComponent();
-        }
-    }
+	/// <summary>
+	/// Interaction logic for MainWindow.xaml
+	/// </summary>
+	public partial class Authorization : UserControl
+	{
+		public Authorization()
+		{
+			InitializeComponent();
+		}
+	}
 }

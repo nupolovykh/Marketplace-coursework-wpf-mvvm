@@ -14,14 +14,14 @@ using System.Windows.Shapes;
 
 namespace MyWpfAppForDb.WPF.Views
 {
-    /// <summary>
-    /// Логика взаимодействия для Registration.xaml
-    /// </summary>
-    public partial class Registration : UserControl
-    {
-        public Registration()
-        {
-            InitializeComponent();
-        }
-    }
+	/// <summary>
+	/// Логика взаимодействия для Registration.xaml
+	/// </summary>
+	public partial class Registration : UserControl
+	{
+		public Registration()
+		{
+			InitializeComponent();
+		}
+	}
 }

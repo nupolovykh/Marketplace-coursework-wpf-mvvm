@@ -3,7 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:model="clr-namespace:MyWpfAppForDb.WPF.Models"
+        xmlns:vm="clr-namespace:MyWpfAppForDb.WPF.ViewModels"
+        xmlns:controls="clr-namespace:MyWpfAppForDb.WPF.Controls"
         mc:Ignorable="d"
         MinHeight="450" MinWidth="800">
 
@@ -30,7 +31,7 @@
         <Label Content="Вы вошли как: xxxxxx" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top"
                Height="30" Width="180" FontSize="16" HorizontalContentAlignment="Left"/>
 
-        <Grid ShowGridLines="True" Margin="0,55,0,0">
+        <Grid ShowGridLines="False" Margin="0,55,0,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
@@ -50,13 +51,14 @@
             </StackPanel>
 
             <Label Content="Товары магазинов" Grid.Column="0" Grid.Row="1"/>
-            <DataGrid AutoGenerateColumns="True" d:ItemsSource="{Binding Categories}" Grid.Column="0" Grid.Row="2"/>
-            <Button Content="Применить" Command="{Binding SelectCategory}" Height="30" Width="85" Grid.Column="0" Grid.Row="3"/>
 
-            <Label Content="Товары" Grid.Column="1" Grid.Row="1"/>
-            <DataGrid AutoGenerateColumns="True" d:ItemsSource="{Binding Products}" Grid.Column="1" Grid.Row="2" MaxWidth="400"/>
-            <Button Content="Применить" Command="{Binding SelectProduct}" Height="30" Width="85" Grid.Column="1" Grid.Row="3"/>
-
+            <ListBox Grid.Row="1" Grid.ColumnSpan="2" ItemsSource="{Binding Products}" SelectedItem="{Binding ChoosenProduct}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <controls:ProductCard Height="100" Width="800" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </Grid>
 
         <Button Content="Начало" Command="{Binding Prev}" Margin="10,0,0,10" HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="30" Width="60"/>

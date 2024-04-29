@@ -3,17 +3,17 @@ using System.Runtime.CompilerServices;
 
 namespace MyWpfAppForDb.WPF.ViewModels
 {
-    public delegate TViewModel CreateViewModel<TViewModel>() where TViewModel : ViewModelBase;
+	public delegate TViewModel CreateViewModel<TViewModel>() where TViewModel : ViewModelBase;
 
-    public class ViewModelBase : INotifyPropertyChanged
-    {
-        public event PropertyChangedEventHandler PropertyChanged;
+	public class ViewModelBase : INotifyPropertyChanged
+	{
+		public event PropertyChangedEventHandler PropertyChanged;
 
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+		protected void OnPropertyChanged(string propertyName)
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+		}
 
-        public virtual void Dispose() { }
-    }
+		public virtual void Dispose() { }
+	}
 }

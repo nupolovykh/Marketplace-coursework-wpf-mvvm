@@ -14,14 +14,14 @@ using System.Windows.Shapes;
 
 namespace MyWpfAppForDb.WPF.Views
 {
-    /// <summary>
-    /// Interaction logic for YourDeliveryInfo.xaml
-    /// </summary>
-    public partial class YourDeliveryInfo : UserControl
-    {
-        public YourDeliveryInfo()
-        {
-            InitializeComponent();
-        }
-    }
+	/// <summary>
+	/// Interaction logic for YourDeliveryInfo.xaml
+	/// </summary>
+	public partial class YourDeliveryInfo : UserControl
+	{
+		public YourDeliveryInfo()
+		{
+			InitializeComponent();
+		}
+	}
 }

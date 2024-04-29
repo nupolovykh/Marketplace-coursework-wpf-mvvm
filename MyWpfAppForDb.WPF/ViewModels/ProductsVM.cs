@@ -6,49 +6,49 @@ using MyWpfAppForDb.WPF.ViewModels;
 
 namespace MyWpfAppForDb.WPF.ViewModels
 {
-    public class ProductsVM : ViewModelBase
-    {
-        private ProductsModel _productsModel;
-        private ViewModelStore _viewModelStore;
+	public class ProductsVM : ViewModelBase
+	{
+		private ProductsModel _productsModel;
+		private ViewModelStore _viewModelStore;
 
-        public string Search
-        {
-            get => _productsModel.Search;
-            set
-            {
-                _productsModel.Search = value;
-                OnPropertyChanged(nameof(Search));
-            }
-        }
+		public string Search
+		{
+			get => _productsModel.Search;
+			set
+			{
+				_productsModel.Search = value;
+				OnPropertyChanged(nameof(Search));
+			}
+		}
 
-        public List<Product> Products
-        {
-            get => _productsModel.Products;
-            set
-            {
-                _productsModel.Products = value;
-                OnPropertyChanged(nameof(Products));
-            }
-        }
+		public List<Product> Products
+		{
+			get => _productsModel.Products;
+			set
+			{
+				_productsModel.Products = value;
+				OnPropertyChanged(nameof(Products));
+			}
+		}
 
-        public List<ProductsInstance> ProductInstances
-        {
-            get => _productsModel.ProductInstances;
-            set
-            {
-                _productsModel.ProductInstances = value;
-                OnPropertyChanged(nameof(ProductInstances));
-            }
-        }
+		public List<ProductsInstance> ProductInstances
+		{
+			get => _productsModel.ProductInstances;
+			set
+			{
+				_productsModel.ProductInstances = value;
+				OnPropertyChanged(nameof(ProductInstances));
+			}
+		}
 
-        public ICommand SearchBtn { get; set; }
-        public ICommand SelectProduct { get; set; }
-        public ICommand SelectProductInstance { get; set; }
+		public ICommand SearchBtn { get; set; }
+		public ICommand SelectProduct { get; set; }
+		public ICommand SelectProductInstance { get; set; }
 
-        public ProductsVM(ViewModelStore viewModelStore)
-        {
-            _viewModelStore = viewModelStore;
-            _productsModel = new ProductsModel();
-        }
-    }
+		public ProductsVM(ViewModelStore viewModelStore)
+		{
+			_viewModelStore = viewModelStore;
+			_productsModel = new ProductsModel();
+		}
+	}
 }

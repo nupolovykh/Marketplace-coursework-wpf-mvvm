@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace MyWpfAppForDb.WPF.State.Navigators
 {
-    public interface IRenavigator
-    {
-        void Renavigate();
-    }
+	public interface IRenavigator
+	{
+		void Renavigate();
+	}
 }

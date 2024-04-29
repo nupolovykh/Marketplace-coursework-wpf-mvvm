@@ -5,36 +5,36 @@ using MyWpfAppForDb.WPF.ViewModels.Factories;
 
 namespace MyWpfAppForDb.WPF.ViewModels
 {
-    public class MainViewModel : ViewModelBase
-    {
-        private readonly IAppViewModelFactory _appViewModelFactory;
-        private readonly INavigator _navigator;
+	public class MainViewModel : ViewModelBase
+	{
+		private readonly IAppViewModelFactory _appViewModelFactory;
+		private readonly INavigator _navigator;
 
-        public ViewModelBase CurrentViewModel => _navigator.CurrentViewModel;
-        public ICommand UpdateCurrentVMCommand { get; }
+		public ViewModelBase CurrentViewModel => _navigator.CurrentViewModel;
+		public ICommand UpdateCurrentVMCommand { get; }
 
-        public MainViewModel(INavigator navigator, IAppViewModelFactory appViewModelFactory)
-        {
-            _navigator = navigator;
-            _appViewModelFactory = appViewModelFactory;
+		public MainViewModel(INavigator navigator, IAppViewModelFactory appViewModelFactory)
+		{
+			_navigator = navigator;
+			_appViewModelFactory = appViewModelFactory;
 
-            _navigator.StateChanged += Navigator_StateChanged;
+			_navigator.StateChanged += Navigator_StateChanged;
 
-            UpdateCurrentVMCommand = new UpdateCurrentVMCommand(navigator, _appViewModelFactory);
-            UpdateCurrentVMCommand.Execute(ViewType.Authorization);
-        }
+			UpdateCurrentVMCommand = new UpdateCurrentVMCommand(navigator, _appViewModelFactory);
+			UpdateCurrentVMCommand.Execute(ViewType.Authorization);
+		}
 
-        private void Navigator_StateChanged()
-        {
-            OnPropertyChanged(nameof(CurrentViewModel));
-        }
+		private void Navigator_StateChanged()
+		{
+			OnPropertyChanged(nameof(CurrentViewModel));
+		}
 
-        public override void Dispose()
-        {
-            _navigator.StateChanged -= Navigator_StateChanged;
-            
-            base.Dispose();
-        }
-    }
+		public override void Dispose()
+		{
+			_navigator.StateChanged -= Navigator_StateChanged;
+			
+			base.Dispose();
+		}
+	}
 
 }

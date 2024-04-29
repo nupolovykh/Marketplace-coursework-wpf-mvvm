@@ -5,28 +5,28 @@ using System;
 
 namespace MyWpfAppForDb.EntityFramework.Services
 {
-    public static class ConnectionChecker
-    {
-        public static Exception DatabaseValidation(IHost host, out Exception exeption)
-        {
-            try
-            {
-                var db = host.Services.GetRequiredService<AppDbContext>();
+	public static class ConnectionChecker
+	{
+		public static Exception DatabaseValidation(IHost host, out Exception exeption)
+		{
+			try
+			{
+				var db = host.Services.GetRequiredService<AppDbContext>();
 
-                if (!db.Database.CanConnect())
-                {
-                    throw new Exception("The Application has not the connection with database. Reload the whole application.");
-                }
-            }
+				if (!db.Database.CanConnect())
+				{
+					throw new Exception("The Application has not the connection with database. Reload the whole application.");
+				}
+			}
 
-            catch (Exception ex)
-            {
-                exeption = ex;
-                return ex;
-            }
+			catch (Exception ex)
+			{
+				exeption = ex;
+				return ex;
+			}
 
-            exeption = null!;
-            return null!;
-        }
-    }
+			exeption = null!;
+			return null!;
+		}
+	}
 }

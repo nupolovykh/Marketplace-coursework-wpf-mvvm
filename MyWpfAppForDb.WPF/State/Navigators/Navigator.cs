@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace MyWpfAppForDb.WPF.State.Navigators
 {
-    internal class Navigator : INavigator
-    {
+	internal class Navigator : INavigator
+	{
 		private ViewModelBase _currentViewModel;
 
 		public ViewModelBase CurrentViewModel
-        {
+		{
 			get => _currentViewModel;
 			set 
 			{ 
@@ -24,5 +24,5 @@ namespace MyWpfAppForDb.WPF.State.Navigators
 		}
 
 		public event Action StateChanged;
-    }
+	}
 }

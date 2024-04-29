@@ -15,14 +15,14 @@ using System.Windows.Shapes;
 
 namespace MyWpfAppForDb.WPF.Controls
 {
-    /// <summary>
-    /// Interaction logic for NavigationBar.xaml
-    /// </summary>
-    public partial class NavigationBar : UserControl
-    {
-        public NavigationBar()
-        {
-            InitializeComponent();
-        }
-    }
+	/// <summary>
+	/// Interaction logic for NavigationBar.xaml
+	/// </summary>
+	public partial class NavigationBar : UserControl
+	{
+		public NavigationBar()
+		{
+			InitializeComponent();
+		}
+	}
 }

@@ -1,0 +1,47 @@
+﻿<UserControl x:Class="MyWpfAppForDb.WPF.Controls.ProductCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MyWpfAppForDb.WPF.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    
+    <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="10">
+        
+        <Grid Margin="10">
+            
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10">
+                <TextBlock Text="Id "/>
+                <TextBlock Text="{Binding Id}"/>
+
+                <TextBlock Text=" Name "/>
+                <TextBlock Text="{Binding Name}"/>
+
+                <TextBlock Text=" Rating "/>
+                <TextBlock Text="{Binding Rating}"/>
+
+                <TextBlock Text=" Category-Name "/>
+                <TextBlock Text="{Binding ProductInstance.Category.Name}"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="10">
+                <TextBlock Text="Market-Name "/>
+                <TextBlock Text="{Binding Market.Name}"/>
+
+                <TextBlock Text=" Price "/>
+                <TextBlock Text="{Binding Price}"/>
+
+                <Button Content="Delete" Command=""/>
+            </StackPanel>
+
+        </Grid>
+        
+    </Border>
+    
+</UserControl>

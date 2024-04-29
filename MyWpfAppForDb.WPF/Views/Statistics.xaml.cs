@@ -14,14 +14,14 @@ using System.Windows.Shapes;
 
 namespace MyWpfAppForDb.WPF.Views
 {
-    /// <summary>
-    /// Interaction logic for Statistics.xaml
-    /// </summary>
-    public partial class Statistics : UserControl
-    {
-        public Statistics()
-        {
-            InitializeComponent();
-        }
-    }
+	/// <summary>
+	/// Interaction logic for Statistics.xaml
+	/// </summary>
+	public partial class Statistics : UserControl
+	{
+		public Statistics()
+		{
+			InitializeComponent();
+		}
+	}
 }

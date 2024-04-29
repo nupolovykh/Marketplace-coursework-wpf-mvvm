@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace MyWpfAppForDb.WPF.ViewModels.Factories
 {
-    public interface IAppViewModelFactory
-    {
-        ViewModelBase CreateViewModel(ViewType viewType);
-    }
+	public interface IAppViewModelFactory
+	{
+		ViewModelBase CreateViewModel(ViewType viewType);
+	}
 }

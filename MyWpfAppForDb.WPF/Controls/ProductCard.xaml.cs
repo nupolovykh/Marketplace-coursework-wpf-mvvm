@@ -10,19 +10,19 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace MyWpfAppForDb.WPF
+namespace MyWpfAppForDb.WPF.Controls
 {
 	/// <summary>
-	/// Логика взаимодействия для Window.xaml
+	/// Interaction logic for ProductCard.xaml
 	/// </summary>
-	public partial class MainWindow : Window
+	public partial class ProductCard : UserControl
 	{
-		public MainWindow(object dataContext)
+		public ProductCard()
 		{
 			InitializeComponent();
-			DataContext = dataContext;
 		}
 	}
 }

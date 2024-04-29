@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace MyWpfAppForDb.EntityFramework.Entities
 {
-    public class Role : EntityInstance
-    {
-        public Role()
-        {
-            Employees = new HashSet<Employee>();
-        }
+	public class Role : EntityInstance
+	{
+		public Role()
+		{
+			Employees = new HashSet<Employee>();
+		}
 
-        public string Name { get; set; }
+		public string Name { get; set; }
 
-        public virtual ICollection<Employee> Employees { get; set; }
-    }
+		public virtual ICollection<Employee> Employees { get; set; }
+	}
 }

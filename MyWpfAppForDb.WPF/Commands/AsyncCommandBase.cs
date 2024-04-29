@@ -4,8 +4,8 @@ using System.Windows.Input;
 
 namespace MyWpfAppForDb.WPF.Commands
 {
-    public abstract class AsyncCommandBase : ICommand
-    {
+	public abstract class AsyncCommandBase : ICommand
+	{
 		private bool _isExecuting;
 
 		public bool IsExecuting
@@ -26,7 +26,7 @@ namespace MyWpfAppForDb.WPF.Commands
 		{
 			IsExecuting = true;
 			await ExecuteAsync(parameter);
-            IsExecuting = false;
+			IsExecuting = false;
 		}
 
 		public abstract Task ExecuteAsync(object parameter);

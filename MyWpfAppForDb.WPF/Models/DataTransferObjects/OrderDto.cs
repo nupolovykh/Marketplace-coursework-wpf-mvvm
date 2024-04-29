@@ -3,87 +3,87 @@ using System.Collections.Generic;
 
 namespace MyWpfAppForDb.WPF.Models.DataTransferObjects
 {
-    public partial class OrderDto : ModelGtoBase
-    {
-        public OrderDto()
-        {
-            OrdersItems = new HashSet<OrdersItemDto>();
-        }
+	public partial class OrderDto : ModelGtoBase
+	{
+		public OrderDto()
+		{
+			OrdersItems = new HashSet<OrdersItemDto>();
+		}
 
-        private int _id;
+		private int _id;
 
-        public int Id
-        {
-            get => _id;
-            set
-            {
-                _id = value;
-                OnPropertyChanged();
-            }
-        }
+		public int Id
+		{
+			get => _id;
+			set
+			{
+				_id = value;
+				OnPropertyChanged();
+			}
+		}
 
-        private int? _deliveryPointId;
+		private int? _deliveryPointId;
 
-        public int? DeliveryPointId
-        {
-            get => _deliveryPointId;
-            set
-            {
-                _deliveryPointId = value;
-                OnPropertyChanged();
-            }
-        }
+		public int? DeliveryPointId
+		{
+			get => _deliveryPointId;
+			set
+			{
+				_deliveryPointId = value;
+				OnPropertyChanged();
+			}
+		}
 
-        private int? _clientId;
+		private int? _clientId;
 
-        public int? ClientId
-        {
-            get => _clientId;
-            set
-            {
-                _clientId = value;
-                OnPropertyChanged();
-            }
-        }
+		public int? ClientId
+		{
+			get => _clientId;
+			set
+			{
+				_clientId = value;
+				OnPropertyChanged();
+			}
+		}
 
-        private DateTime? _orderDate;
+		private DateTime? _orderDate;
 
-        public DateTime? OrderDate
-        {
-            get => _orderDate;
-            set
-            {
-                _orderDate = value;
-                OnPropertyChanged();
-            }
-        }
+		public DateTime? OrderDate
+		{
+			get => _orderDate;
+			set
+			{
+				_orderDate = value;
+				OnPropertyChanged();
+			}
+		}
 
-        private string _status;
+		private string _status;
 
-        public string Status
-        {
-            get => _status;
-            set
-            {
-                _status = value;
-                OnPropertyChanged();
-            }
-        }
+		public string Status
+		{
+			get => _status;
+			set
+			{
+				_status = value;
+				OnPropertyChanged();
+			}
+		}
 
-        private decimal? _totalAmount;
+		private decimal? _totalAmount;
 
-        public decimal? TotalAmount
-        {
-            get => _totalAmount;
-            set
-            {
-                _totalAmount = value;
-                OnPropertyChanged();
-            }
-        }
+		public decimal? TotalAmount
+		{
+			get => _totalAmount;
+			set
+			{
+				_totalAmount = value;
+				OnPropertyChanged();
+			}
+		}
 
-        public virtual ClientDto Client { get; set; }
-        public virtual DeliveryPointDto DeliveryPoint { get; set; }
-        public virtual ICollection<OrdersItemDto> OrdersItems { get; set; }
-    }
+		public virtual ClientDto Client { get; set; }
+		public virtual DeliveryPointDto DeliveryPoint { get; set; }
+		public virtual ICollection<OrdersItemDto> OrdersItems { get; set; }
+	}
 }

@@ -7,19 +7,19 @@ using MyWpfAppForDb.WPF.State.Navigators;
 
 namespace MyWpfAppForDb.WPF.HostBuilders
 {
-    internal static class AddStoresHostBuilderExtensions
-    {
-        public static IHostBuilder AddStores(this IHostBuilder host)
-        {
-            host.ConfigureServices(services =>
-            {
-                services.AddSingleton<INavigator,Navigator>();
-                services.AddSingleton<IAuthenticator, Authenticator>();
-                services.AddSingleton<IAccountStore, AccountStore>();
-            });
+	internal static class AddStoresHostBuilderExtensions
+	{
+		public static IHostBuilder AddStores(this IHostBuilder host)
+		{
+			host.ConfigureServices(services =>
+			{
+				services.AddSingleton<INavigator,Navigator>();
+				services.AddSingleton<IAuthenticator, Authenticator>();
+				services.AddSingleton<IAccountStore, AccountStore>();
+			});
 
-            return host;
-        }
+			return host;
+		}
 
-    }
+	}
 }

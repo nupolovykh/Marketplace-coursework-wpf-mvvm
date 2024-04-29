@@ -1,7 +1,7 @@
 ﻿namespace MyWpfAppForDb.EntityFramework.Entities
 {
-    public class EntityInstance
-    {
-        public int Id { get; set; }
-    }
+	public class EntityInstance
+	{
+		public int Id { get; set; }
+	}
 }

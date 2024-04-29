@@ -9,24 +9,40 @@
         mc:Ignorable="d"
         Title="Main" Height="650" Width="1000">
 
-    <StackPanel Margin="15">
+    <Grid ShowGridLines="True" Margin="15">
 
-        <StackPanel.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="400"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Grid.Resources>
             <Style TargetType="Button">
                 <Setter Property="Height" Value="30" />
                 <Setter Property="Width" Value="85" />
                 <Setter Property="Background" Value="White"/>
             </Style>
-        </StackPanel.Resources>
+        </Grid.Resources>
 
-        <controls:NavigationBar/>
+        <controls:NavigationBar Grid.Row="0"/>
 
-        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Grid.Row="1">
             <ContentControl Content="{Binding CurrentViewModel}"/>
+        </ScrollViewer>
+
+        <ScrollViewer Grid.Row="2">
+            <StackPanel>
+                <Button MinHeight="50" MinWidth="800" Background="Red"/>
+                <Button MinHeight="50" MinWidth="800" Background="Orange"/>
+                <Button MinHeight="50" MinWidth="800" Background="Yellow"/>
+                <Button MinHeight="50" MinWidth="800" Background="Green"/>
+                <Button MinHeight="50" MinWidth="800" Background="Blue"/>
+            </StackPanel>
         </ScrollViewer>
 
         <!--<Button Content="Вернуться" Command="{Binding Return}" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom"/>-->
 
-    </StackPanel>
+    </Grid>
 
 </Window>

@@ -30,6 +30,11 @@
             CommandParameter="{x:Static nav:ViewType.Registration}"/>
 
         <Button 
+            Content="Главная" 
+            Command="{Binding UpdateCurrentVMCommand}"
+            CommandParameter="{x:Static nav:ViewType.Home}"/>
+
+        <Button 
             Content="Профиль" 
             Command="{Binding UpdateCurrentVMCommand}"
             CommandParameter="{x:Static nav:ViewType.Profile}"/>

@@ -3,22 +3,22 @@ using System;
 
 namespace MyWpfAppForDb.EntityFramework
 {
-    public class AppDbContextFactory
-    {
-        private readonly Action<DbContextOptionsBuilder> _config;
+	public class AppDbContextFactory
+	{
+		private readonly Action<DbContextOptionsBuilder> _config;
 
-        public AppDbContextFactory(Action<DbContextOptionsBuilder> config) 
-        {
-            _config = config;
-        }
+		public AppDbContextFactory(Action<DbContextOptionsBuilder> config) 
+		{
+			_config = config;
+		}
 
-        public AppDbContext CreateDbContext()
-        {
-            DbContextOptionsBuilder<AppDbContext> options = new();
+		public AppDbContext CreateDbContext()
+		{
+			DbContextOptionsBuilder<AppDbContext> options = new();
 
-            _config(options);
+			_config(options);
 
-            return new AppDbContext(options.Options);
-        }
-    }
+			return new AppDbContext(options.Options);
+		}
+	}
 }
