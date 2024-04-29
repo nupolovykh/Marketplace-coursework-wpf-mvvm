@@ -9,7 +9,7 @@ namespace MyWpfAppForDb.WPF.HostBuilders
 		{
 			host.ConfigureAppConfiguration(c =>
 			{
-				c.AddJsonFile("appsettings.json");
+				c.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 				c.AddEnvironmentVariables();
 			});
 

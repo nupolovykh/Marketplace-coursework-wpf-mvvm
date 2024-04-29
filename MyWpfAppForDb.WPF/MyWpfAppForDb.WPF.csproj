@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
-    <Nullable>enable</Nullable>
-    <UseWPF>true</UseWPF>
+	<OutputType>WinExe</OutputType>
+	<TargetFramework>net6.0-windows</TargetFramework>
+	<Nullable>enable</Nullable>
+	<UseWPF>true</UseWPF>
   </PropertyGroup>
 
 	<ItemGroup>
@@ -18,7 +18,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\MyWpfAppForDb.EntityFramework\MyWpfAppForDb.EntityFramework.csproj" />
-        <ProjectReference Include="..\MyWpfAppForDb.Domain\MyWpfAppForDb.Domain.csproj" />
+		<ProjectReference Include="..\MyWpfAppForDb.Domain\MyWpfAppForDb.Domain.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

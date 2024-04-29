@@ -13,8 +13,8 @@ namespace MyWpfAppForDb.WPF.HostBuilders
 		{
 			host.ConfigureServices((context, services) =>
 			{
-				string connectionString = context.Configuration.GetConnectionString("sqlite");
-				Action<DbContextOptionsBuilder> configureDbContext = (o) => o.UseSqlite(connectionString);
+				string connect = context.Configuration.GetConnectionString("sqlite");
+				Action<DbContextOptionsBuilder> configureDbContext = (o) => o.UseSqlite(connect);
 
 				services.AddDbContext<AppDbContext>(configureDbContext);
 				services.AddSingleton(new AppDbContextFactory(configureDbContext));

@@ -11,11 +11,12 @@ namespace MyWpfAppForDb.EntityFramework.Services
 		{
 			try
 			{
-				var db = host.Services.GetRequiredService<AppDbContext>();
+				var factory = host.Services.GetRequiredService<AppDbContextFactory>();
 
-				if (!db.Database.CanConnect())
+				using (var db = factory.CreateDbContext())
 				{
-					throw new Exception("The Application has not the connection with database. Reload the whole application.");
+					db.Database.EnsureCreated();
+					if (!db.Database.CanConnect()) throw new Exception("Never gonna give you up");
 				}
 			}
 
