@@ -3,11 +3,11 @@ using System.Linq;
 using System.Windows.Input;
 using AutoMapper;
 using MyWpfAppForDb.Domain.Services.ProductsService;
-using MyWpfAppForDb.EntityFramework.Entities;
 using MyWpfAppForDb.WPF.Models;
-using MyWpfAppForDb.WPF.Controls;
 using MyWpfAppForDb.WPF.Models.DataTransferObjects;
-using MyWpfAppForDb.WPF.ViewModels;
+using MyWpfAppForDb.WPF.Commands;
+using System.Collections.ObjectModel;
+using System;
 
 namespace MyWpfAppForDb.WPF.ViewModels
 {
@@ -16,11 +16,31 @@ namespace MyWpfAppForDb.WPF.ViewModels
 		private HomeModel _homeModel;
 
 		private IProductsService _productsService;
-        private IMapper _mapper;
+		private IMapper _mapper;
 
-        public List<ProductDto> Products
+		public int CurrentPage
 		{
-			get => _homeModel.Products;
+			get => _homeModel.CurrentPage;
+			set
+			{
+				_homeModel.CurrentPage = value;
+				OnPropertyChanged(nameof(CurrentPage));
+			}
+		}
+
+		public int MaxPage
+		{
+			get => _homeModel.MaxPage;
+			set
+			{
+				_homeModel.MaxPage = value;
+				OnPropertyChanged(nameof(MaxPage));
+			}
+		}
+
+		public ObservableCollection<ProductDto> Products
+		{
+			get => _homeModel.Products!;
 			set
 			{
 				_homeModel.Products = value;
@@ -28,9 +48,9 @@ namespace MyWpfAppForDb.WPF.ViewModels
 			}
 		}
 
-        public ProductDto ChoosenProduct
+		public ProductDto ChoosenProduct
 		{
-			get => _homeModel.ChoosenProduct;
+			get => _homeModel.ChoosenProduct!;
 			set
 			{
 				_homeModel.ChoosenProduct = value;
@@ -40,7 +60,7 @@ namespace MyWpfAppForDb.WPF.ViewModels
 
 		public string Search
 		{
-			get => _homeModel.Search;
+			get => _homeModel.Search!;
 			set
 			{
 				_homeModel.Search = value;
@@ -52,30 +72,54 @@ namespace MyWpfAppForDb.WPF.ViewModels
 		public ICommand Prev { get; set; }
 		public ICommand SearchBtn { get; set; }
 
+		public ICommand DeleteCommand { get; set; }
+
 		public HomeVM(IProductsService productsService, IMapper mapper)
 		{
-            _homeModel = new HomeModel();
+			_homeModel = new HomeModel();
 			_productsService = productsService;
 			_mapper	= mapper;
 
-            FillingOfTheListBox();
+			AsyncInitializing();
+
+			Next = new DelegateCommand(
+				action: (_) => ChangePage(++CurrentPage),
+				condition: (_) => CurrentPage != MaxPage,
+				vmb: this);
+
+			Prev = new DelegateCommand(
+				action: (_) => ChangePage(--CurrentPage),
+				condition: (_) => CurrentPage != 0,
+				vmb: this);
+
+			DeleteCommand = new RelayGenericCommand<int>(
+				action: (id) => DeleteProduct(id),
+				condition: (id) => true);
 		}
 
-		private async void FillingOfTheListBox()
+		private async void AsyncInitializing()
 		{
-            var product = await _productsService.GetAll();
+			CurrentPage = 0;
+			MaxPage = await _productsService.GetLastPageNumber();
 
-            Products = _mapper.Map<List<ProductDto>>(product.ToList());
-
-
-			//List<ProductCard> ProductCardss = new List<ProductCard>();
-			//foreach (var p in Products)
-			//{
-			//	var NewCard = new ProductCard();
-			//	NewCard.DataContext = p;
-			//}
-
-			//ProductCards = ProductCardss;
+			var products = await _productsService.GetPage(CurrentPage);
+			Products = _mapper.Map<ObservableCollection<ProductDto>>(products);
 		}
-    }
+
+		private async void DeleteProduct(int id)
+		{
+			await _productsService.Delete(id);
+			var products = await _productsService.GetPage(CurrentPage);
+			Products = _mapper.Map<ObservableCollection<ProductDto>>(products);
+
+			MaxPage = await _productsService.GetLastPageNumber();
+			if (Products.Count is 0) Prev.Execute(null);
+		}
+
+		private async void ChangePage(int page)
+		{
+			var products = await _productsService.GetPage(page);
+			Products = _mapper.Map<ObservableCollection<ProductDto>>(products);
+		}
+	}
 }

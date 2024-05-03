@@ -1,5 +1,7 @@
-﻿using System;
+﻿using MyWpfAppForDb.WPF.ViewModels;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,32 +9,35 @@ using System.Windows.Input;
 
 namespace MyWpfAppForDb.WPF.Commands
 {
-	internal class DelegateCommand : ICommand
+	internal class DelegateCommand : AsyncCommandBase
 	{
-		private readonly Action<object> ExecuteAction;
-		private readonly Func<object, bool> CanExecuteFunc;
+		private readonly Action<object> _action;
+		private readonly Predicate<object> _canExecuteFunc;
+		private readonly ViewModelBase _viewModel;
 
-		public DelegateCommand(Action<object> executeAction, Func<object, bool> canExecuteFunc)
+		public DelegateCommand(Action<object> action, Predicate<object> condition, ViewModelBase vmb)
 		{
-			ExecuteAction = executeAction;
-			CanExecuteFunc = canExecuteFunc;
+			_action = action;
+			_canExecuteFunc = condition;
+			_viewModel = vmb;
+
+			_viewModel.PropertyChanged += Reload_PropertyChanged!;
 		}
 
-		public bool CanExecute(object parameter)
+		public override bool CanExecute(object? parameter)
 		{
-			return CanExecuteFunc == null || CanExecuteFunc(parameter);
+			bool v = (_canExecuteFunc == null || _canExecuteFunc(parameter!)) && base.CanExecute(parameter);
+			return v;
 		}
 
-		public void Execute(object parameter)
+		public override async Task ExecuteAsync(object? parameter)
 		{
-			ExecuteAction(parameter);
+			_action(parameter!);
 		}
 
-		public event EventHandler CanExecuteChanged;
-
-		public void RaiseCanExecuteChanged()
+		public void Reload_PropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
-			CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+			OnCanExecuteChanged();
 		}
 	}
 }

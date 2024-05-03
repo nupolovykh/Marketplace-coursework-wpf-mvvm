@@ -29,12 +29,14 @@ namespace MyWpfAppForDb.EntityFramework.EntitiesBuilders
 				entity.HasOne(d => d.Market)
 					.WithMany(p => p.Products)
 					.HasForeignKey(d => d.MarketId)
-					.HasConstraintName("FK__Products__market__6383C8BA");
+					.HasConstraintName("FK__Products__market__6383C8BA")
+					.OnDelete(DeleteBehavior.SetNull);
 
 				entity.HasOne(d => d.ProductInstance)
 					.WithMany(p => p.Products)
 					.HasForeignKey(d => d.ProductInstanceId)
-					.HasConstraintName("FK__Products__produc__628FA481");
+					.HasConstraintName("FK__Products__produc__628FA481")
+					.OnDelete(DeleteBehavior.SetNull);
 			});
 
 			modelBuilder.Entity<Product>().HasData(

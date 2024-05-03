@@ -9,11 +9,7 @@ namespace MyWpfAppForDb.EntityFramework
 	{
 		public AppDbContext() {}
 
-		public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) 
-		{
-			//Database.EnsureDeleted();
-			//Database.EnsureCreated();
-		}
+		public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}
 
 		public virtual DbSet<Category> Categories { get; set; } = null!;
 		public virtual DbSet<Role> Roles { get; set; } = null!;

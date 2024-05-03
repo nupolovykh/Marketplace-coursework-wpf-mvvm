@@ -10,6 +10,8 @@ namespace MyWpfAppForDb.Domain.Services.ProductsService
 {
 	public interface IProductsService : IDataService<Product>
 	{
-		Task<IEnumerable<Product>> GetProducts(int offset, int fetch);
+		Task<IEnumerable<Product>> GetPage(int offset);
+
+		Task<int> GetLastPageNumber();
 	}
 }

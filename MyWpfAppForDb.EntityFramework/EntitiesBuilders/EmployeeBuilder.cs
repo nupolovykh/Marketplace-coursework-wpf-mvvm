@@ -41,7 +41,8 @@ namespace MyWpfAppForDb.EntityFramework.EntitiesBuilders
 				entity.HasOne(d => d.DeliveryPoint)
 					.WithMany(p => p.Employees)
 					.HasForeignKey(d => d.DeliveryPointId)
-					.HasConstraintName("FK__Employees__deliv__6FE99F9F");
+					.HasConstraintName("FK__Employees__deliv__6FE99F9F")
+					.OnDelete(DeleteBehavior.SetNull);
 			});
 
 			IPasswordHasher hasher = new PasswordHasher();

@@ -1,47 +1,56 @@
 ﻿<UserControl x:Class="MyWpfAppForDb.WPF.Controls.ProductCard"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:MyWpfAppForDb.WPF.Controls"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    
-    <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="10">
-        
-        <Grid Margin="10">
-            
-            <Grid.RowDefinitions>
-                <RowDefinition Height="1*"/>
-                <RowDefinition Height="1*"/>
-            </Grid.RowDefinitions>
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+			 xmlns:local="clr-namespace:MyWpfAppForDb.WPF.Controls"
+			 mc:Ignorable="d" 
+			 d:DesignHeight="450" d:DesignWidth="800">
 
-            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10">
-                <TextBlock Text="Id "/>
-                <TextBlock Text="{Binding Id}"/>
+	<Border BorderBrush="Gray" BorderThickness="1" CornerRadius="10" Height="150" Width="920">
+		
+		<Grid Margin="10">
 
-                <TextBlock Text=" Name "/>
-                <TextBlock Text="{Binding Name}"/>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="7*"/>
+				<ColumnDefinition Width="1*"/>
+			</Grid.ColumnDefinitions>
+			
+			<Grid.RowDefinitions>
+				<RowDefinition Height="1*"/>
+				<RowDefinition Height="1*"/>
+			</Grid.RowDefinitions>
 
-                <TextBlock Text=" Rating "/>
-                <TextBlock Text="{Binding Rating}"/>
+			<StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal" Margin="10">
+				<TextBlock Text="Id - "/>
+				<TextBox Text="{Binding Id}"/>
 
-                <TextBlock Text=" Category-Name "/>
-                <TextBlock Text="{Binding ProductInstance.Category.Name}"/>
-            </StackPanel>
+				<TextBlock Text="Name - "/>
+				<TextBox Text="{Binding ProductInstance.Name}"/>
 
-            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="10">
-                <TextBlock Text="Market-Name "/>
-                <TextBlock Text="{Binding Market.Name}"/>
+				<TextBlock Text="Rating - "/>
+				<TextBox Text="{Binding Rating}"/>
 
-                <TextBlock Text=" Price "/>
-                <TextBlock Text="{Binding Price}"/>
+				<TextBlock Text="Category-Name - "/>
+				<TextBox Text="{Binding ProductInstance.Category.Name}"/>
+			</StackPanel>
 
-                <Button Content="Delete" Command=""/>
-            </StackPanel>
+			<StackPanel Grid.Column="0" Grid.Row="1" Orientation="Horizontal" Margin="10">
+				<TextBlock Text="Market-Name - "/>
+				<TextBox Text="{Binding Market.Name}"/>
 
-        </Grid>
-        
-    </Border>
-    
+				<TextBlock Text="Price - "/>
+				<TextBox Text="{Binding Price}"/>
+			</StackPanel>
+
+			<Button Grid.Column="1" Grid.RowSpan="2" 
+					VerticalAlignment="Center" HorizontalAlignment="Center" 
+					Content="Delete" 
+					Command="{Binding DataContext.DeleteCommand, ElementName=Main}" 
+					CommandParameter = "{Binding Id}"/>
+			
+		</Grid>
+		
+	</Border>
+	
 </UserControl>

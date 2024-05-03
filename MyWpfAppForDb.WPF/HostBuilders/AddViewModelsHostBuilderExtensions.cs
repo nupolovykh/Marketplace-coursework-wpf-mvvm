@@ -43,7 +43,6 @@ namespace MyWpfAppForDb.WPF.HostBuilders
 			return host;
 		}
 
-
 		private static AuthorizationVM CreateAuthorizationVM(IServiceProvider services)
 		{
 			return new AuthorizationVM(

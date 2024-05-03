@@ -26,9 +26,9 @@ namespace MyWpfAppForDb.WPF.Commands
 			_viewModel.PropertyChanged += AuthorizationVM_PropertyChanged!;
 		}
 
-		public override bool CanExecute(object parameter) => _viewModel.CanLogin && base.CanExecute(parameter);
+		public override bool CanExecute(object? parameter) => _viewModel.CanLogin && base.CanExecute(parameter);
 
-		public override async Task ExecuteAsync(object parameter)
+		public override async Task ExecuteAsync(object? parameter)
 		{
 			_viewModel.ErrorMessage = string.Empty;
 

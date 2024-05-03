@@ -46,18 +46,6 @@ namespace MyWpfAppForDb.WPF.Models.DataTransferObjects
 			}
 		}
 
-		private string? _name;
-
-		public string? Name
-		{
-			get => _name;
-			set
-			{
-				_name = value;
-				OnPropertyChanged();
-			}
-		}
-
 		private decimal? _price;
 
 		public decimal? Price

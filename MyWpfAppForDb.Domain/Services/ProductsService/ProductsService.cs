@@ -12,6 +12,8 @@ namespace MyWpfAppForDb.Domain.Services.ProductsService
 {
 	public class ProductsService : IProductsService
 	{
+		private static int fetch = 10;
+
 		private readonly AppDbContextFactory _contextFactory;
 		private readonly NonQueryDataService<Product> _nonQueryDataService;
 
@@ -24,6 +26,11 @@ namespace MyWpfAppForDb.Domain.Services.ProductsService
 		public async Task<Product> Create(Product entity)
 		{
 			return await _nonQueryDataService.Create(entity);
+		}
+
+		public async Task<Product> Update(int id, Product entity)
+		{
+			return await _nonQueryDataService.Update(id, entity);
 		}
 
 		public async Task<bool> Delete(int id)
@@ -56,7 +63,7 @@ namespace MyWpfAppForDb.Domain.Services.ProductsService
 			}
 		}
 
-		public async Task<IEnumerable<Product>> GetProducts(int offset, int fetch)
+		public async Task<IEnumerable<Product>> GetPage(int offset)
 		{
 			using (AppDbContext context = _contextFactory.CreateDbContext())
 			{
@@ -64,7 +71,7 @@ namespace MyWpfAppForDb.Domain.Services.ProductsService
 					.Include(p => p.Market)
 					.Include(p => p.ProductInstance)
 						.ThenInclude(pi => pi.Category)
-					.Skip(offset)
+					.Skip(offset * fetch)
 					.Take(fetch)
 				.ToListAsync();
 					
@@ -72,9 +79,12 @@ namespace MyWpfAppForDb.Domain.Services.ProductsService
 			}
 		}
 
-		public async Task<Product> Update(int id, Product entity)
+		public async Task<int> GetLastPageNumber()
 		{
-			return await _nonQueryDataService.Update(id, entity);
+			using (AppDbContext context = _contextFactory.CreateDbContext())
+			{
+				return (await context.Products.CountAsync() - 1) / fetch;
+			}
 		}
 	}
 }

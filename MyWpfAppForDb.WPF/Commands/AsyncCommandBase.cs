@@ -18,18 +18,22 @@ namespace MyWpfAppForDb.WPF.Commands
 			}
 		}
 
-		public event EventHandler CanExecuteChanged;
+		//////// ICommand
 
-		public virtual bool CanExecute(object parameter) => !IsExecuting;
+		public event EventHandler? CanExecuteChanged;
 
-		public async void Execute(object parameter)
+		public virtual bool CanExecute(object? parameter) => !IsExecuting;
+
+		public async void Execute(object? parameter)
 		{
 			IsExecuting = true;
-			await ExecuteAsync(parameter);
+			await ExecuteAsync(parameter!);
 			IsExecuting = false;
 		}
 
-		public abstract Task ExecuteAsync(object parameter);
+		/////////
+
+		public abstract Task ExecuteAsync(object? parameter);
 
 		protected void OnCanExecuteChanged()
 		{

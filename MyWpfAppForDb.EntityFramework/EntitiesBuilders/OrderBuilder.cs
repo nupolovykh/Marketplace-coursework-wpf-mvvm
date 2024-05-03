@@ -33,12 +33,14 @@ namespace MyWpfAppForDb.EntityFramework.EntitiesBuilders
 				entity.HasOne(d => d.Client)
 					.WithMany(p => p.Orders)
 					.HasForeignKey(d => d.ClientId)
-					.HasConstraintName("FK__Orders__client_i__6754599E");
+					.HasConstraintName("FK__Orders__client_i__6754599E")
+					.OnDelete(DeleteBehavior.SetNull);
 
 				entity.HasOne(d => d.DeliveryPoint)
 					.WithMany(p => p.Orders)
 					.HasForeignKey(d => d.DeliveryPointId)
-					.HasConstraintName("FK__Orders__delivery__70DDC3D8");
+					.HasConstraintName("FK__Orders__delivery__70DDC3D8")
+					.OnDelete(DeleteBehavior.SetNull);
 			});
 
 			modelBuilder.Entity<Order>().HasData(

@@ -22,12 +22,14 @@ namespace MyWpfAppForDb.EntityFramework.EntitiesBuilders
 				entity.HasOne(d => d.Order)
 					.WithMany(p => p.OrdersItems)
 					.HasForeignKey(d => d.OrderId)
-					.HasConstraintName("FK__Orders_It__order__66603565");
+					.HasConstraintName("FK__Orders_It__order__66603565")
+					.OnDelete(DeleteBehavior.SetNull);
 
 				entity.HasOne(d => d.Product)
 					.WithMany(p => p.OrdersItems)
 					.HasForeignKey(d => d.ProductId)
-					.HasConstraintName("FK__Orders_It__produ__656C112C");
+					.HasConstraintName("FK__Orders_It__produ__656C112C")
+					.OnDelete(DeleteBehavior.SetNull);
 			});
 
 			modelBuilder.Entity<OrdersItem>().HasData(

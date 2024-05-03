@@ -31,7 +31,8 @@ namespace MyWpfAppForDb.EntityFramework.EntitiesBuilders
 				entity.HasOne(d => d.Category)
 					.WithMany(p => p.ProductsInstances)
 					.HasForeignKey(d => d.CategoryId)
-					.HasConstraintName("FK__Products___categ__60A75C0F");
+					.HasConstraintName("FK__Products___categ__60A75C0F")
+					.OnDelete(DeleteBehavior.SetNull);
 			});
 
 			modelBuilder.Entity<ProductsInstance>().HasData(

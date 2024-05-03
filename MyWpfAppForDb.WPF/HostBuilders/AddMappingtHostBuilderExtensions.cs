@@ -32,6 +32,7 @@ namespace MyWpfAppForDb.WPF.HostBuilders
 			CreateMap<OrdersItem, OrdersItemDto>();
 			CreateMap<Product, ProductDto>();
 			CreateMap<ProductsInstance, ProductsInstanceDto>();
+			CreateMap<Role, RoleDto>();
 		}
 	}
 

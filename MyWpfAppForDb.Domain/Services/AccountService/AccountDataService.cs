@@ -34,6 +34,7 @@ namespace MyWpfAppForDb.Domain.Services.AccountService
 			{
 				Employee entity = await context.Employees
 					.Include(e => e.DeliveryPoint)
+					.Include(e => e.Role)
 					.FirstOrDefaultAsync((e) => e.Id == id);
 				return entity;
 			}
@@ -44,7 +45,9 @@ namespace MyWpfAppForDb.Domain.Services.AccountService
 			using (AppDbContext context = _contextFactory.CreateDbContext())
 			{
 				IEnumerable<Employee> entities = await context.Employees
-					.Include(e => e.DeliveryPoint).ToListAsync();
+					.Include(e => e.DeliveryPoint)
+					.Include(e => e.Role)
+					.ToListAsync();
 				return entities;
 			}
 		}
@@ -55,6 +58,7 @@ namespace MyWpfAppForDb.Domain.Services.AccountService
 			{
 				return await context.Employees
 					.Include(e => e.DeliveryPoint)
+					.Include(e => e.Role)
 					.FirstOrDefaultAsync(e => e.Email == email);
 			}
 		}
@@ -65,6 +69,7 @@ namespace MyWpfAppForDb.Domain.Services.AccountService
 			{
 				return await context.Employees
 					.Include(e => e.DeliveryPoint)
+					.Include(e => e.Role)
 					.FirstOrDefaultAsync(a => a.Name == username);
 			}
 		}

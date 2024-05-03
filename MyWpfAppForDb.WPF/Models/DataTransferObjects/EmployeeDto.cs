@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MyWpfAppForDb.EntityFramework.Entities;
+using System;
 using System.Collections.Generic;
 
 namespace MyWpfAppForDb.WPF.Models.DataTransferObjects
@@ -13,6 +14,18 @@ namespace MyWpfAppForDb.WPF.Models.DataTransferObjects
 			set
 			{
 				_id = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private int? _rolePointId;
+
+		public int? RoleId
+		{
+			get => _rolePointId;
+			set
+			{
+				_rolePointId = value;
 				OnPropertyChanged();
 			}
 		}
@@ -90,5 +103,6 @@ namespace MyWpfAppForDb.WPF.Models.DataTransferObjects
 		}
 
 		public virtual DeliveryPointDto DeliveryPoint { get; set; }
+		public virtual RoleDto Role { get; set; }
 	}
 }
