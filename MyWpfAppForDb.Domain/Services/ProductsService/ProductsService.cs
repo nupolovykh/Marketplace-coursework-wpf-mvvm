@@ -86,5 +86,13 @@ namespace MyWpfAppForDb.Domain.Services.ProductsService
 				return (await context.Products.CountAsync() - 1) / fetch;
 			}
 		}
+
+		public async Task<int> GetNewId()
+		{
+			using (AppDbContext context = _contextFactory.CreateDbContext())
+			{
+				return await context.Products.CountAsync();
+			}
+		}
 	}
 }

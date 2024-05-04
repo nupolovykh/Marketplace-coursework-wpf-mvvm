@@ -11,6 +11,8 @@
 
 	<UserControl.Resources>
 
+		<BooleanToVisibilityConverter x:Key="BoolToVis"/>
+
 		<Style TargetType="TextBox">
 			<Setter Property="FontSize" Value="16" />
 			<Setter Property="Height" Value="30"/>
@@ -43,6 +45,7 @@
 			<Setter Property="VerticalAlignment" Value="Bottom" />
 			<Setter Property="Width" Value="60"/>
 			<Setter Property="Height" Value="30"/>
+			<Setter Property="Margin" Value="10"/>
 		</Style>
 
 	</UserControl.Resources>
@@ -63,12 +66,22 @@
 
 			<controls:SearchControl Grid.ColumnSpan="2" Grid.Row="0" HorizontalAlignment="Center" Margin="10"/>
 
-			<Label Content="Товары магазинов" Grid.ColumnSpan="2" Grid.Row="1" HorizontalAlignment="Center" Margin="10"/>
+			<StackPanel Orientation="Horizontal" Grid.ColumnSpan="2" Grid.Row="1" HorizontalAlignment="Center" Margin="10">
+				<Label Content="Товары магазинов" Margin="10"/>
+				
+				<Button Content="Add" Command="{Binding AddCommand}" VerticalAlignment="Center"
+						Visibility="{Binding RequiredRole, Converter={StaticResource BoolToVis}, FallbackValue=Hidden}"/>
+				<Button Content="Save" Command="{Binding SaveCommand}" VerticalAlignment="Center"
+						Visibility="{Binding RequiredRole, Converter={StaticResource BoolToVis}, FallbackValue=Hidden}"/>
+				
+			</StackPanel>
 
 			<ListBox Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding Products}" SelectedItem="{Binding ChoosenProduct}" HorizontalAlignment="Center">
 				<ListBox.ItemTemplate>
 					<DataTemplate>
+
 						<controls:ProductCard HorizontalAlignment="Center"/>
+						
 					</DataTemplate>
 				</ListBox.ItemTemplate>
 			</ListBox>

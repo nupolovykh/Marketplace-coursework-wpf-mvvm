@@ -13,5 +13,7 @@ namespace MyWpfAppForDb.Domain.Services.ProductsService
 		Task<IEnumerable<Product>> GetPage(int offset);
 
 		Task<int> GetLastPageNumber();
+
+		Task<int> GetNewId();
 	}
 }

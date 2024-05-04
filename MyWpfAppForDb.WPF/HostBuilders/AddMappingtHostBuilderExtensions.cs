@@ -23,16 +23,25 @@ namespace MyWpfAppForDb.WPF.HostBuilders
 	{
 		public OrganizationProfile()
 		{
-			CreateMap<Category, CategoryDto>();
-			CreateMap<Client, ClientDto>();
-			CreateMap<DeliveryPoint, DeliveryPointDto>();
-			CreateMap<Employee, EmployeeDto>();
-			CreateMap<Market, MarketDto>();
-			CreateMap<Order, OrderDto>();
-			CreateMap<OrdersItem, OrdersItemDto>();
-			CreateMap<Product, ProductDto>();
-			CreateMap<ProductsInstance, ProductsInstanceDto>();
-			CreateMap<Role, RoleDto>();
+			CreateMap<Category, CategoryDto>().ReverseMap();
+
+			CreateMap<Client, ClientDto>().ReverseMap();
+
+			CreateMap<DeliveryPoint, DeliveryPointDto>().ReverseMap();
+
+			CreateMap<Employee, EmployeeDto>().ReverseMap();
+
+			CreateMap<Market, MarketDto>().ReverseMap();
+
+			CreateMap<Order, OrderDto>().ReverseMap();
+
+			CreateMap<OrdersItem, OrdersItemDto>().ReverseMap();
+
+			CreateMap<Product, ProductDto>().ReverseMap();
+
+			CreateMap<ProductsInstance, ProductsInstanceDto>().ReverseMap();
+
+			CreateMap<Role, RoleDto>().ReverseMap();
 		}
 	}
 
