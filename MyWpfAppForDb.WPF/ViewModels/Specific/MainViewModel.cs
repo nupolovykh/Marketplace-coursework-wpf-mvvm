@@ -24,27 +24,17 @@ namespace MyWpfAppForDb.WPF.ViewModels
 			_appViewModelFactory = appViewModelFactory;
 			_store = store;
 
-			_store.StateChanged += Account_StateChanged;
-			_navigator.StateChanged += Navigator_StateChanged;
+			_store.StateChanged += () => OnPropertyChanged(nameof(CurrentEmployee));
+			_navigator.StateChanged += () => OnPropertyChanged(nameof(CurrentViewModel));
 
 			UpdateCurrentVMCommand = new UpdateCurrentVMCommand(navigator, _appViewModelFactory);
 			UpdateCurrentVMCommand.Execute(ViewType.Authorization);
 		}
 
-		private void Account_StateChanged()
-		{
-			OnPropertyChanged(nameof(CurrentEmployee));
-		}
-
-		private void Navigator_StateChanged()
-		{
-			OnPropertyChanged(nameof(CurrentViewModel));
-		}
-
 		public override void Dispose()
 		{
-			_navigator.StateChanged -= Navigator_StateChanged;
-			_store.StateChanged -= Account_StateChanged;
+			_navigator.StateChanged -= () => OnPropertyChanged(nameof(CurrentViewModel));
+			_store.StateChanged -= () => OnPropertyChanged(nameof(CurrentEmployee));
 
 			base.Dispose();
 		}

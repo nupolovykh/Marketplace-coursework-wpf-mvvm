@@ -13,7 +13,7 @@ namespace MyWpfAppForDb.WPF.ViewModels
 
 		public string Search
 		{
-			get => _productsModel.Search;
+			get => _productsModel.Search!;
 			set
 			{
 				_productsModel.Search = value;
@@ -23,7 +23,7 @@ namespace MyWpfAppForDb.WPF.ViewModels
 
 		public List<Product> Products
 		{
-			get => _productsModel.Products;
+			get => _productsModel.Products!;
 			set
 			{
 				_productsModel.Products = value;
@@ -33,7 +33,7 @@ namespace MyWpfAppForDb.WPF.ViewModels
 
 		public List<ProductsInstance> ProductInstances
 		{
-			get => _productsModel.ProductInstances;
+			get => _productsModel.ProductInstances!;
 			set
 			{
 				_productsModel.ProductInstances = value;

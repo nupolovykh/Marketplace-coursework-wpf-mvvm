@@ -25,29 +25,28 @@ namespace MyWpfAppForDb.WPF.Commands
 			_viewModel.PropertyChanged += RegistrationVM_PropertyChanged!;
 		}
 
-		public override bool CanExecute(object parameter) => _viewModel.CanRegist && base.CanExecute(parameter);
+		public override bool CanExecute(object? parameter) => _viewModel.CanRegist && base.CanExecute(parameter);
 
-		public override async Task ExecuteAsync(object parameter)
+		public override async Task ExecuteAsync(object? parameter)
 		{
 			_viewModel.ErrorMessage = string.Empty;
-
 			try
 			{
-				RegistrationResult registrationResult = 
+				AccountResult registrationResult = 
 					await _authenticator.Register(_viewModel.Email, _viewModel.Login, _viewModel.Password1, _viewModel.Password2);
 
 				switch (registrationResult)
 				{
-					case RegistrationResult.Success:
+					case AccountResult.Success:
 						_renavigator.Renavigate();
 						break;
-					case RegistrationResult.PasswordsDoNotMatch:
+					case AccountResult.PasswordsDoNotMatch:
 						_viewModel.ErrorMessage = "Password does not match confirm password.";
 						break;
-					case RegistrationResult.EmailAlreadyExists:
+					case AccountResult.EmailAlreadyExists:
 						_viewModel.ErrorMessage = "This email already exist.";
 						break;
-					case RegistrationResult.UsernameAlreadyExists:
+					case AccountResult.UsernameAlreadyExists:
 						_viewModel.ErrorMessage = "This username already exist.";
 						break;
 					default:
@@ -55,7 +54,6 @@ namespace MyWpfAppForDb.WPF.Commands
 						break;
 				}
 			}
-			
 			catch (Exception ex)
 			{
 				MessageBox.Show(ex.Message);

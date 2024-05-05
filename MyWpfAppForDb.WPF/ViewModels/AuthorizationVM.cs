@@ -4,7 +4,6 @@ using Microsoft.Extensions.Hosting;
 using MyWpfAppForDb.WPF.Commands;
 using MyWpfAppForDb.WPF.State.Navigators;
 using MyWpfAppForDb.WPF.State.Authenticators;
-using System.Windows;
 
 namespace MyWpfAppForDb.WPF.ViewModels
 {
@@ -22,7 +21,6 @@ namespace MyWpfAppForDb.WPF.ViewModels
 				OnPropertyChanged(nameof(CanLogin));
 			}
 		}
-
 		public string Password
 		{
 			get => _authorizationModel.Password!;
@@ -37,7 +35,6 @@ namespace MyWpfAppForDb.WPF.ViewModels
 		public bool CanLogin => !string.IsNullOrEmpty(LoginEmail) && !string.IsNullOrEmpty(Password);
 
 		public MessageViewModel ErrorMessageViewModel { get;  }
-
 		public string ErrorMessage 
 		{   
 			set => ErrorMessageViewModel.Message = value;
@@ -47,8 +44,8 @@ namespace MyWpfAppForDb.WPF.ViewModels
 
 		public AuthorizationVM(IAuthenticator authenticator, IRenavigator renavigator)
 		{
-			ErrorMessageViewModel = new MessageViewModel();
 			_authorizationModel = new AuthorizationModel();
+			ErrorMessageViewModel = new MessageViewModel();
 
 			LoginCommand = new LoginCommand(this, authenticator, renavigator);
 		}

@@ -31,20 +31,20 @@ namespace MyWpfAppForDb.EntityFramework.Services.AuthenticationServices
 			return employee;
 		}
 
-		public async Task<RegistrationResult> Register(string email, string username, string password, string confirmPassword)
+		public async Task<AccountResult> Register(string email, string username, string password, string confirmPassword)
 		{
-			RegistrationResult result = RegistrationResult.Success;
+			AccountResult result = AccountResult.Success;
 
-			if (password != confirmPassword) result = RegistrationResult.PasswordsDoNotMatch;
+			if (password != confirmPassword) result = AccountResult.PasswordsDoNotMatch;
 
 			Employee employee = await _accountService.GetByUsername(username);
 			
 			if(employee != null)
 			{
-				result = RegistrationResult.UsernameAlreadyExists;
+				result = AccountResult.UsernameAlreadyExists;
 			}
 
-			if(result == RegistrationResult.Success)
+			if(result == AccountResult.Success)
 			{
 				string hashedPassword = _passwordHasher.HashPassword(password);
 
@@ -57,6 +57,30 @@ namespace MyWpfAppForDb.EntityFramework.Services.AuthenticationServices
 				};
 
 				await _accountService.Create(newEmployee);
+			}
+
+			return result;
+		}
+
+		public async Task<AccountResult> Adjust(Employee employee)
+		{
+			AccountResult result = AccountResult.Success;
+
+			Employee check = await _accountService.GetByUsername(employee.Name);
+
+			if (check is not null && check.Id != employee.Id) result = AccountResult.UsernameAlreadyExists;
+
+			check = await _accountService.GetByEmail(employee.Email);
+
+			if (check is not null && check.Id != employee.Id) result = AccountResult.EmailAlreadyExists;
+
+			if (result == AccountResult.Success)
+			{
+				string hashedPassword = _passwordHasher.HashPassword(employee.Password);
+
+				employee.Password = hashedPassword;
+
+				await _accountService.Update(employee.Id, employee);
 			}
 
 			return result;

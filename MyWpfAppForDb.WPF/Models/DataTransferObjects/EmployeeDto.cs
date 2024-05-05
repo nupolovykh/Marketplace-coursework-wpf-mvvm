@@ -18,9 +18,9 @@ namespace MyWpfAppForDb.WPF.Models.DataTransferObjects
 			}
 		}
 
-		private int? _rolePointId;
+		private int _rolePointId;
 
-		public int? RoleId
+		public int RoleId
 		{
 			get => _rolePointId;
 			set
@@ -30,9 +30,9 @@ namespace MyWpfAppForDb.WPF.Models.DataTransferObjects
 			}
 		}
 
-		private int? _deliveryPointId;
+		private int _deliveryPointId;
 
-		public int? DeliveryPointId
+		public int DeliveryPointId
 		{
 			get => _deliveryPointId;
 			set
@@ -42,11 +42,11 @@ namespace MyWpfAppForDb.WPF.Models.DataTransferObjects
 			}
 		}
 
-		private string _name;
+		private string? _name;
 
 		public string Name
 		{
-			get => _name;
+			get => _name!;
 			set
 			{
 				_name = value;
@@ -54,11 +54,11 @@ namespace MyWpfAppForDb.WPF.Models.DataTransferObjects
 			}
 		}
 
-		private string _email;
+		private string? _email;
 
 		public string Email
 		{
-			get => _email;
+			get => _email!;
 			set
 			{
 				_email = value;
@@ -66,11 +66,11 @@ namespace MyWpfAppForDb.WPF.Models.DataTransferObjects
 			}
 		}
 
-		private string _paswword;
+		private string? _paswword;
 
 		public string Password
 		{
-			get => _paswword;
+			get => _paswword!;
 			set
 			{
 				_paswword = value;
@@ -78,11 +78,11 @@ namespace MyWpfAppForDb.WPF.Models.DataTransferObjects
 			}
 		}
 
-		private string _phone;
+		private string? _phone;
 
 		public string Phone
 		{
-			get => _phone;
+			get => _phone!;
 			set
 			{
 				_phone = value;
@@ -90,9 +90,9 @@ namespace MyWpfAppForDb.WPF.Models.DataTransferObjects
 			}
 		}
 
-		private decimal? _salary;
+		private decimal _salary;
 
-		public decimal? Salary
+		public decimal Salary
 		{
 			get => _salary;
 			set
@@ -102,7 +102,7 @@ namespace MyWpfAppForDb.WPF.Models.DataTransferObjects
 			}
 		}
 
-		public virtual DeliveryPointDto DeliveryPoint { get; set; }
-		public virtual RoleDto Role { get; set; }
+		public virtual DeliveryPointDto? DeliveryPoint { get; set; }
+		public virtual RoleDto? Role { get; set; }
 	}
 }

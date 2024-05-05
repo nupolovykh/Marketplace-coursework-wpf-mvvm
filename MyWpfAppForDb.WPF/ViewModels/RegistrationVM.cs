@@ -20,7 +20,6 @@ namespace MyWpfAppForDb.WPF.ViewModels
 				OnPropertyChanged(nameof(CanRegist));
 			}
 		}
-
 		public string Email
 		{
 			get => _registrationVM.Email!;
@@ -31,7 +30,6 @@ namespace MyWpfAppForDb.WPF.ViewModels
 				OnPropertyChanged(nameof(CanRegist));
 			}
 		}
-
 		public string Password1
 		{
 			get => _registrationVM.Password1!;
@@ -42,7 +40,6 @@ namespace MyWpfAppForDb.WPF.ViewModels
 				OnPropertyChanged(nameof(CanRegist));
 			}
 		}
-
 		public string Password2
 		{
 			get => _registrationVM.Password2!;
@@ -54,17 +51,16 @@ namespace MyWpfAppForDb.WPF.ViewModels
 			}
 		}
 
-		public bool CanRegist => !string.IsNullOrEmpty(Login) && !string.IsNullOrEmpty(Email) && !string.IsNullOrEmpty(Password1) && !string.IsNullOrEmpty(Password2);
+		public bool CanRegist => !string.IsNullOrEmpty(Login) && !string.IsNullOrEmpty(Email)
+			&& !string.IsNullOrEmpty(Password1) && !string.IsNullOrEmpty(Password2);
 
 		public MessageViewModel ErrorMessageViewModel { get; }
-
 		public string ErrorMessage
 		{
 			set => ErrorMessageViewModel.Message = value;
 		}
 
 		public ICommand RegistrationCommand { get; set; }
-
 
 		public RegistrationVM(IAuthenticator authenticator, IRenavigator renavigator)
 		{

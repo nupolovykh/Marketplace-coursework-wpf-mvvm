@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace MyWpfAppForDb.EntityFramework.Services.AuthenticationServices
 {
-	public enum RegistrationResult
+	public enum AccountResult
 	{
 		Success,
 		PasswordsDoNotMatch,
@@ -13,8 +13,10 @@ namespace MyWpfAppForDb.EntityFramework.Services.AuthenticationServices
 
 	public interface IAuthenticationService
 	{
-		Task<RegistrationResult> Register(string email, string username, string password, string confirmPassword);
-
 		Task<Employee> Login(string username, string password);
+
+		Task<AccountResult> Register(string email, string username, string password, string confirmPassword);
+
+		Task<AccountResult> Adjust(Employee employee);
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MyWpfAppForDb.EntityFramework.Entities;
 using MyWpfAppForDb.EntityFramework.Services.AuthenticationServices;
 using MyWpfAppForDb.WPF.Models.DataTransferObjects;
 using MyWpfAppForDb.WPF.State.Accounts;
@@ -40,12 +41,25 @@ namespace MyWpfAppForDb.WPF.State.Authenticators
 			if (employee is null) return;
 
 			var dto = _mapper.Map<EmployeeDto>(employee);
-
 			CurrentAccount = dto;
 		}
 
-		public async Task<RegistrationResult> Register(string email, string username, string password, string confirmPassword)
+		public async Task<AccountResult> Register(string email, string username, string password, string confirmPassword)
 			=> await _authenticationService.Register(email, username, password, confirmPassword);
+
+		public async Task<AccountResult> Adjust(EmployeeDto dto, string password)
+		{
+			Employee employee = _mapper.Map<Employee>(dto);
+			employee.Password = password;
+
+			var result = await _authenticationService.Adjust(employee);
+
+			if(result == AccountResult.Success)
+			{
+				CurrentAccount = dto;
+			}
+			return result;
+		}
 
 		public void Logout()
 		{

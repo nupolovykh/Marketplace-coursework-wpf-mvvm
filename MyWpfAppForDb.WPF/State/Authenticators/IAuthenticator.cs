@@ -8,15 +8,15 @@ namespace MyWpfAppForDb.WPF.State.Authenticators
 {
 	public interface IAuthenticator
 	{
-		EmployeeDto CurrentAccount { get; }
-
 		bool IsLoggedIn { get; }
 
 		event Action StateChanged;
 
 		Task Login(string username, string password);
 
-		Task<RegistrationResult> Register(string email, string username, string password, string confirmPassword);
+		Task<AccountResult> Register(string email, string username, string password, string confirmPassword);
+
+		Task<AccountResult> Adjust(EmployeeDto employee, string password);
 
 		void Logout();
 	}
