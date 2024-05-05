@@ -13,8 +13,9 @@ namespace MyWpfAppForDb.WPF.State.Accounts
 			set
 			{
 				_currentEmployee = value;
-				StateChanged?.Invoke();
 				RoleChanged();
+
+				StateChanged?.Invoke();
 			}
 		}
 

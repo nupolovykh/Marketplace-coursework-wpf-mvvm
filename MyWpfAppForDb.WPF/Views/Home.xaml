@@ -63,7 +63,7 @@
 		</Grid.ColumnDefinitions>
 
 		<controls:SearchControl Grid.ColumnSpan="2" Grid.Row="0" HorizontalAlignment="Center" Margin="10"
-		DataContext="{Binding SearchViewModel}"/>
+			DataContext="{Binding SearchViewModel}"/>
 
 		<StackPanel Orientation="Horizontal" Grid.ColumnSpan="2" Grid.Row="1" HorizontalAlignment="Center" Margin="10">
 			<Label Content="Товары магазинов" Margin="10"/>

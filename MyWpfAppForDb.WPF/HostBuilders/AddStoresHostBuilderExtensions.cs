@@ -1,9 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using MyWpfAppForDb.Domain.Services.ProductsService;
-using MyWpfAppForDb.EntityFramework.Services;
 using MyWpfAppForDb.WPF.State.Accounts;
 using MyWpfAppForDb.WPF.State.Authenticators;
+using MyWpfAppForDb.WPF.State.Delivery;
 using MyWpfAppForDb.WPF.State.Navigators;
 using MyWpfAppForDb.WPF.State.Products;
 
@@ -19,6 +18,7 @@ namespace MyWpfAppForDb.WPF.HostBuilders
 				services.AddSingleton<IAuthenticator, Authenticator>();
 				services.AddSingleton<IAccountStore, AccountStore>();
 				services.AddSingleton<IProductWorker, ProductWorker>();
+				services.AddSingleton<IDeliveryWorker, DeliveryWorker>();
 			});
 
 			return host;

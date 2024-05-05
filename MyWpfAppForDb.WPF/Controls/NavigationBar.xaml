@@ -5,12 +5,12 @@
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
 			 xmlns:nav="clr-namespace:MyWpfAppForDb.WPF.State.Navigators"
 			 xmlns:converter="clr-namespace:MyWpfAppForDb.WPF.Converters"
-			 mc:Ignorable="d" 
+			 mc:Ignorable="d"
 			 d:DesignHeight="450" d:DesignWidth="800">
 
 	<UserControl.Resources>
-		<converter:EqualValueToParameterConverter
-			x:Key="EqualValueToParameterConverter"/>
+		<converter:EqualValueToParameterConverter x:Key="EqualValueToParameterConverter"/>
+		<BooleanToVisibilityConverter x:Key="BoolToVis"/>
 
 		<Style TargetType="Label">
 			<Setter Property="Height" Value="50" />
@@ -19,7 +19,7 @@
 			<Setter Property="HorizontalContentAlignment" Value="Center"/>
 		</Style>
 	</UserControl.Resources>
-	
+
 	<StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Orientation="Horizontal" MinHeight="50" MinWidth="800">
 
 		<Label Content="MyMarket"/>
@@ -42,16 +42,19 @@
 		<Button 
 			Content="Профиль" 
 			Command="{Binding UpdateCurrentVMCommand}"
+			Visibility="{Binding RequiredRole, Converter={StaticResource BoolToVis}, FallbackValue=Hidden}"
 			CommandParameter="{x:Static nav:ViewType.Profile}"/>
 
 		<Button 
 			Content="Ваш ПВЗ" 
 			Command="{Binding UpdateCurrentVMCommand}"
+			Visibility="{Binding RequiredRole, Converter={StaticResource BoolToVis}, FallbackValue=Hidden}"
 			CommandParameter="{x:Static nav:ViewType.YourDeliveryInfo}"/>
 
 		<Button 
 			Content="Статистика"
 			Command="{Binding UpdateCurrentVMCommand}"
+			Visibility="{Binding RequiredRole, Converter={StaticResource BoolToVis}, FallbackValue=Hidden}"
 			CommandParameter="{x:Static nav:ViewType.Statistics}"/>
 
 		<Label DataContext="{Binding CurrentEmployee}">

@@ -61,15 +61,55 @@
 		<controls:SearchControl Grid.ColumnSpan="2" Grid.Row="0" HorizontalAlignment="Center" Margin="10"
 			DataContext="{Binding SearchViewModel}"/>
 
-		<Label Content="Заказы" Grid.Column="0" Grid.Row="1"/>
-		<Label Content="Состав заказа" Grid.Column="1" Grid.Row="1"/>
+		<Label Content="Orders of your DeliveryPoint" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" MinWidth="300"/>
 
-		<DataGrid ItemsSource="{Binding Orders}" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Stretch" MinHeight="350"/>
-		<DataGrid ItemsSource="{Binding Products}" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Stretch" MinHeight="350"/>
+		<TabControl Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" MinHeight="350" SelectedItem="{Binding SelectedTab}">
+			<TabItem Header="Order - DeliveryPoint" Width="150">
+				<DataGrid ItemsSource="{Binding Orders}" SelectedItem="{Binding SelectedOrder}"
+					 AutoGenerateColumns="False" CanUserAddRows="false" MinColumnWidth="100" CanUserDeleteRows="False"
+					 VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" RowHeight="50">
+					<DataGrid.Columns>
+						<DataGridTextColumn Header="Id" Binding="{Binding Path=Id}" />
+						<DataGridTextColumn Header="Address Delivery" Binding="{Binding Path=DeliveryPoint.Address}" />
+						<DataGridTextColumn Header="City Delivery" Binding="{Binding Path=DeliveryPoint.City}" />
+						<DataGridTextColumn Header="Zipcode Delivery" Binding="{Binding Path=DeliveryPoint.Zipcode}" />
+						<DataGridTextColumn Header="TotalAmount" Binding="{Binding Path=TotalAmount}" />
+						<DataGridTextColumn Header="OrderDate" Binding="{Binding Path=OrderDate}" />
+						<DataGridTextColumn Header="Status" Binding="{Binding Path=Status}" />
+					</DataGrid.Columns>
+				</DataGrid>
+			</TabItem>
 
-		<Button Content="Выбрать" Command="{Binding SelectOrder}" Grid.Column="0" Grid.Row="3"/>
-		<Button Content="Применить" Command="{Binding SelectProduct}" Grid.Column="1" Grid.Row="3"/>
-		
+			<TabItem Header="Items - Product" Width="150">
+				<DataGrid ItemsSource="{Binding SelectedOrder.OrdersItems}" SelectedItem="{Binding SelectedOrderItem}"
+					AutoGenerateColumns="False" CanUserAddRows="false" MinColumnWidth="100" CanUserDeleteRows="False"
+					VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" RowHeight="50">
+					<DataGrid.Columns>
+						<DataGridTextColumn Header="Product name" Binding="{Binding Path=Product.ProductInstance.Name}" />
+						<DataGridTextColumn Header="Product market name" Binding="{Binding Path=Product.Market.Name}" />
+						<DataGridTextColumn Header="Product price" Binding="{Binding Path=Product.Price}" />
+						<DataGridTextColumn Header="Product rating" Binding="{Binding Path=Product.Rating}" />
+						<DataGridTextColumn Header="Product availability" Binding="{Binding Path=Product.ProductInstance.Availability}" />
+					</DataGrid.Columns>
+				</DataGrid>
+			</TabItem>
+
+			<TabItem Header="Employee" Width="150">
+				<DataGrid ItemsSource="{Binding SelectedOrder.DeliveryPoint.Employees}" SelectedItem="{Binding SelectedEmployee}"
+					AutoGenerateColumns="False" CanUserAddRows="false" MinColumnWidth="100" CanUserDeleteRows="False"
+					VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" RowHeight="50">
+					<DataGrid.Columns>
+						<DataGridTextColumn Header="Employee id" Binding="{Binding Path=Id}" />
+						<DataGridTextColumn Header="Employee name" Binding="{Binding Path=Name}" />
+						<DataGridTextColumn Header="Employee email" Binding="{Binding Path=Email}" />
+						<DataGridTextColumn Header="Employee phone" Binding="{Binding Path=Phone}" />
+						<DataGridTextColumn Header="Employee salary" Binding="{Binding Path=Salary}" />
+					</DataGrid.Columns>
+				</DataGrid>
+			</TabItem>
+
+		</TabControl>
+
 	</Grid>
 	
 </UserControl>

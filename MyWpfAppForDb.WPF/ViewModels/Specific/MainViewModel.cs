@@ -16,6 +16,9 @@ namespace MyWpfAppForDb.WPF.ViewModels
 
 		public ViewModelBase CurrentViewModel => _navigator.CurrentViewModel;
 		public EmployeeDto CurrentEmployee => _store.CurrentEmployee;
+
+		public bool RequiredRole => _store.IsOperator() || _store.IsAdmin();
+
 		public ICommand UpdateCurrentVMCommand { get; }
 
 		public MainViewModel(INavigator navigator, IAppViewModelFactory appViewModelFactory, IAccountStore store)
@@ -25,6 +28,7 @@ namespace MyWpfAppForDb.WPF.ViewModels
 			_store = store;
 
 			_store.StateChanged += () => OnPropertyChanged(nameof(CurrentEmployee));
+			_store.StateChanged += () => OnPropertyChanged(nameof(RequiredRole));
 			_navigator.StateChanged += () => OnPropertyChanged(nameof(CurrentViewModel));
 
 			UpdateCurrentVMCommand = new UpdateCurrentVMCommand(navigator, _appViewModelFactory);
@@ -35,6 +39,7 @@ namespace MyWpfAppForDb.WPF.ViewModels
 		{
 			_navigator.StateChanged -= () => OnPropertyChanged(nameof(CurrentViewModel));
 			_store.StateChanged -= () => OnPropertyChanged(nameof(CurrentEmployee));
+			_store.StateChanged -= () => OnPropertyChanged(nameof(RequiredRole));
 
 			base.Dispose();
 		}
