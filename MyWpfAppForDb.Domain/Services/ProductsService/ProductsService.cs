@@ -1,10 +1,8 @@
 ﻿using MyWpfAppForDb.EntityFramework.Entities;
 using MyWpfAppForDb.EntityFramework.Services;
 using MyWpfAppForDb.EntityFramework;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
@@ -79,11 +77,47 @@ namespace MyWpfAppForDb.Domain.Services.ProductsService
 			}
 		}
 
+		public async Task<IEnumerable<Product>> GetPageWithSearch(int offset, string search)
+		{
+			using (AppDbContext context = _contextFactory.CreateDbContext())
+			{
+				IEnumerable<Product> entities = await context.Products
+					.Include(p => p.Market)
+					.Include(p => p.ProductInstance)
+						.ThenInclude(pi => pi.Category)
+							.Where(p => p.Market.Name.Contains(search) ||
+									p.ProductInstance.Name.Contains(search) ||
+										p.ProductInstance.Category.Name.Contains(search))
+							.Skip(offset * fetch)
+							.Take(fetch)
+								.ToListAsync();
+
+				return entities;
+			}
+		}
+
 		public async Task<int> GetLastPageNumber()
 		{
 			using (AppDbContext context = _contextFactory.CreateDbContext())
 			{
 				return (await context.Products.CountAsync() - 1) / fetch;
+			}
+		}
+
+		public async Task<int> GetLastPageNumberWithSearch(string search)
+		{
+			using (AppDbContext context = _contextFactory.CreateDbContext())
+			{
+				IEnumerable<Product> entities = await context.Products
+					.Include(p => p.Market)
+					.Include(p => p.ProductInstance)
+						.ThenInclude(pi => pi.Category)
+							.Where(p => p.Market.Name.Contains(search) ||
+									p.ProductInstance.Name.Contains(search) ||
+										p.ProductInstance.Category.Name.Contains(search))
+								.ToListAsync();
+
+				return (entities.Count() - 1) / fetch;
 			}
 		}
 

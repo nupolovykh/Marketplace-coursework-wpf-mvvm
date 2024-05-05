@@ -8,11 +8,11 @@ namespace MyWpfAppForDb.WPF.ViewModels
 {
 	public class MessageViewModel : ViewModelBase
 	{
-		public string _message;
+		public string? _message;
 
 		public string Message
 		{
-			get => _message;
+			get => _message!;
 			set
 			{
 				_message = value;

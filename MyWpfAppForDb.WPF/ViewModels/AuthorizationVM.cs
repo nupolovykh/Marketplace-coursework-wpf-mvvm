@@ -1,6 +1,5 @@
 ﻿using System.Windows.Input;
 using MyWpfAppForDb.WPF.Models;
-using Microsoft.Extensions.Hosting;
 using MyWpfAppForDb.WPF.Commands;
 using MyWpfAppForDb.WPF.State.Navigators;
 using MyWpfAppForDb.WPF.State.Authenticators;

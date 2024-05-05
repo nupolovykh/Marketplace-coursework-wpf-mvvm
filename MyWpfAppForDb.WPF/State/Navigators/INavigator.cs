@@ -10,8 +10,7 @@ namespace MyWpfAppForDb.WPF.State.Navigators
 		Registration,
 		Profile,
 		Statistics,
-		YourDeliveryInfo,
-		Products
+		YourDeliveryInfo
 	}
 
 	public interface INavigator

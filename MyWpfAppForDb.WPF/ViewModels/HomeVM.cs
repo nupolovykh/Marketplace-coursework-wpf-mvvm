@@ -1,14 +1,11 @@
 ﻿using System.Windows.Input;
-using AutoMapper;
-using MyWpfAppForDb.Domain.Services.ProductsService;
 using MyWpfAppForDb.WPF.Models;
 using MyWpfAppForDb.WPF.Models.DataTransferObjects;
 using MyWpfAppForDb.WPF.Commands;
 using System.Collections.ObjectModel;
-using System;
-using MyWpfAppForDb.EntityFramework.Entities;
-using Microsoft.VisualBasic;
 using MyWpfAppForDb.WPF.State.Accounts;
+using MyWpfAppForDb.WPF.ViewModels.Specific;
+using MyWpfAppForDb.WPF.State.Products;
 
 namespace MyWpfAppForDb.WPF.ViewModels
 {
@@ -16,8 +13,7 @@ namespace MyWpfAppForDb.WPF.ViewModels
 	{
 		private HomeModel _homeModel;
 
-		private readonly IProductsService _productsService;
-		private readonly IMapper _mapper;
+		private readonly IProductWorker _productsWorker;
 		private readonly IAccountStore _store;
 
 		public int CurrentPage
@@ -29,7 +25,6 @@ namespace MyWpfAppForDb.WPF.ViewModels
 				OnPropertyChanged(nameof(CurrentPage));
 			}
 		}
-
 		public int MaxPage
 		{
 			get => _homeModel.MaxPage;
@@ -49,7 +44,6 @@ namespace MyWpfAppForDb.WPF.ViewModels
 				OnPropertyChanged(nameof(Products));
 			}
 		}
-
 		public ProductDto ChoosenProduct
 		{
 			get => _homeModel.ChoosenProduct!;
@@ -60,17 +54,13 @@ namespace MyWpfAppForDb.WPF.ViewModels
 			}
 		}
 
-		public string Search
-		{
-			get => _homeModel.Search!;
-			set
-			{
-				_homeModel.Search = value;
-				OnPropertyChanged(nameof(Search));
-			}
-		}
+		public SearchViewModel SearchViewModel { get; }
+		private string SearchString => SearchViewModel.Search;
+		private bool HasSearchString => SearchViewModel.HasSearchString;
 
-		public bool RequiredRole => _store.CurrentEmployee?.Role?.Name is "Admin" or "Operator" and not null;
+		private bool NotFirstPage => CurrentPage is not 0;
+
+		public bool RequiredRole => _store.IsOperator() || _store.IsAdmin();
 
 		public ICommand Next { get; set; }
 		public ICommand Prev { get; set; }
@@ -79,98 +69,74 @@ namespace MyWpfAppForDb.WPF.ViewModels
 		public ICommand SaveCommand { get; set; }
 		public ICommand DeleteCommand { get; set; }
 
-		public ICommand SearchBtn { get; set; }
-
-		public HomeVM(IProductsService productsService, IMapper mapper, IAccountStore store)
+		public HomeVM(IProductWorker productsWorker, IAccountStore store)
 		{
 			_homeModel = new HomeModel();
-			_productsService = productsService;
-			_mapper	= mapper;
+			_productsWorker = productsWorker;
 			_store = store;
 
-			AsyncInitializing();
+			SearchViewModel = new SearchViewModel();
+			CurrentPage = 0;
+			GetPage(CurrentPage, SearchString);
 
 			Next = new DelegateCommand(
-				action: (_) => ChangePage(++CurrentPage),
+				action: (_) => GetPage(++CurrentPage, SearchString),
 				condition: (_) => CurrentPage != MaxPage,
 				vmb: this);
 
 			Prev = new DelegateCommand(
-				action: (_) => ChangePage(--CurrentPage),
-				condition: (_) => CurrentPage != 0,
+				action: (_) => GetPage(--CurrentPage, SearchString),
+				condition: (_) => NotFirstPage,
 				vmb: this);
 
 			AddCommand = new DelegateCommand(
-				action: (_) => AddProduct(),
+				action: (_) => AddProduct(CurrentPage, SearchString),
 				condition: (_) => true,
 				vmb: this);
 
 			SaveCommand = new DelegateCommand(
-				action: (_) => SaveProduct(),
+				action: (_) => UpdateProduct(CurrentPage, SearchString, ChoosenProduct),
 				condition: (_) => ChoosenProduct is not null,
 				vmb: this);
 
 			DeleteCommand = new RelayGenericCommand<int>(
-				action: (id) => DeleteProduct(id),
+				action: (id) => DeleteProduct(id, CurrentPage, SearchString), //lal
 				condition: (id) => true);
+
+			SearchViewModel.SearchCommand = new RelayGenericCommand<string>(
+				action: (search) => GetPage(CurrentPage, search), //lal
+				condition: (search) => true);
 		}
 
-		private async void AsyncInitializing()
+		private async void UpdateProduct(int page, string search, ProductDto product)
 		{
-			CurrentPage = 0;
-			MaxPage = await _productsService.GetLastPageNumber();
-
-			var products = await _productsService.GetPage(CurrentPage);
-			Products = _mapper.Map<ObservableCollection<ProductDto>>(products);
+			await _productsWorker.UpdateProduct(product);
+			GetPage(page, search);
 		}
 
-		private async void SaveProduct()
+		private async void AddProduct(int page, string search)
 		{
-			Product product = _mapper.Map<Product>(ChoosenProduct);
-
-			await _productsService.Update(product.Id, product);
-
-			var products = await _productsService.GetPage(CurrentPage);
-			Products = _mapper.Map<ObservableCollection<ProductDto>>(products);
-
-			MaxPage = await _productsService.GetLastPageNumber();
+			await _productsWorker.AddProduct();
+			GetPage(page, search);
 		}
 
-		private async void AddProduct()
+		private async void DeleteProduct(int id, int page, string search)
 		{
-			int MarketId = int.Parse(Interaction.InputBox("Enter the marketId:", "Prescribe the info", "write here"));
-			int ProductInstanceId = int.Parse(Interaction.InputBox("Enter the productInstanceId:", "Prescribe the info", "write here"));
-
-			ProductDto productDto = new ProductDto()
-			{
-				Id = await _productsService.GetNewId(),
-				MarketId = MarketId,
-				ProductInstanceId = ProductInstanceId
-			};
-
-			Product product = _mapper.Map<Product>(productDto);
-			await _productsService.Create(product);
-
-			var products = await _productsService.GetPage(CurrentPage);
-			Products = _mapper.Map<ObservableCollection<ProductDto>>(products);
-
-			MaxPage = await _productsService.GetLastPageNumber();
+			await _productsWorker.DeleteProduct(id);
+			GetPage(page, search);
 		}
 
-		private async void DeleteProduct(int id)
+		private async void GetPage(int page, string search)
 		{
-			await _productsService.Delete(id);
-			var products = await _productsService.GetPage(CurrentPage);
-			Products = _mapper.Map<ObservableCollection<ProductDto>>(products);
-
-			MaxPage = await _productsService.GetLastPageNumber();
-			if (Products.Count is 0) Prev.Execute(null);
+			Products = await _productsWorker.GetPageWithSearch(page, search);
+			MaxPage = await _productsWorker.GetLastIdPageWithSearch(search);
+			if (Products.Count is 0 && NotFirstPage) Prev.Execute(null);
 		}
 
-		private async void ChangePage(int page)
+		public override void Dispose()
 		{
-			var products = await _productsService.GetPage(page);
-			Products = _mapper.Map<ObservableCollection<ProductDto>>(products);
+			SearchViewModel.Dispose();
+			base.Dispose();
 		}
 	}
 }

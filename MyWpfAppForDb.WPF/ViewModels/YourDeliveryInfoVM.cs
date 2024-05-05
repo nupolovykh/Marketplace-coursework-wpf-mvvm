@@ -1,29 +1,17 @@
-﻿using System.Collections.Generic;
-using System.Windows.Input;
-using MyWpfAppForDb.EntityFramework.Entities;
+﻿using System.Collections.ObjectModel;
 using MyWpfAppForDb.WPF.Models;
-using MyWpfAppForDb.WPF.ViewModels;
+using MyWpfAppForDb.WPF.Models.DataTransferObjects;
+using MyWpfAppForDb.WPF.ViewModels.Specific;
 
 namespace MyWpfAppForDb.WPF.ViewModels
 {
 	public class YourDeliveryInfoVM : ViewModelBase
 	{
 		private YourDeliveryInfoModel _yourDeliveryModel;
-		private ViewModelStore _viewModelStore;
 
-		public string Search
+		public ObservableCollection<ProductDto> Products
 		{
-			get => _yourDeliveryModel.Search;
-			set
-			{
-				_yourDeliveryModel.Search = value;
-				OnPropertyChanged(nameof(Search));
-			}
-		}
-
-		public List<Product> Products
-		{
-			get => _yourDeliveryModel.Products;
+			get => _yourDeliveryModel.Products!;
 			set
 			{
 				_yourDeliveryModel.Products = value;
@@ -31,9 +19,9 @@ namespace MyWpfAppForDb.WPF.ViewModels
 			}
 		}
 
-		public List<Order> Orders
+		public ObservableCollection<OrderDto> Orders
 		{
-			get => _yourDeliveryModel.Orders;
+			get => _yourDeliveryModel.Orders!;
 			set
 			{
 				_yourDeliveryModel.Orders = value;
@@ -41,14 +29,12 @@ namespace MyWpfAppForDb.WPF.ViewModels
 			}
 		}
 
-		public ICommand SelectOrder { get; set; }
-		public ICommand SelectProduct { get; set; }
-		public ICommand SearchBtn { get; set; }
+		public SearchViewModel SearchViewModel { get; }
 
-		public YourDeliveryInfoVM(ViewModelStore viewModelStore)
+		public YourDeliveryInfoVM()
 		{
-			_viewModelStore = viewModelStore;
 			_yourDeliveryModel = new YourDeliveryInfoModel();
+			SearchViewModel = new SearchViewModel();
 		}
 	}
 }

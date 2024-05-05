@@ -15,11 +15,9 @@ namespace MyWpfAppForDb.WPF.HostBuilders
 			host.ConfigureServices(services =>
 			{
 				services.AddTransient<MainViewModel>();
-				services.AddSingleton<ViewModelStore>();
 
 				services.AddTransient<AuthorizationVM>();
 				services.AddTransient<HomeVM>();
-				services.AddTransient<ProductsVM>();
 				services.AddTransient<ProfileVM>();
 				services.AddTransient<RegistrationVM>();
 				services.AddTransient<StatisticsVM>();
@@ -27,7 +25,6 @@ namespace MyWpfAppForDb.WPF.HostBuilders
 
 				services.AddSingleton<CreateViewModel<HomeVM>>(services => () => services.GetRequiredService<HomeVM>());
 				services.AddSingleton<CreateViewModel<AuthorizationVM>>(services => () => CreateAuthorizationVM(services));
-				services.AddSingleton<CreateViewModel<ProductsVM>>(services => () => services.GetRequiredService<ProductsVM>());
 				services.AddSingleton<CreateViewModel<ProfileVM>>(services => () => services.GetRequiredService<ProfileVM>());
 				services.AddSingleton<CreateViewModel<RegistrationVM>>(services => () => CreateRegistrationVM(services));
 				services.AddSingleton<CreateViewModel<StatisticsVM>>(services => () => services.GetRequiredService<StatisticsVM>());

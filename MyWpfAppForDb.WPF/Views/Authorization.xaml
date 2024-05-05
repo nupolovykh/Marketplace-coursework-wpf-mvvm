@@ -3,13 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:vm="clr-namespace:MyWpfAppForDb.WPF.ViewModels"
+        xmlns:controls="clr-namespace:MyWpfAppForDb.WPF.Controls"
         mc:Ignorable="d"
         Height="450" Width="800">
 
-    <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-        <Style TargetType="TextBox">
+	<UserControl.Resources>
+		<Style TargetType="TextBox">
             <Setter Property="FontSize" Value="16" />
             <Setter Property="HorizontalAlignment" Value="Center" />
             <Setter Property="VerticalAlignment" Value="Top"/>
@@ -27,14 +26,12 @@
             <RowDefinition Height="7*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Margin="0 10 0 0"
+		<controls:MessageControl Grid.Row="0" 
+            Margin="0 10 0 0" 
             HorizontalAlignment="Center"
-            DataContext="{Binding ErrorMessageViewModel}"
-            Foreground="DarkRed"
-            Text="{Binding Message}"
-            Visibility="{Binding HasMessage, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            DataContext="{Binding ErrorMessageViewModel}"/>
 
-        <Label Grid.Row="1" Content="Авторизация" HorizontalAlignment="Center" VerticalAlignment="Top" Height="50" Width="200"
+		<Label Grid.Row="1" Content="Авторизация" HorizontalAlignment="Center" VerticalAlignment="Top" Height="50" Width="200"
             FontSize="28" HorizontalContentAlignment="Center" Margin="0,100,0,0"/>
 
         <TextBox Grid.Row="1" Text="{Binding LoginEmail}" ToolTip="Введите логин или почту" Margin="0,170,0,0"/>

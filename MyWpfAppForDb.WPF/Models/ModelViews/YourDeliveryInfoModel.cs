@@ -1,12 +1,11 @@
-﻿using MyWpfAppForDb.EntityFramework.Entities;
-using System.Collections.Generic;
+﻿using MyWpfAppForDb.WPF.Models.DataTransferObjects;
+using System.Collections.ObjectModel;
 
 namespace MyWpfAppForDb.WPF.Models
 {
 	public class YourDeliveryInfoModel
 	{
-		public string? Search { get; set; }
-		public List<Product>? Products { get; set; }
-		public List<Order>? Orders { get; set; }
+		public ObservableCollection<ProductDto>? Products { get; set; }
+		public ObservableCollection<OrderDto>? Orders { get; set; }
 	}
 }

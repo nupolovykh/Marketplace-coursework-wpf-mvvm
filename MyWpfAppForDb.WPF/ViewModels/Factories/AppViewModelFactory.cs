@@ -6,7 +6,6 @@ namespace MyWpfAppForDb.WPF.ViewModels.Factories
 	public class AppViewModelFactory : IAppViewModelFactory
 	{
 		private readonly CreateViewModel<HomeVM> _createHomeViewModel;
-		private readonly CreateViewModel<ProductsVM> _createProductsViewModel;
 		private readonly CreateViewModel<ProfileVM> _createProfileViewModel;
 		private readonly CreateViewModel<StatisticsVM> _createStatisticsViewModel;
 		private readonly CreateViewModel<YourDeliveryInfoVM> _createYourDeliveryInfoViewModel;
@@ -14,7 +13,6 @@ namespace MyWpfAppForDb.WPF.ViewModels.Factories
 		private readonly CreateViewModel<RegistrationVM> _createRegistrationViewModel;
 
 		public AppViewModelFactory(CreateViewModel<HomeVM> createHomeViewModel,
-			CreateViewModel<ProductsVM> createProductsViewModel,
 			CreateViewModel<ProfileVM> createProfileViewModel,
 			CreateViewModel<StatisticsVM> createStatisticsViewModel,
 			CreateViewModel<YourDeliveryInfoVM> createYourDeliveryInfoViewModel,
@@ -23,7 +21,6 @@ namespace MyWpfAppForDb.WPF.ViewModels.Factories
 		{
 			_createHomeViewModel = createHomeViewModel;
 			_createAuthorizationViewModel = createAuthorizationViewModel;
-			_createProductsViewModel = createProductsViewModel;
 			_createProfileViewModel = createProfileViewModel;
 			_createStatisticsViewModel = createStatisticsViewModel;
 			_createYourDeliveryInfoViewModel = createYourDeliveryInfoViewModel;
@@ -46,8 +43,6 @@ namespace MyWpfAppForDb.WPF.ViewModels.Factories
 					return _createStatisticsViewModel();
 				case ViewType.YourDeliveryInfo:
 					return _createYourDeliveryInfoViewModel();
-				case ViewType.Products:
-					return _createProductsViewModel();
 				default:
 					throw new ArgumentException
 						("The ViewType does not have a ViewModel.", "viewType");

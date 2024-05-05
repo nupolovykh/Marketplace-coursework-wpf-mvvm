@@ -7,10 +7,9 @@ namespace MyWpfAppForDb.WPF.Models
 {
 	public class HomeModel
 	{
-		public string? Search { get; set; }
 		public ObservableCollection<ProductDto>? Products { get; set; }
 		public ProductDto? ChoosenProduct { get; set; }
-		public int MaxPage { get; set; }
-		public int CurrentPage { get; set; }
+		public int MaxPage { get; set; } = 0;
+		public int CurrentPage { get; set; } = 0;
 	}
 }

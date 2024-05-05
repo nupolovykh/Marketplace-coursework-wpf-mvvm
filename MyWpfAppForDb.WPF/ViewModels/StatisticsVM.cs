@@ -1,28 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 using MyWpfAppForDb.EntityFramework.Entities;
 using MyWpfAppForDb.WPF.Models;
+using MyWpfAppForDb.WPF.Models.DataTransferObjects;
+using MyWpfAppForDb.WPF.ViewModels.Specific;
 
 namespace MyWpfAppForDb.WPF.ViewModels
 {
 	public class StatisticsVM : ViewModelBase
 	{
 		private StatisticsModel _statisticsModel;
-		private ViewModelStore _viewModelStore;
 
-		public string Search
+		public ObservableCollection<DeliveryPointDto> DeliveryPoints
 		{
-			get => _statisticsModel.Search;
-			set
-			{
-				_statisticsModel.Search = value;
-				OnPropertyChanged(nameof(Search));
-			}
-		}
-		//
-		public List<DeliveryPoint> DeliveryPoints
-		{
-			get => _statisticsModel.DeliveryPoints;
+			get => _statisticsModel.DeliveryPoints!;
 			set
 			{
 				_statisticsModel.DeliveryPoints = value;
@@ -30,14 +21,15 @@ namespace MyWpfAppForDb.WPF.ViewModels
 			}
 		}
 
-		public ICommand SearchBtn { get; set; }
+		public SearchViewModel SearchViewModel { get; }
+
 		public ICommand SelectDeliveryPoint { get; set; }
 		//public ICommand DrawTheGraph { get; set; }
 
-		public StatisticsVM(ViewModelStore viewModelStore)
+		public StatisticsVM()
 		{
-			_viewModelStore = viewModelStore;
 			_statisticsModel = new StatisticsModel();
+			SearchViewModel = new SearchViewModel();
 		}
 	}
 }

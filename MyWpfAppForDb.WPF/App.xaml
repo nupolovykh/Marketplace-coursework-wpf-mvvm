@@ -12,15 +12,11 @@
                 <views:YourDeliveryInfo />
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type viewmodels:HomeVM}">
-                <views:Home />
-            </DataTemplate>
+			<DataTemplate DataType="{x:Type viewmodels:HomeVM}">
+				<views:Home />
+			</DataTemplate>
 
-            <DataTemplate DataType="{x:Type viewmodels:ProductsVM}">
-                <views:Products />
-            </DataTemplate>
-
-            <DataTemplate DataType="{x:Type viewmodels:AuthorizationVM}">
+			<DataTemplate DataType="{x:Type viewmodels:AuthorizationVM}">
                 <views:Authorization />
             </DataTemplate>
 

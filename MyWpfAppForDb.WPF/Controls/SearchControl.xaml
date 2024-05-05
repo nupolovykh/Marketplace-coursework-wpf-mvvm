@@ -18,8 +18,9 @@
 
 		<Button Content="Search"
 				VerticalAlignment="Center"
-				Command="{Binding SearchBtn}"/>
-		
+				Command="{Binding SearchCommand}"
+				CommandParameter = "{Binding Search}"/>
+
 	</StackPanel>
 	
 </UserControl>

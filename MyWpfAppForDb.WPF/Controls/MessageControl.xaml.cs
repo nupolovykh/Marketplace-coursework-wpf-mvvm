@@ -10,16 +10,17 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace MyWpfAppForDb.WPF.Views
+namespace MyWpfAppForDb.WPF.Controls
 {
 	/// <summary>
-	/// Interaction logic for Products.xaml
+	/// Interaction logic for MessageControl.xaml
 	/// </summary>
-	public partial class Products : UserControl
+	public partial class MessageControl : UserControl
 	{
-		public Products()
+		public MessageControl()
 		{
 			InitializeComponent();
 		}

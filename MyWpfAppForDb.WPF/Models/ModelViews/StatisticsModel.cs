@@ -1,11 +1,10 @@
-﻿using MyWpfAppForDb.EntityFramework.Entities;
-using System.Collections.Generic;
+﻿using MyWpfAppForDb.WPF.Models.DataTransferObjects;
+using System.Collections.ObjectModel;
 
 namespace MyWpfAppForDb.WPF.Models
 {
 	public class StatisticsModel
 	{
-		public string? Search { get; set; }
-		public List<DeliveryPoint>? DeliveryPoints { get; set; }
+		public ObservableCollection<DeliveryPointDto>? DeliveryPoints { get; set; }
 	}
 }
