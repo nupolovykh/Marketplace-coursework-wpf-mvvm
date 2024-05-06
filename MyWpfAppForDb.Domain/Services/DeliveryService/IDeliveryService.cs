@@ -14,8 +14,18 @@ namespace MyWpfAppForDb.Domain.Services.DeliveryService
 		ByEmployee
 	}
 
-	public interface IDeliveryService : IDataService<Order>
+	public interface IDeliveryServiceOrder : IDataService<Order>
 	{
 		Task<IEnumerable<Order>> HardGetWithSearch(int id, WhereCondition condition, string search = "");
+	}
+
+	public interface IDeliveryPointService : IDataService<DeliveryPoint>
+	{
+		Task<IEnumerable<DeliveryPoint>> GetWithSearch(string search = "");
+	}
+
+	public interface IDeliveryServiceEmployee : IDataService<Employee>
+	{
+		Task<IEnumerable<Employee>> GetWithSearch(string search = "");
 	}
 }

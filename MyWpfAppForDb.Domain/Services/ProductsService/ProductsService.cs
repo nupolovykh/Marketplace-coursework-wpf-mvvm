@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace MyWpfAppForDb.Domain.Services.ProductsService
 {
@@ -33,6 +34,23 @@ namespace MyWpfAppForDb.Domain.Services.ProductsService
 
 		public async Task<bool> Delete(int id)
 		{
+			//using (AppDbContext context = _contextFactory.CreateDbContext())
+			//{
+			//	var encounters = await context.Products
+			//		.Include(p => p.OrdersItems)
+			//			.ThenInclude(pi => pi.Order)
+			//		.SelectMany(product =>
+			//			context.Orders.Where(o => o.OrderDate > DateTime.UtcNow.AddMonths(-2))
+			//				.Include(o => o.OrdersItems)
+			//					.ThenInclude(oi => oi.Product)
+			//				.Where(o => o.OrdersItems.Any(oi => oi.Product.Id == product.Id))
+			//				.Select(order => new { Product = product, Order = order })
+			//		)
+			//		.ToListAsync();
+
+			//	if (encounters.Any()) return false;
+			//}
+
 			return await _nonQueryDataService.Delete(id);
 		}
 

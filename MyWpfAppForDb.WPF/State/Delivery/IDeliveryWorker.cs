@@ -1,6 +1,4 @@
-﻿using MyWpfAppForDb.Domain.Services.DeliveryService;
-using MyWpfAppForDb.WPF.Models.DataTransferObjects;
-using System.Collections.Generic;
+﻿using MyWpfAppForDb.WPF.Models.DataTransferObjects;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
@@ -15,5 +13,9 @@ namespace MyWpfAppForDb.WPF.State.Delivery
 		Task<ObservableCollection<OrderDto>> GetOrdersByProduct(EmployeeDto current, string search);
 
 		Task<ObservableCollection<OrderDto>> GetOrdersByEmployee(EmployeeDto current, string search);
+
+		Task<ObservableCollection<DeliveryPointDto>> GetDeliveryPoints(string? search = "");
+
+		Task<ObservableCollection<EmployeeDto>> GetEmployees(string? search = "");
 	}
 }

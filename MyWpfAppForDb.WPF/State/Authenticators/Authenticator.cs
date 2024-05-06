@@ -45,7 +45,13 @@ namespace MyWpfAppForDb.WPF.State.Authenticators
 		}
 
 		public async Task<AccountResult> Register(string email, string username, string password, string confirmPassword)
-			=> await _authenticationService.Register(email, username, password, confirmPassword);
+		{
+			var result = await _authenticationService.Register(email, username, password, confirmPassword);
+
+			await this.Login(username, password);
+
+			return result;
+		}
 
 		public async Task<AccountResult> Adjust(EmployeeDto dto, string password)
 		{

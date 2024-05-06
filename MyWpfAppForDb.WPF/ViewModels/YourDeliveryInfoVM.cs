@@ -95,7 +95,7 @@ namespace MyWpfAppForDb.WPF.ViewModels
 				InitContent();
 
 				SearchViewModel.SearchCommand = new DelegateCommand(
-					action: (_) => GetPage(SelectedTab, SearchString),
+					action: (_) => Search(SelectedTab, SearchString),
 					condition: (_) => true,
 					vmb: this);
 			}
@@ -108,7 +108,7 @@ namespace MyWpfAppForDb.WPF.ViewModels
 
 		private int PreviousId { get; set; }
 
-		private async void GetPage(TabItem selectedTab, string search)
+		private async void Search(TabItem selectedTab, string search)
 		{
 			PreviousId = SelectedOrder?.Id ?? 0;
 			if (selectedTab.Header is "Order - DeliveryPoint")

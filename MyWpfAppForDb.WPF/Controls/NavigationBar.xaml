@@ -42,19 +42,19 @@
 		<Button 
 			Content="Профиль" 
 			Command="{Binding UpdateCurrentVMCommand}"
-			Visibility="{Binding RequiredRole, Converter={StaticResource BoolToVis}, FallbackValue=Hidden}"
+			Visibility="{Binding LevelOne, Converter={StaticResource BoolToVis}, FallbackValue=Hidden}"
 			CommandParameter="{x:Static nav:ViewType.Profile}"/>
 
 		<Button 
 			Content="Ваш ПВЗ" 
 			Command="{Binding UpdateCurrentVMCommand}"
-			Visibility="{Binding RequiredRole, Converter={StaticResource BoolToVis}, FallbackValue=Hidden}"
+			Visibility="{Binding LevelTwo, Converter={StaticResource BoolToVis}, FallbackValue=Hidden}"
 			CommandParameter="{x:Static nav:ViewType.YourDeliveryInfo}"/>
 
 		<Button 
 			Content="Статистика"
 			Command="{Binding UpdateCurrentVMCommand}"
-			Visibility="{Binding RequiredRole, Converter={StaticResource BoolToVis}, FallbackValue=Hidden}"
+			Visibility="{Binding LevelTwo, Converter={StaticResource BoolToVis}, FallbackValue=Hidden}"
 			CommandParameter="{x:Static nav:ViewType.Statistics}"/>
 
 		<Label DataContext="{Binding CurrentEmployee}">

@@ -23,6 +23,11 @@ namespace MyWpfAppForDb.Domain.Services.AccountService
 			return await _nonQueryDataService.Create(entity);
 		}
 
+		public async Task<Employee> Update(int id, Employee entity)
+		{
+			return await _nonQueryDataService.Update(id, entity);
+		}
+
 		public async Task<bool> Delete(int id)
 		{
 			return await _nonQueryDataService.Delete(id);
@@ -72,11 +77,6 @@ namespace MyWpfAppForDb.Domain.Services.AccountService
 					.Include(e => e.Role)
 					.FirstOrDefaultAsync(a => a.Name == username);
 			}
-		}
-
-		public async Task<Employee> Update(int id, Employee entity)
-		{
-			return await _nonQueryDataService.Update(id, entity);
 		}
 	}
 }

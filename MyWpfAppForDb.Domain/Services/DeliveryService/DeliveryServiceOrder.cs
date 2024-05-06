@@ -5,16 +5,15 @@ using MyWpfAppForDb.EntityFramework.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 
 namespace MyWpfAppForDb.Domain.Services.DeliveryService
 {
-	public class DeliveryService : IDeliveryService
+	public class DeliveryServiceOrder : IDeliveryServiceOrder
 	{
 		private readonly AppDbContextFactory _dbContextFactory;
 		private readonly NonQueryDataService<Order> _nonQueryDataService;
 
-		public DeliveryService(AppDbContextFactory dbContextFactory)
+		public DeliveryServiceOrder(AppDbContextFactory dbContextFactory)
 		{
 			_dbContextFactory = dbContextFactory;
 			_nonQueryDataService = new NonQueryDataService<Order>(_dbContextFactory);
@@ -69,7 +68,7 @@ namespace MyWpfAppForDb.Domain.Services.DeliveryService
 			}
 		}
 
-		//hard quaries
+		//impossible quaries for normal data including
 
 		public async Task<IEnumerable<Order>> HardGetWithSearch(int id, WhereCondition condition = WhereCondition.None, string search = "")
 		{

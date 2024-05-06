@@ -21,7 +21,9 @@ namespace MyWpfAppForDb.WPF.HostBuilders
 				services.AddSingleton<IDataService<Employee>, AccountDataService>();
 				services.AddSingleton<IAccountService, AccountDataService>();
 				services.AddSingleton<IProductsService, ProductsService>();
-				services.AddSingleton<IDeliveryService, DeliveryService>();
+				services.AddSingleton<IDeliveryServiceOrder, DeliveryServiceOrder>();
+				services.AddSingleton<IDeliveryPointService, DeliveryPointsService>();
+				services.AddSingleton<IDeliveryServiceEmployee, DeliveryServiceEmployee>();
 			});
 
 			return host;

@@ -6,5 +6,7 @@ namespace MyWpfAppForDb.WPF.Models
 	public class StatisticsModel
 	{
 		public ObservableCollection<DeliveryPointDto>? DeliveryPoints { get; set; }
+
+		public ObservableCollection<EmployeeDto>? Employees { get; set; }
 	}
 }
