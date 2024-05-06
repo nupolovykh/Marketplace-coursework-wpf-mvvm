@@ -3,8 +3,10 @@ using Microsoft.VisualBasic;
 using MyWpfAppForDb.Domain.Services.ProductsService;
 using MyWpfAppForDb.EntityFramework.Entities;
 using MyWpfAppForDb.WPF.Models.DataTransferObjects;
+using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace MyWpfAppForDb.WPF.State.Products
 {
@@ -68,11 +70,14 @@ namespace MyWpfAppForDb.WPF.State.Products
 				await _productsService.Delete(id);
 				return ProductQuaryResult.Success;
 			}
-			catch
+			catch (Exception ex)
 			{
+				ThrowError(ex);
 				return ProductQuaryResult.Error;
 			}
 		}
+
+		private void ThrowError(Exception exception) => MessageBox.Show(exception.Message).HasFlag(MessageBoxResult.No);
 
 		public async Task<ObservableCollection<ProductDto>> GetPageWithSearch(int page, string search)
 		{

@@ -44,7 +44,7 @@ namespace MyWpfAppForDb.EntityFramework.EntitiesBuilders
 			});
 
 			modelBuilder.Entity<Order>().HasData(
-				new Order { Id = 1, DeliveryPointId = 1, ClientId = 1, OrderDate = new DateTime(2024, 05, 15, 08, 30, 00), Status = "Pending", TotalAmount = 704.49m },
+				new Order { Id = 1, DeliveryPointId = 1, ClientId = 1, OrderDate = new DateTime(2024, 04, 15, 08, 30, 00), Status = "Pending", TotalAmount = 704.49m },
 				new Order { Id = 2, DeliveryPointId = 3, ClientId = 3, OrderDate = new DateTime(2024, 01, 16, 12, 45, 00), Status = "Shipped", TotalAmount = 325.23m },
 				new Order { Id = 3, DeliveryPointId = 5, ClientId = 5, OrderDate = new DateTime(2024, 01, 17, 16, 20, 00), Status = "Delivered", TotalAmount = 226.00m },
 				new Order { Id = 4, DeliveryPointId = 4, ClientId = 10, OrderDate = new DateTime(2024, 01, 18, 09, 10, 00), Status = "Pending", TotalAmount = 28.99m },

@@ -32,7 +32,7 @@ namespace MyWpfAppForDb.WPF
 		{
 			_host.Start();
 
-			RecreatorDatabase.RecreateDatabase(_host, false).Wait();
+			RecreatorDatabase.RecreateDatabase(_host, true).Wait();
 			if (ConnectionChecker.DatabaseValidation(_host, out var result) is not null) MessageBox.Show(result.Message);
 
 			Window window = _host.Services.GetRequiredService<MainWindow>();

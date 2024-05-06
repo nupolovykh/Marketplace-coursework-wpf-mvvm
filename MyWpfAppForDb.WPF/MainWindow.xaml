@@ -7,34 +7,63 @@
 		mc:Ignorable="d"
 		Title="Main" Height="650" Width="1000">
 
-	<Grid ShowGridLines="True" Margin="15">
+	<Grid ShowGridLines="False" Margin="15">
 
 		<Grid.RowDefinitions>
 			<RowDefinition Height="1*"/>
 			<RowDefinition Height="10*"/>
 		</Grid.RowDefinitions>
 
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="1*"/>
+			<ColumnDefinition Width="20*"/>
+			<ColumnDefinition Width="1*"/>
+		</Grid.ColumnDefinitions>
+
 		<Grid.Resources>
 			<Style TargetType="Button">
 				<Setter Property="Height" Value="30" />
 				<Setter Property="Width" Value="85" />
-				<Setter Property="Background" Value="White"/>
 			</Style>
 		</Grid.Resources>
 
-		<controls:NavigationBar Grid.Row="0"/>
+		<controls:NavigationBar Grid.Row="0" Grid.Column="1"/>
 
-		<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Grid.Row="1">
+		<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Grid.Row="1" Grid.Column="1">
 			<ContentControl Content="{Binding CurrentViewModel}"/>
 		</ScrollViewer>
 
-		<ScrollViewer Grid.Row="2" Visibility="Hidden">
-			<StackPanel>
-				<Button MinHeight="50" MinWidth="800" Background="Red"/>
-				<Button MinHeight="50" MinWidth="800" Background="Orange"/>
-				<Button MinHeight="50" MinWidth="800" Background="Yellow"/>
-				<Button MinHeight="50" MinWidth="800" Background="Green"/>
-				<Button MinHeight="50" MinWidth="800" Background="Blue"/>
+		<ScrollViewer Grid.Column="0" Grid.RowSpan="3" Visibility="Collapsed">
+			<ScrollViewer.Resources>
+				<Style TargetType="Button">
+					<Setter Property="MinHeight" Value="200" />
+					<Setter Property="Width" Value="85" />
+				</Style>
+			</ScrollViewer.Resources>
+
+			<StackPanel Orientation="Vertical" VerticalAlignment="Stretch">
+				<Button Background="Red"/>
+				<Button Background="Orange"/>
+				<Button Background="Yellow"/>
+				<Button Background="Green"/>
+				<Button Background="Blue"/>
+			</StackPanel>
+		</ScrollViewer>
+
+		<ScrollViewer Grid.Column="2" Grid.RowSpan="3" Visibility="Collapsed">
+			<ScrollViewer.Resources>
+				<Style TargetType="Button">
+					<Setter Property="MinHeight" Value="200" />
+					<Setter Property="Width" Value="85" />
+				</Style>
+			</ScrollViewer.Resources>
+
+			<StackPanel Orientation="Vertical" VerticalAlignment="Stretch">
+				<Button Background="Red"/>
+				<Button Background="Orange"/>
+				<Button Background="Yellow"/>
+				<Button Background="Green"/>
+				<Button Background="Blue"/>
 			</StackPanel>
 		</ScrollViewer>
 

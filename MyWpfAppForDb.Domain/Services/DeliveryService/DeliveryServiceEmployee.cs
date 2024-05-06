@@ -67,9 +67,10 @@ namespace MyWpfAppForDb.Domain.Services.DeliveryService
 			using (AppDbContext context = _dbContextFactory.CreateDbContext())
 			{
 				IEnumerable<Employee> entities = await context.Employees
-					.Include(e => e.DeliveryPoint).Where(d => d.DeliveryPoint.City.Contains(search) || d.DeliveryPoint.Address.Contains(search))
-					.Include(e => e.Role).Where(r => r.Role.Name.Contains(search))
-						.ToListAsync();
+					.Where(e => e.Name.Contains(search) || e.Email.Contains(search))
+					.Include(e => e.DeliveryPoint)
+					.Include(e => e.Role)
+							.ToListAsync();
 
 				return entities;
 			}

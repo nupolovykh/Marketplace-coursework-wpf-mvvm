@@ -43,7 +43,7 @@ namespace MyWpfAppForDb.WPF.ViewModels
 			set
 			{
 				_statisticsModel.Employees = value;
-				OnPropertyChanged(nameof(EmployeeDto));
+				OnPropertyChanged(nameof(Employees));
 			}
 		}
 

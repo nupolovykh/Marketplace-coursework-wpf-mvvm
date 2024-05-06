@@ -65,7 +65,7 @@
 
 		<DataGrid ItemsSource="{Binding DeliveryPoints}" SelectedItem="{Binding SelectedDeliveryPoint}" HorizontalAlignment="Stretch" MinHeight="350"
 			 AutoGenerateColumns="False" CanUserAddRows="false" MinColumnWidth="100" CanUserDeleteRows="False"
-			 VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" RowHeight="50" Grid.Column="0" Grid.Row="2">
+			 HorizontalScrollBarVisibility="Auto" RowHeight="50" Grid.Column="0" Grid.Row="2">
 			<DataGrid.Columns>
 				<DataGridTextColumn Header="Id Delivery" Binding="{Binding Path=Id}" />
 				<DataGridTextColumn Header="Address Delivery" Binding="{Binding Path=Address}" />
@@ -77,9 +77,10 @@
 
 		<DataGrid ItemsSource="{Binding Employees}" SelectedItem="{Binding SelectedEmployee}" HorizontalAlignment="Stretch" MinHeight="350"
 			AutoGenerateColumns="False" CanUserAddRows="false" MinColumnWidth="80" CanUserDeleteRows="False"
-			VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" RowHeight="50" Grid.Column="1" Grid.Row="2">
+			HorizontalScrollBarVisibility="Auto" RowHeight="50" Grid.Column="1" Grid.Row="2">
 			<DataGrid.Columns>
 				<DataGridTextColumn Header="Employee id" Binding="{Binding Path=Id}" />
+				<DataGridTextColumn Header="Employee id" Binding="{Binding Path=DeliveryPoint.Id}" />
 				<DataGridTextColumn Header="Employee name" Binding="{Binding Path=Name}" />
 				<DataGridTextColumn Header="Employee email" Binding="{Binding Path=Email}" />
 				<DataGridTextColumn Header="Employee phone" Binding="{Binding Path=Phone}" />

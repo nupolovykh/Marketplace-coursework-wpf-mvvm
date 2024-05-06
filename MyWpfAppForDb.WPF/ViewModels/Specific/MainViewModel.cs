@@ -1,5 +1,4 @@
 ﻿using System.Windows.Input;
-using MyWpfAppForDb.EntityFramework.Entities;
 using MyWpfAppForDb.WPF.Commands;
 using MyWpfAppForDb.WPF.Models.DataTransferObjects;
 using MyWpfAppForDb.WPF.State.Accounts;

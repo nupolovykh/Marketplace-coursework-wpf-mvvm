@@ -68,7 +68,7 @@ namespace MyWpfAppForDb.Domain.Services.DeliveryService
 			}
 		}
 
-		//impossible quaries for normal data including
+		//impossible quaries for normal data including => ohhhhh yeah
 
 		public async Task<IEnumerable<Order>> HardGetWithSearch(int id, WhereCondition condition = WhereCondition.None, string search = "")
 		{
@@ -87,7 +87,7 @@ namespace MyWpfAppForDb.Domain.Services.DeliveryService
 					.Include(o => o.Client)
 						.ToListAsync();
 
-				if(condition == WhereCondition.None && search == "") return entities;
+				if(condition == WhereCondition.None && search == string.Empty) return entities;
 
 				switch (condition)
 				{
@@ -95,11 +95,39 @@ namespace MyWpfAppForDb.Domain.Services.DeliveryService
 						return entities.Where(e => e.DeliveryPoint.Address.Contains(search) || e.DeliveryPoint.City.Contains(search));
 
 					case WhereCondition.ByProduct:
-						return entities.Where(e => e.OrdersItems.Where(oi => oi.Product is not null && 
-							(oi.Product.ProductInstance.Name.Contains(search) || oi.Product.Market.Name.Contains(search))).Any());
+
+						return entities.Where(e => e.OrdersItems
+							.Any(oi => oi.Product != null && (oi.Product.ProductInstance.Name.Contains(search) || oi.Product.Market.Name.Contains(search))))
+							.Select(e => new Order
+							{
+								Id = e.Id,
+								DeliveryPoint = e.DeliveryPoint,
+								OrderDate = e.OrderDate,
+								Status = e.Status,
+								TotalAmount = e.TotalAmount,
+								Client = e.Client,
+								ClientId = e.ClientId,
+								DeliveryPointId = e.DeliveryPointId,
+								OrdersItems = e.OrdersItems
+									.Where(oi => oi.Product != null && (oi.Product.ProductInstance.Name.Contains(search) || oi.Product.Market.Name.Contains(search)))
+									.ToList()
+							});
 
 					case WhereCondition.ByEmployee:
-						return entities.Where(e => e.DeliveryPoint.Employees.Where(e => e.Name.Contains(search) || e.Email.Contains(search)).Any());
+
+						return entities.Where(e => e.DeliveryPoint.Employees
+							 .Any(emp => emp.Name.Contains(search) || emp.Email.Contains(search)))
+							 .Select(e => new
+							 {
+								 Order = e,
+								 FilteredEmployees = e.DeliveryPoint.Employees.Where(emp => emp.Name.Contains(search) || emp.Email.Contains(search))
+							 }).AsEnumerable()
+								.Select(x =>
+								{
+									var order = x.Order;
+									order.DeliveryPoint.Employees = x.FilteredEmployees.ToList();
+									return order;
+								});
 
 					default:
 						return entities;

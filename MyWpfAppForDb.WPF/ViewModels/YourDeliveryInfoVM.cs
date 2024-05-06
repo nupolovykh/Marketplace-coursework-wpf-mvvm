@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Controls;
-using MyWpfAppForDb.EntityFramework.Entities;
 using MyWpfAppForDb.WPF.Commands;
 using MyWpfAppForDb.WPF.Models;
 using MyWpfAppForDb.WPF.Models.DataTransferObjects;
