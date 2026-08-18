@@ -35,9 +35,9 @@ namespace MyWpfAppForDb.WPF.State.Authenticators
 
 		public event Action StateChanged;
 
-		public async Task Login(string username, string password)
+		public async Task Login(string loginOrEmail, string password)
 		{
-			var employee = await _authenticationService.Login(username, password);
+			var employee = await _authenticationService.Login(loginOrEmail, password);
 			if (employee is null) return;
 
 			var dto = _mapper.Map<EmployeeDto>(employee);
@@ -48,17 +48,19 @@ namespace MyWpfAppForDb.WPF.State.Authenticators
 		{
 			var result = await _authenticationService.Register(email, username, password, confirmPassword);
 
-			await this.Login(username, password);
+			// Logging in unconditionally meant a rejected registration (name taken,
+			// passwords not matching) immediately threw UserNotFoundException or
+			// InvalidPasswordException instead of showing why it was rejected.
+			if (result == AccountResult.Success) await Login(username, password);
 
 			return result;
 		}
 
-		public async Task<AccountResult> Adjust(EmployeeDto dto, string password)
+		public async Task<AccountResult> Adjust(EmployeeDto dto, string newPassword)
 		{
 			Employee employee = _mapper.Map<Employee>(dto);
-			employee.Password = password;
 
-			var result = await _authenticationService.Adjust(employee);
+			var result = await _authenticationService.Adjust(employee, newPassword);
 
 			if(result == AccountResult.Success)
 			{

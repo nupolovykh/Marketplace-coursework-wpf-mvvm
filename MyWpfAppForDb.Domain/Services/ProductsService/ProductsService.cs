@@ -37,22 +37,17 @@ namespace MyWpfAppForDb.Domain.Services.ProductsService
 		{
 			using (AppDbContext context = _contextFactory.CreateDbContext())
 			{
-				List<Product> products = await context.Products
-					.Include(p => p.OrdersItems)
-						.ThenInclude(pi => pi.Order)
-							.ToListAsync();
+				DateTime recentThreshold = DateTime.UtcNow.AddMonths(-2);
 
-				List<Order> recentOrders = await context.Orders
-					.Include(o => o.OrdersItems)
-						.ThenInclude(oi => oi.Product)
-					.Where(o => o.OrderDate >= DateTime.UtcNow.AddMonths(-2))
-						.ToListAsync();
+				// "Is this product part of a recent order?" used to be answered by
+				// pulling every product and every recent order into memory and
+				// building the cross product of the two. One EXISTS query answers it
+				// - and answers it about *this* product, which the old code did not:
+				// it threw whenever any product at all had a recent order.
+				bool isInRecentOrder = await context.OrdersItems
+					.AnyAsync(oi => oi.ProductId == id && oi.Order.OrderDate >= recentThreshold);
 
-				var encounters = products.SelectMany(product =>
-					recentOrders.Where(o => o.OrdersItems.Any(oi => oi.Product.Id == product.Id))
-						.Select(order => new { Product = product, Order = order })).ToList();
-
-				if (encounters.Any()) throw new IsNotAvailableExeprion(id);
+				if (isInRecentOrder) throw new IsNotAvailableExeprion(id);
 			}
 
 			return await _nonQueryDataService.Delete(id);
@@ -75,27 +70,31 @@ namespace MyWpfAppForDb.Domain.Services.ProductsService
 		{
 			using (AppDbContext context = _contextFactory.CreateDbContext())
 			{
-				IEnumerable<Product> entities = await context.Products
-					.Include(p => p.Market)
-					.Include(p => p.ProductInstance)
-						.ThenInclude(pi => pi.Category).ToListAsync();
-				return entities;
+				return await WithDetails(context).ToListAsync();
 			}
 		}
+
+		// Every catalogue query needs the same three navigations loaded and the same
+		// search predicate; they were spelled out at each call site.
+		private static IQueryable<Product> WithDetails(AppDbContext context)
+			=> context.Products
+				.Include(p => p.Market)
+				.Include(p => p.ProductInstance)
+					.ThenInclude(pi => pi.Category);
+
+		private static IQueryable<Product> MatchingSearch(IQueryable<Product> products, string search)
+			=> products.Where(p => p.Market.Name.Contains(search)
+				|| p.ProductInstance.Name.Contains(search)
+				|| p.ProductInstance.Category.Name.Contains(search));
 
 		public async Task<IEnumerable<Product>> GetPage(int offset)
 		{
 			using (AppDbContext context = _contextFactory.CreateDbContext())
 			{
-				IEnumerable<Product> entities = await context.Products
-					.Include(p => p.Market)
-					.Include(p => p.ProductInstance)
-						.ThenInclude(pi => pi.Category)
+				return await WithDetails(context)
 					.Skip(offset * fetch)
 					.Take(fetch)
-				.ToListAsync();
-					
-				return entities;
+					.ToListAsync();
 			}
 		}
 
@@ -103,18 +102,10 @@ namespace MyWpfAppForDb.Domain.Services.ProductsService
 		{
 			using (AppDbContext context = _contextFactory.CreateDbContext())
 			{
-				IEnumerable<Product> entities = await context.Products
-					.Include(p => p.Market)
-					.Include(p => p.ProductInstance)
-						.ThenInclude(pi => pi.Category)
-							.Where(p => p.Market.Name.Contains(search) ||
-									p.ProductInstance.Name.Contains(search) ||
-										p.ProductInstance.Category.Name.Contains(search))
-							.Skip(offset * fetch)
-							.Take(fetch)
-								.ToListAsync();
-
-				return entities;
+				return await MatchingSearch(WithDetails(context), search)
+					.Skip(offset * fetch)
+					.Take(fetch)
+					.ToListAsync();
 			}
 		}
 
@@ -130,16 +121,11 @@ namespace MyWpfAppForDb.Domain.Services.ProductsService
 		{
 			using (AppDbContext context = _contextFactory.CreateDbContext())
 			{
-				IEnumerable<Product> entities = await context.Products
-					.Include(p => p.Market)
-					.Include(p => p.ProductInstance)
-						.ThenInclude(pi => pi.Category)
-							.Where(p => p.Market.Name.Contains(search) ||
-									p.ProductInstance.Name.Contains(search) ||
-										p.ProductInstance.Category.Name.Contains(search))
-								.ToListAsync();
+				// Counting the matches used to mean materialising all of them, with
+				// their joined market/category rows, and throwing the rows away.
+				int matches = await MatchingSearch(context.Products, search).CountAsync();
 
-				return (entities.Count() - 1) / fetch;
+				return (matches - 1) / fetch;
 			}
 		}
 
@@ -147,7 +133,10 @@ namespace MyWpfAppForDb.Domain.Services.ProductsService
 		{
 			using (AppDbContext context = _contextFactory.CreateDbContext())
 			{
-				return await context.Products.CountAsync();
+				// Product ids are ValueGeneratedNever, so the next id has to come from
+				// the largest existing one. Counting rows instead collides with an
+				// existing id as soon as anything has been deleted.
+				return (await context.Products.MaxAsync(p => (int?)p.Id) ?? 0) + 1;
 			}
 		}
 	}

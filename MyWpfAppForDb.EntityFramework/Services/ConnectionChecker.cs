@@ -7,7 +7,7 @@ namespace MyWpfAppForDb.EntityFramework.Services
 {
 	public static class ConnectionChecker
 	{
-		public static Exception DatabaseValidation(IHost host, out Exception exeption)
+		public static Exception DatabaseValidation(IHost host, out Exception exception)
 		{
 			try
 			{
@@ -16,17 +16,17 @@ namespace MyWpfAppForDb.EntityFramework.Services
 				using (var db = factory.CreateDbContext())
 				{
 					db.Database.EnsureCreated();
-					if (!db.Database.CanConnect()) throw new Exception("Never gonna give you up");
+					if (!db.Database.CanConnect()) throw new Exception("The database was created but cannot be connected to.");
 				}
 			}
 
 			catch (Exception ex)
 			{
-				exeption = ex;
+				exception = ex;
 				return ex;
 			}
 
-			exeption = null!;
+			exception = null!;
 			return null!;
 		}
 	}

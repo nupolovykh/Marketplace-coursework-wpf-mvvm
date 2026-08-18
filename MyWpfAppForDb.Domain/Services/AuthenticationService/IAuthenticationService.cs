@@ -13,10 +13,10 @@ namespace MyWpfAppForDb.EntityFramework.Services.AuthenticationServices
 
 	public interface IAuthenticationService
 	{
-		Task<Employee> Login(string username, string password);
+		Task<Employee> Login(string loginOrEmail, string password);
 
 		Task<AccountResult> Register(string email, string username, string password, string confirmPassword);
 
-		Task<AccountResult> Adjust(Employee employee);
+		Task<AccountResult> Adjust(Employee employee, string newPassword);
 	}
 }

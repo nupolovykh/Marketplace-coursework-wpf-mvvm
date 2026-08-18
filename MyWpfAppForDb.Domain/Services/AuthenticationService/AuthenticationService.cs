@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNet.Identity;
+﻿using MyWpfAppForDb.Domain.Extensions;
 using MyWpfAppForDb.Domain.Exceptions;
 using MyWpfAppForDb.Domain.Services.AccountService;
 using MyWpfAppForDb.EntityFramework.Entities;
-using System.Security.Principal;
 using System.Threading.Tasks;
 
 namespace MyWpfAppForDb.EntityFramework.Services.AuthenticationServices
@@ -10,43 +9,44 @@ namespace MyWpfAppForDb.EntityFramework.Services.AuthenticationServices
 	public class AuthenticationService : IAuthenticationService
 	{
 		private readonly IAccountService _accountService;
-		private readonly IPasswordHasher _passwordHasher;
 
-		public AuthenticationService(IAccountService accountService, IPasswordHasher passwordHasher) 
-		{ 
+		public AuthenticationService(IAccountService accountService)
+		{
 			_accountService = accountService;
-			_passwordHasher = passwordHasher;
 		}
 
-		public async Task<Employee> Login(string username, string password)
+		public async Task<Employee> Login(string loginOrEmail, string password)
 		{
-			Employee employee = await _accountService.GetByUsername(username);
+			// The login box is labelled "Login / Email", so accept either - it used
+			// to match against the employee name only.
+			Employee employee = await _accountService.GetByUsername(loginOrEmail)
+				?? await _accountService.GetByEmail(loginOrEmail);
 
-			if (employee is null) throw new UserNotFoundException(username);
+			if (employee is null) throw new UserNotFoundException(loginOrEmail);
 
-			PasswordVerificationResult passwordResult = _passwordHasher.VerifyHashedPassword(employee.Password, password);
-
-			if (passwordResult != PasswordVerificationResult.Success) throw new InvalidPasswordException(username, password);
+			if (!password.VerifyHash(employee.Password)) throw new InvalidPasswordException(loginOrEmail);
 
 			return employee;
 		}
 
 		public async Task<AccountResult> Register(string email, string username, string password, string confirmPassword)
 		{
+			if (password != confirmPassword) return AccountResult.PasswordsDoNotMatch;
+
 			AccountResult result = AccountResult.Success;
 
-			if (password != confirmPassword) result = AccountResult.PasswordsDoNotMatch;
-
-			Employee employee = await _accountService.GetByUsername(username);
-			
-			if(employee != null)
+			if (await _accountService.GetByUsername(username) is not null)
 			{
 				result = AccountResult.UsernameAlreadyExists;
 			}
-
-			if(result == AccountResult.Success)
+			else if (await _accountService.GetByEmail(email) is not null)
 			{
-				string hashedPassword = _passwordHasher.HashPassword(password);
+				result = AccountResult.EmailAlreadyExists;
+			}
+
+			if (result == AccountResult.Success)
+			{
+				string hashedPassword = password.ToHash();
 
 				Employee newEmployee = new Employee()
 				{
@@ -62,7 +62,7 @@ namespace MyWpfAppForDb.EntityFramework.Services.AuthenticationServices
 			return result;
 		}
 
-		public async Task<AccountResult> Adjust(Employee employee)
+		public async Task<AccountResult> Adjust(Employee employee, string newPassword)
 		{
 			AccountResult result = AccountResult.Success;
 
@@ -76,9 +76,12 @@ namespace MyWpfAppForDb.EntityFramework.Services.AuthenticationServices
 
 			if (result == AccountResult.Success)
 			{
-				string hashedPassword = _passwordHasher.HashPassword(employee.Password);
-
-				employee.Password = hashedPassword;
+				// An empty password box means "leave my password alone" - the stored
+				// hash is read back from the database rather than trusting whatever
+				// the view model happened to be carrying.
+				employee.Password = string.IsNullOrEmpty(newPassword)
+					? (await _accountService.Get(employee.Id)).Password
+					: newPassword.ToHash();
 
 				await _accountService.Update(employee.Id, employee);
 			}

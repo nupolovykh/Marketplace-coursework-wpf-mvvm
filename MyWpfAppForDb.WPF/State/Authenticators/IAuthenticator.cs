@@ -12,11 +12,11 @@ namespace MyWpfAppForDb.WPF.State.Authenticators
 
 		event Action StateChanged;
 
-		Task Login(string username, string password);
+		Task Login(string loginOrEmail, string password);
 
 		Task<AccountResult> Register(string email, string username, string password, string confirmPassword);
 
-		Task<AccountResult> Adjust(EmployeeDto employee, string password);
+		Task<AccountResult> Adjust(EmployeeDto employee, string newPassword);
 
 		void Logout();
 	}
