@@ -15,31 +15,36 @@ namespace MyWpfAppForDb.EntityFramework.Services.AuthenticationServices
 			_accountService = accountService;
 		}
 
-		public async Task<Employee> Login(string username, string password)
+		public async Task<Employee> Login(string loginOrEmail, string password)
 		{
-			Employee employee = await _accountService.GetByUsername(username);
+			// The login box is labelled "Login / Email", so accept either - it used
+			// to match against the employee name only.
+			Employee employee = await _accountService.GetByUsername(loginOrEmail)
+				?? await _accountService.GetByEmail(loginOrEmail);
 
-			if (employee is null) throw new UserNotFoundException(username);
+			if (employee is null) throw new UserNotFoundException(loginOrEmail);
 
-			if (!password.VerifyHash(employee.Password)) throw new InvalidPasswordException(username);
+			if (!password.VerifyHash(employee.Password)) throw new InvalidPasswordException(loginOrEmail);
 
 			return employee;
 		}
 
 		public async Task<AccountResult> Register(string email, string username, string password, string confirmPassword)
 		{
+			if (password != confirmPassword) return AccountResult.PasswordsDoNotMatch;
+
 			AccountResult result = AccountResult.Success;
 
-			if (password != confirmPassword) result = AccountResult.PasswordsDoNotMatch;
-
-			Employee employee = await _accountService.GetByUsername(username);
-			
-			if(employee != null)
+			if (await _accountService.GetByUsername(username) is not null)
 			{
 				result = AccountResult.UsernameAlreadyExists;
 			}
+			else if (await _accountService.GetByEmail(email) is not null)
+			{
+				result = AccountResult.EmailAlreadyExists;
+			}
 
-			if(result == AccountResult.Success)
+			if (result == AccountResult.Success)
 			{
 				string hashedPassword = password.ToHash();
 
@@ -57,7 +62,7 @@ namespace MyWpfAppForDb.EntityFramework.Services.AuthenticationServices
 			return result;
 		}
 
-		public async Task<AccountResult> Adjust(Employee employee)
+		public async Task<AccountResult> Adjust(Employee employee, string newPassword)
 		{
 			AccountResult result = AccountResult.Success;
 
@@ -71,9 +76,12 @@ namespace MyWpfAppForDb.EntityFramework.Services.AuthenticationServices
 
 			if (result == AccountResult.Success)
 			{
-				string hashedPassword = employee.Password.ToHash();
-
-				employee.Password = hashedPassword;
+				// An empty password box means "leave my password alone" - the stored
+				// hash is read back from the database rather than trusting whatever
+				// the view model happened to be carrying.
+				employee.Password = string.IsNullOrEmpty(newPassword)
+					? (await _accountService.Get(employee.Id)).Password
+					: newPassword.ToHash();
 
 				await _accountService.Update(employee.Id, employee);
 			}

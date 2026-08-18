@@ -24,8 +24,14 @@ namespace MyWpfAppForDb.EntityFramework
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
+			base.OnConfiguring(optionsBuilder);
+
+#if DEBUG
+			// Sensitive-data logging writes query parameters - including password
+			// hashes - into the trace listener, so it stays out of release builds.
 			optionsBuilder.EnableSensitiveDataLogging();
 			optionsBuilder.LogTo(s => Trace.WriteLine(s));
+#endif
 		}
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)

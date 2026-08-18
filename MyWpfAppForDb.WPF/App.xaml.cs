@@ -32,7 +32,13 @@ namespace MyWpfAppForDb.WPF
 		{
 			_host.Start();
 
-			RecreatorDatabase.RecreateDatabase(_host, true).Wait();
+			// Rebuilding from seed data on every launch used to be unconditional, so
+			// nothing a user registered or edited survived a restart. It is a
+			// development switch now, off by default.
+			bool recreateDatabase = _host.Services.GetRequiredService<IConfiguration>()
+				.GetValue<bool>("Database:RecreateOnStartup");
+
+			RecreatorDatabase.RecreateDatabase(_host, recreateDatabase).Wait();
 			if (ConnectionChecker.DatabaseValidation(_host, out var result) is not null) MessageBox.Show(result.Message);
 
 			Window window = _host.Services.GetRequiredService<MainWindow>();

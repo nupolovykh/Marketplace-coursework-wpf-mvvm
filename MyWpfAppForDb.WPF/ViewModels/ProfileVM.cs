@@ -52,8 +52,10 @@ namespace MyWpfAppForDb.WPF.ViewModels
 			set => ErrorMessageViewModel.Message = value;
 		}
 
-		public bool CanAdjust => !string.IsNullOrEmpty(Password1) && !string.IsNullOrEmpty(Password2)
-			&& Password1 == Password2 && CurrentEmployee is not null;
+		// Leaving both password boxes empty saves name/email/phone and keeps the
+		// current password; filling them in changes it. Previously nothing could be
+		// saved at all without retyping a password twice.
+		public bool CanAdjust => CurrentEmployee is not null && Password1 == Password2;
 
 		public ICommand ApplyChanges { get; set; }
 		public ICommand Logout { get; set; }

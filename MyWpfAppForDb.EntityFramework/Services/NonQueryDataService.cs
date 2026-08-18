@@ -18,7 +18,10 @@ namespace MyWpfAppForDb.EntityFramework.Services
 		{
 			using (AppDbContext context = _contextFactory.CreateDbContext())
 			{
-				entity.Id = await context.Set<T>().CountAsync() + 1;
+				// Ids are ValueGeneratedNever across the model, so they are assigned
+				// here - from the largest existing one, not from the row count, which
+				// reuses an id as soon as a row in the middle has been deleted.
+				entity.Id = (await context.Set<T>().MaxAsync(e => (int?)e.Id) ?? 0) + 1;
 
 				EntityEntry<T> createdResult = await context.Set<T>().AddAsync(entity);
 				await context.SaveChangesAsync();

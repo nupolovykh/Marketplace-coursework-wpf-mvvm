@@ -1,33 +1,25 @@
-﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MyWpfAppForDb.EntityFramework.Services
 {
+	/// <summary>
+	/// Drops the database so the next EnsureCreated call rebuilds it from the seed
+	/// data. Development convenience only - it destroys everything the user has
+	/// entered, so it is off unless Database:RecreateOnStartup says otherwise.
+	/// </summary>
 	public static class RecreatorDatabase
 	{
 		public static async Task RecreateDatabase(IHost host, bool condition)
 		{
 			if (!condition) return;
 
-			try
-			{
-				var factory = host.Services.GetRequiredService<AppDbContextFactory>();
+			var factory = host.Services.GetRequiredService<AppDbContextFactory>();
 
-				using (var db = factory.CreateDbContext())
-				{
-					await db.Database.EnsureDeletedAsync();
-				}
-			}
-
-			catch (Exception)
+			using (var db = factory.CreateDbContext())
 			{
-				throw;
+				await db.Database.EnsureDeletedAsync();
 			}
 		}
 	}
