@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNet.Identity;
+﻿using MyWpfAppForDb.Domain.Extensions;
 using MyWpfAppForDb.Domain.Exceptions;
 using MyWpfAppForDb.Domain.Services.AccountService;
 using MyWpfAppForDb.EntityFramework.Entities;
-using System.Security.Principal;
 using System.Threading.Tasks;
 
 namespace MyWpfAppForDb.EntityFramework.Services.AuthenticationServices
@@ -10,12 +9,10 @@ namespace MyWpfAppForDb.EntityFramework.Services.AuthenticationServices
 	public class AuthenticationService : IAuthenticationService
 	{
 		private readonly IAccountService _accountService;
-		private readonly IPasswordHasher _passwordHasher;
 
-		public AuthenticationService(IAccountService accountService, IPasswordHasher passwordHasher) 
-		{ 
+		public AuthenticationService(IAccountService accountService)
+		{
 			_accountService = accountService;
-			_passwordHasher = passwordHasher;
 		}
 
 		public async Task<Employee> Login(string username, string password)
@@ -24,9 +21,7 @@ namespace MyWpfAppForDb.EntityFramework.Services.AuthenticationServices
 
 			if (employee is null) throw new UserNotFoundException(username);
 
-			PasswordVerificationResult passwordResult = _passwordHasher.VerifyHashedPassword(employee.Password, password);
-
-			if (passwordResult != PasswordVerificationResult.Success) throw new InvalidPasswordException(username, password);
+			if (!password.VerifyHash(employee.Password)) throw new InvalidPasswordException(username);
 
 			return employee;
 		}
@@ -46,7 +41,7 @@ namespace MyWpfAppForDb.EntityFramework.Services.AuthenticationServices
 
 			if(result == AccountResult.Success)
 			{
-				string hashedPassword = _passwordHasher.HashPassword(password);
+				string hashedPassword = password.ToHash();
 
 				Employee newEmployee = new Employee()
 				{
@@ -76,7 +71,7 @@ namespace MyWpfAppForDb.EntityFramework.Services.AuthenticationServices
 
 			if (result == AccountResult.Success)
 			{
-				string hashedPassword = _passwordHasher.HashPassword(employee.Password);
+				string hashedPassword = employee.Password.ToHash();
 
 				employee.Password = hashedPassword;
 

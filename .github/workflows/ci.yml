@@ -32,7 +32,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 6.0.x
+          dotnet-version: 8.0.x
       - run: dotnet restore "${{ matrix.path }}"
       - run: dotnet build "${{ matrix.path }}" --no-restore -c Release
 
@@ -45,6 +45,6 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 6.0.x
+          dotnet-version: 8.0.x
       - run: dotnet restore MyWpfAppForDb.sln
       - run: dotnet build MyWpfAppForDb.sln --no-restore -c Release

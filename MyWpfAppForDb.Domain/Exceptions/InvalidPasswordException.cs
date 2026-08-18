@@ -1,32 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System;
 
 namespace MyWpfAppForDb.Domain.Exceptions
 {
+	/// <summary>
+	/// Thrown when a login attempt supplies the wrong password. The attempted
+	/// password is deliberately not carried on the exception: it would end up in
+	/// logs and crash dumps in plain text.
+	/// </summary>
 	public class InvalidPasswordException : Exception
 	{
-		public string Username { get; set; }
-		public string Password { get; set; }
+		public string Username { get; }
 
-		public InvalidPasswordException(string username, string password)
+		public InvalidPasswordException(string username)
 		{
 			Username = username;
-			Password = password;
 		}
 
-		public InvalidPasswordException(string message, string username, string password) : base(message)
+		public InvalidPasswordException(string message, string username) : base(message)
 		{
 			Username = username;
-			Password = password;
 		}
 
-		public InvalidPasswordException(string message, Exception innerException, string username, string password) : base(message, innerException)
+		public InvalidPasswordException(string message, Exception innerException, string username) : base(message, innerException)
 		{
 			Username = username;
-			Password = password;
 		}
 	}
 }
