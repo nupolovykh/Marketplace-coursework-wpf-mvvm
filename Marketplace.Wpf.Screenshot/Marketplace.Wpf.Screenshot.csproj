@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Screenshot harness, not part of the shipped app. Boots the real host - the
+    same CreateHostBuilder the app uses - seeds the database, logs in, resolves a
+    view model out of DI and renders its view offscreen via RenderTargetBitmap.
+    No Show(), no message loop.
+    Takes the output PNG path and the screen name as arguments.
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>Marketplace.Wpf.Screenshot</AssemblyName>
+    <RootNamespace>Marketplace.Wpf.Screenshot</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Marketplace.Wpf\Marketplace.Wpf.csproj" />
+  </ItemGroup>
+
+  <!-- The host reads appsettings.json from the working directory. -->
+  <ItemGroup>
+    <None Include="..\Marketplace.Wpf\appsettings.json" Link="appsettings.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

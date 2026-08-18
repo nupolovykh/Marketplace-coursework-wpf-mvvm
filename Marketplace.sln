@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marketplace.Playground", "M
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marketplace.SmokeTest", "Marketplace.SmokeTest\Marketplace.SmokeTest.csproj", "{FFBFDD00-DFCA-4037-96AD-81279A9E086F}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marketplace.Wpf.Screenshot", "Marketplace.Wpf.Screenshot\Marketplace.Wpf.Screenshot.csproj", "{589E907E-E967-4EF9-BED1-0C3B0322312F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{FFBFDD00-DFCA-4037-96AD-81279A9E086F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FFBFDD00-DFCA-4037-96AD-81279A9E086F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FFBFDD00-DFCA-4037-96AD-81279A9E086F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{589E907E-E967-4EF9-BED1-0C3B0322312F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{589E907E-E967-4EF9-BED1-0C3B0322312F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{589E907E-E967-4EF9-BED1-0C3B0322312F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{589E907E-E967-4EF9-BED1-0C3B0322312F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
