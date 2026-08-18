@@ -1,0 +1,47 @@
+﻿<UserControl x:Class="Marketplace.Wpf.Views.Registration"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="clr-namespace:Marketplace.Wpf.Controls"
+        mc:Ignorable="d"
+        Height="450" Width="800">
+
+	<UserControl.Resources>
+		<Style TargetType="TextBox">
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Width" Value="250"/>
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="7*"/>
+        </Grid.RowDefinitions>
+
+		<controls:MessageControl Grid.Row="0" 
+            Margin="0 10 0 0" 
+            HorizontalAlignment="Center"
+            DataContext="{Binding ErrorMessageViewModel}"/>
+
+		<Label Grid.Row="1" Content="Регистрация" HorizontalAlignment="Center" Margin="0,100,0,0" VerticalAlignment="Top" Height="50" Width="300"
+       FontSize="28" HorizontalContentAlignment="Center"/>
+
+        <TextBox Grid.Row="1" Margin="0,150,0,0" Text="{Binding Login}" ToolTip="Введите логин"/>
+        <TextBox Grid.Row="1" Margin="0,200,0,0" Text="{Binding Email}" ToolTip="Введите вашу почту"/>
+        <TextBox Grid.Row="1" Margin="0,250,0,0" Text="{Binding Password1}" ToolTip="Введите пароль"/>
+        <TextBox Grid.Row="1" Margin="0,300,0,0" Text="{Binding Password2}" ToolTip="Повторите пароль"/>
+
+        <Button Grid.Row="1" Content="Зарегистрироваться" Command="{Binding RegistrationCommand}" HorizontalAlignment="Center" Margin="0,350,0,0"
+            VerticalAlignment="Top" Height="30" Width="150"/>
+    </Grid>
+
+
+</UserControl>

@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>Marketplace.Playground</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Marketplace.EntityFramework\Marketplace.EntityFramework.csproj" />
+	</ItemGroup>
+
+	<!--
+		The playground talks to the same database as the app, so it reads the app's
+		configuration file rather than keeping a second copy in sync. Linking it
+		here puts it next to the built assembly, which is where the configuration
+		builder looks.
+	-->
+	<ItemGroup>
+		<None Include="..\Marketplace.Wpf\appsettings.json" Link="appsettings.json" CopyToOutputDirectory="PreserveNewest" />
+	</ItemGroup>
+
+</Project>
