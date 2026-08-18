@@ -4,7 +4,8 @@
     Screenshot harness, not part of the shipped app. Boots the real host - the
     same CreateHostBuilder the app uses - seeds the database, logs in, resolves a
     view model out of DI and renders its view offscreen via RenderTargetBitmap.
-    No Show(), no message loop. Usage: dotnet run -- <output.png> <screen>.
+    No Show(), no message loop.
+    Takes the output PNG path and the screen name as arguments.
   -->
   <PropertyGroup>
     <OutputType>Exe</OutputType>
