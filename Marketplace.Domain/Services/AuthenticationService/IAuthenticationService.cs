@@ -1,0 +1,22 @@
+﻿using Marketplace.EntityFramework.Entities;
+using System.Threading.Tasks;
+
+namespace Marketplace.EntityFramework.Services.AuthenticationServices
+{
+	public enum AccountResult
+	{
+		Success,
+		PasswordsDoNotMatch,
+		EmailAlreadyExists,
+		UsernameAlreadyExists
+	}
+
+	public interface IAuthenticationService
+	{
+		Task<Employee> Login(string loginOrEmail, string password);
+
+		Task<AccountResult> Register(string email, string username, string password, string confirmPassword);
+
+		Task<AccountResult> Adjust(Employee employee, string newPassword);
+	}
+}

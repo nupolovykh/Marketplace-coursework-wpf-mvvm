@@ -1,0 +1,77 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace Marketplace.Wpf.Models.DataTransferObjects
+{
+	public partial class DeliveryPointDto : ModelDtoBase
+	{
+		public DeliveryPointDto()
+		{
+			Employees = new HashSet<EmployeeDto>();
+			Orders = new HashSet<OrderDto>();
+		}
+
+		private int _id;
+
+		public int Id
+		{
+			get => _id;
+			set
+			{
+				_id = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private string _address;
+
+		public string Address
+		{
+			get => _address;
+			set
+			{
+				_address = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private string _city;
+
+		public string City
+		{
+			get => _city;
+			set
+			{
+				_city = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private decimal _rating;
+
+		public decimal Rating
+		{
+			get => _rating;
+			set
+			{
+				_rating = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private string _zipcode;
+
+		public string Zipcode
+		{
+			get => _zipcode;
+			set
+			{
+				_zipcode = value;
+				OnPropertyChanged();
+			}
+		}
+
+		public virtual ICollection<EmployeeDto> Employees { get; set; }
+		public virtual ICollection<OrderDto> Orders { get; set; }
+	}
+}

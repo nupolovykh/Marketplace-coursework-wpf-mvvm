@@ -23,13 +23,13 @@ jobs:
       matrix:
         include:
           - name: Domain
-            path: MyWpfAppForDb.Domain/MyWpfAppForDb.Domain.csproj
+            path: Marketplace.Domain/Marketplace.Domain.csproj
           - name: EntityFramework
-            path: MyWpfAppForDb.EntityFramework/MyWpfAppForDb.EntityFramework.csproj
-          - name: Console.Playground
-            path: Console.Playground/Console.Playground.csproj
+            path: Marketplace.EntityFramework/Marketplace.EntityFramework.csproj
+          - name: Marketplace.Playground
+            path: Marketplace.Playground/Marketplace.Playground.csproj
           - name: SmokeTest
-            path: MyWpfAppForDb.SmokeTest/MyWpfAppForDb.SmokeTest.csproj
+            path: Marketplace.SmokeTest/Marketplace.SmokeTest.csproj
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
@@ -48,8 +48,8 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
-      - run: dotnet restore MyWpfAppForDb.sln
-      - run: dotnet build MyWpfAppForDb.sln --no-restore -c Release
+      - run: dotnet restore Marketplace.sln
+      - run: dotnet build Marketplace.sln --no-restore -c Release
 
   # A build proves the code compiles, not that it works. This runs the domain and
   # data layers against a real (throwaway) SQLite database: EnsureCreated with
@@ -64,4 +64,4 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
-      - run: dotnet run --project MyWpfAppForDb.SmokeTest/MyWpfAppForDb.SmokeTest.csproj -c Release
+      - run: dotnet run --project Marketplace.SmokeTest/Marketplace.SmokeTest.csproj -c Release

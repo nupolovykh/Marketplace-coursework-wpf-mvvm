@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Functional smoke test, not part of the shipped app. Exercises the domain and
+    data layers end to end against a throwaway SQLite file: seeding, password
+    hashing, the login/register/profile flows and the catalogue queries. No WPF
+    involved, so it runs on any platform - the WPF head only adds views on top
+    of the services checked here. Usage: dotnet run.
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>Marketplace.SmokeTest</AssemblyName>
+    <RootNamespace>Marketplace.SmokeTest</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Marketplace.Domain\Marketplace.Domain.csproj" />
+    <ProjectReference Include="..\Marketplace.EntityFramework\Marketplace.EntityFramework.csproj" />
+  </ItemGroup>
+
+</Project>
