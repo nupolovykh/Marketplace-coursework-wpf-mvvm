@@ -65,3 +65,71 @@ jobs:
         with:
           dotnet-version: 8.0.x
       - run: dotnet run --project Marketplace.SmokeTest/Marketplace.SmokeTest.csproj -c Release
+
+  # Renders each screen headlessly - no Show(), no message loop - and uploads the
+  # PNGs. Marked non-blocking: the harness drives the real host and database, so
+  # it is the most fragile part of the pipeline and should not gate a build.
+  screenshot:
+    name: screenshot (${{ matrix.screen }})
+    runs-on: windows-latest
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        screen: [authorization, registration, home, profile, statistics, delivery]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - run: dotnet run --project Marketplace.Wpf.Screenshot/Marketplace.Wpf.Screenshot.csproj -c Release -- "${{ runner.temp }}/${{ matrix.screen }}.png" "${{ matrix.screen }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: screenshot-${{ matrix.screen }}
+          path: ${{ runner.temp }}/${{ matrix.screen }}.png
+          if-no-files-found: error
+
+  # Commits the rendered screens into docs/img/ so they are viewable on GitHub and
+  # embeddable in the README, instead of expiring with the CI artifacts. One job
+  # rather than a matrix, so there is only ever a single commit and no push race.
+  publish-screenshots:
+    name: publish screenshots to repo
+    needs: [screenshot]
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: screenshot-*
+          path: screenshots-download
+      - name: Copy screenshots into docs/img and commit
+        shell: bash
+        env:
+          TARGET_REF: ${{ github.head_ref || github.ref_name }}
+        run: |
+          mkdir -p docs/img
+
+          for screen in authorization registration home profile statistics delivery; do
+            src=$(find "screenshots-download/screenshot-${screen}" -type f -name '*.png' 2>/dev/null | head -1)
+            if [ -z "$src" ]; then
+              echo "::warning::no screenshot artifact for ${screen}, skipping"
+              continue
+            fi
+            cp "$src" "docs/img/${screen}.png"
+            git add -- "docs/img/${screen}.png"
+          done
+
+          git config user.name "nupolovykh"
+          git config user.email "96892429+nupolovykh@users.noreply.github.com"
+
+          if git diff --cached --quiet; then
+            echo "No screenshot changes to commit"
+          else
+            git commit -m "Update generated screenshots [skip ci]"
+            git push origin "HEAD:${TARGET_REF}"
+          fi
