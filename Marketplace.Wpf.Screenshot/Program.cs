@@ -99,9 +99,12 @@ static void Render(string screen, string outputPath)
 	Dispatcher.CurrentDispatcher.Invoke(() => { }, DispatcherPriority.SystemIdle);
 
 	// Views declaring an explicit size are rendered at it; the ones that only set
-	// a minimum get the app window's content area.
+	// a minimum get the app window's content area, except the statistics screen,
+	// whose two side-by-side grids need more width than that to fit their columns.
+	double defaultWidth = screen is "statistics" ? 1280 : 960;
+
 	var size = new Size(
-		double.IsNaN(view.Width) ? 960 : view.Width,
+		double.IsNaN(view.Width) ? defaultWidth : view.Width,
 		double.IsNaN(view.Height) ? 600 : view.Height);
 
 	// RenderTargetBitmap starts from a transparent canvas. A Border gives it a
