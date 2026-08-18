@@ -1,7 +1,9 @@
 using Marketplace.EntityFramework.Services;
 using Marketplace.Wpf;
 using Marketplace.Wpf.State.Authenticators;
+using Marketplace.Wpf.State.Navigators;
 using Marketplace.Wpf.ViewModels;
+using Marketplace.Wpf.ViewModels.Factories;
 using Marketplace.Wpf.Views;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -128,41 +130,42 @@ static void Render(string screen, string outputPath)
 	Console.WriteLine($"Saved {outputPath} ({size.Width}x{size.Height}, screen: {screen})");
 }
 
-// Resolves the view model for a screen out of DI and pairs its view with a test
-// for "has this finished loading", since every data-backed screen fills itself
-// asynchronously in its constructor.
+// Builds the view model for a screen through the same factory the application
+// uses. Resolving the view model types straight out of the container does not
+// work: AuthorizationVM and RegistrationVM ask for IRenavigator, which is never
+// registered - the factory closes over the concrete renavigators instead. Each
+// screen is paired with a test for "has it finished loading", since every
+// data-backed one fills itself asynchronously from its constructor.
 static (FrameworkElement View, Func<bool> Loaded) Compose(IHost host, string screen)
 {
+	var factory = host.Services.GetRequiredService<IAppViewModelFactory>();
+
 	switch (screen)
 	{
 		case "authorization":
-		{
-			var viewModel = host.Services.GetRequiredService<AuthorizationVM>();
-			return (new Authorization { DataContext = viewModel }, () => true);
-		}
+			return (new Authorization { DataContext = factory.CreateViewModel(ViewType.Authorization) }, () => true);
+
 		case "registration":
-		{
-			var viewModel = host.Services.GetRequiredService<RegistrationVM>();
-			return (new Registration { DataContext = viewModel }, () => true);
-		}
+			return (new Registration { DataContext = factory.CreateViewModel(ViewType.Registration) }, () => true);
+
 		case "home":
 		{
-			var viewModel = host.Services.GetRequiredService<HomeVM>();
+			var viewModel = (HomeVM)factory.CreateViewModel(ViewType.Home);
 			return (new Home { DataContext = viewModel }, () => viewModel.Products?.Count > 0);
 		}
 		case "profile":
 		{
-			var viewModel = host.Services.GetRequiredService<ProfileVM>();
+			var viewModel = (ProfileVM)factory.CreateViewModel(ViewType.Profile);
 			return (new Profile { DataContext = viewModel }, () => viewModel.CurrentEmployee is not null);
 		}
 		case "statistics":
 		{
-			var viewModel = host.Services.GetRequiredService<StatisticsVM>();
+			var viewModel = (StatisticsVM)factory.CreateViewModel(ViewType.Statistics);
 			return (new Statistics { DataContext = viewModel }, () => viewModel.Employees?.Count > 0);
 		}
 		case "delivery":
 		{
-			var viewModel = host.Services.GetRequiredService<YourDeliveryInfoVM>();
+			var viewModel = (YourDeliveryInfoVM)factory.CreateViewModel(ViewType.YourDeliveryInfo);
 			return (new YourDeliveryInfo { DataContext = viewModel }, () => viewModel.Orders?.Count > 0);
 		}
 		default:
