@@ -1,0 +1,38 @@
+name: Dependabot auto-merge
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.actor.login == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Merge the pull request if it targets the dependency branch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          REPO: ${{ github.repository }}
+        run: |
+          number=$(gh api "repos/$REPO/commits/$HEAD_SHA/pulls" \
+            --jq '.[]
+                  | select(.state == "open")
+                  | select(.base.ref == "security-features-main")
+                  | .number' | head -n1)
+
+          if [ -z "$number" ]; then
+            echo "No open pull request against security-features-main for $HEAD_SHA."
+            exit 0
+          fi
+
+          echo "CI passed on $HEAD_SHA; merging #$number into security-features-main."
+          gh pr merge --squash --delete-branch --repo "$REPO" "$number"

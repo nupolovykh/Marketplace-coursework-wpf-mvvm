@@ -10,7 +10,7 @@ A course project (VKI NSU, spring 2024), written against a T-SQL assignment:
 design a 3NF schema for a Wildberries/Ozon-style store, fill it, and query it.
 The database from that assignment is the one the application runs on.
 
-[![CI](https://github.com/nupolovykh/WPF-MVVM-marketplace/actions/workflows/ci.yml/badge.svg)](https://github.com/nupolovykh/WPF-MVVM-marketplace/actions/workflows/ci.yml)
+[![CI](https://github.com/nupolovykh/Marketplace-coursework-wpf-mvvm/actions/workflows/ci.yml/badge.svg)](https://github.com/nupolovykh/Marketplace-coursework-wpf-mvvm/actions/workflows/ci.yml)
 ![.NET 8](https://img.shields.io/badge/.NET-8.0-512BD4)
 ![WPF](https://img.shields.io/badge/UI-WPF%20%2B%20MVVM-0078D4)
 ![SQLite](https://img.shields.io/badge/SQLite-embedded-003B57)
@@ -39,8 +39,8 @@ are all that is needed — the WPF head targets `net8.0-windows`, and the databa
 is created on first run.
 
 ```bash
-git clone https://github.com/nupolovykh/WPF-MVVM-marketplace.git
-cd WPF-MVVM-marketplace
+git clone https://github.com/nupolovykh/Marketplace-coursework-wpf-mvvm.git
+cd Marketplace-coursework-wpf-mvvm
 dotnet run --project Marketplace.Wpf
 ```
 
