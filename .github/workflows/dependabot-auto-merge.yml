@@ -1,38 +1,258 @@
-name: Dependabot auto-merge
+name: Dependency auto-merge
+
+# Merges Dependabot pull requests into `deps` once CI is green on the commit
+# being merged. Nothing reaches main from here — see deps-promote.yml.
+#
+# The merge cannot happen from the pull_request event: a run raised by Dependabot
+# gets a read-only token. workflow_run executes in the context of the default
+# branch with write access, and runs the copy of this file that lives there.
+#
+# There is NO checkout anywhere in this workflow. Every step talks to the API.
+# That is the whole reason no `ref:` pin is needed: there is no working tree and
+# no script file on disk for a push to `deps` to poison, so the write token can
+# never be pointed at code that came from the branch it writes to.
+#
+# There is no semver filter either. A bump that breaks the build fails CI and is
+# never merged — the same outcome as filtering patch/minor, by a shorter route,
+# and what does land is confined to `deps` and still faces the promotion review.
 
 on:
   workflow_run:
     workflows: ["CI"]
     types: [completed]
+  # The safety net. Every event-driven gate loses pull requests when the event
+  # carries nothing usable — GitHub still indexing a force-push, a rebase landing
+  # between CI and the merge — and nothing ever re-raises that event. This sweep
+  # is what makes a missed event cost a week instead of forever, and it is also
+  # the only thing that ever reports a queue that has quietly stopped moving.
+  schedule:
+    - cron: "37 6 * * 1"
+  workflow_dispatch:
 
 permissions:
   contents: write
   pull-requests: write
+  # To start CI on `deps` and to hand off to the promotion workflow, below.
+  actions: write
+
+# Two sweeps at once would both read the same base and the second would merge
+# onto a branch that moved under it.
+concurrency:
+  group: dependency-auto-merge
+  cancel-in-progress: false
 
 jobs:
-  auto-merge:
+  sweep:
+    # workflow_run fires for every CI run in the repository, main's included.
+    # There is only work to do after a pull request run.
     if: >-
-      github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.event == 'pull_request' &&
-      github.event.workflow_run.actor.login == 'dependabot[bot]'
+      github.event_name != 'workflow_run' ||
+      github.event.workflow_run.event == 'pull_request'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      REPO: ${{ github.repository }}
+      DEPS_BRANCH: deps
+      BASE_BRANCH: ${{ github.event.repository.default_branch || 'main' }}
+      CI_WORKFLOW: ci.yml
+      # How long an update may sit unmerged before this run turns red. A failed
+      # workflow run is the only notification an unattended repository actually
+      # gets — GitHub emails the owner. Everything else (a job summary, an
+      # annotation on a green run) is indistinguishable from silence.
+      STALE_DAYS: "14"
     steps:
-      - name: Merge the pull request if it targets the dependency branch
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
-          REPO: ${{ github.repository }}
+      - name: Merge Dependabot pull requests that passed CI
+        id: sweep
         run: |
-          number=$(gh api "repos/$REPO/commits/$HEAD_SHA/pulls" \
-            --jq '.[]
-                  | select(.state == "open")
-                  | select(.base.ref == "security-features-main")
-                  | .number' | head -n1)
+          set -euo pipefail
 
-          if [ -z "$number" ]; then
-            echo "No open pull request against security-features-main for $HEAD_SHA."
-            exit 0
+          merged=0
+          stuck=0
+          summary=()
+
+          note() { summary+=("$1"); printf '   %s\n' "$1"; }
+
+          finish() {
+            echo "merged=${merged}" >>"$GITHUB_OUTPUT"
+            if [ "${#summary[@]}" -gt 0 ]; then
+              {
+                echo "### Dependency auto-merge"
+                echo
+                printf -- '- %s\n' "${summary[@]}"
+              } >>"$GITHUB_STEP_SUMMARY"
+            fi
+          }
+          trap finish EXIT
+
+          now=$(date -u +%s)
+          age_days() { echo $(( (now - $(date -u -d "$1" +%s)) / 86400 )); }
+
+          # Post a comment at most once per (pull request, marker).
+          #
+          # The existing comments are read into a variable and only then searched.
+          # `grep -q` exits on its first match, and under `set -o pipefail` the
+          # SIGPIPE that kills `gh` mid-write becomes the pipeline's exit status —
+          # so a marker that is present reads as absent, and the gate comments
+          # again on every single sweep.
+          comment_once() {
+            local number="$1" marker="$2" body="$3" existing
+            existing=$(gh api --paginate "repos/$REPO/issues/${number}/comments?per_page=100" --jq '.[].body')
+            if grep -qF "$marker" <<<"$existing"; then
+              return 1
+            fi
+            gh api "repos/$REPO/issues/${number}/comments" -f "body=${body}
+
+          ${marker}" >/dev/null
+          }
+
+          numbers=$(gh api --paginate \
+            "repos/$REPO/pulls?state=open&base=${DEPS_BRANCH}&per_page=100" \
+            --jq '.[] | select(.user.login == "dependabot[bot]") | select(.draft | not) | .number')
+
+          if [ -z "$numbers" ]; then
+            echo "No open Dependabot pull requests against ${DEPS_BRANCH}."
           fi
 
-          echo "CI passed on $HEAD_SHA; merging #$number into security-features-main."
-          gh pr merge --squash --delete-branch --repo "$REPO" "$number"
+          for number in $numbers; do
+            pr=$(gh api "repos/$REPO/pulls/${number}")
+            head_sha=$(jq -r '.head.sha' <<<"$pr")
+            title=$(jq -r '.title' <<<"$pr")
+            author=$(jq -r '.user.login' <<<"$pr")
+            age=$(age_days "$(jq -r '.created_at' <<<"$pr")")
+
+            echo ""
+            echo "#${number} ${title}"
+            echo "   head ${head_sha}  age ${age}d"
+
+            # The listing already filtered on the author; re-reading it from the
+            # pull request is the check that decides, because that object is what
+            # gets merged. Neither workflow_run.actor nor the branch name is proof
+            # of authorship — the actor is whoever pushed last, and any writer can
+            # push a branch called dependabot/anything.
+            if [ "$author" != "dependabot[bot]" ]; then
+              note "#${number}: author is ${author}, not dependabot[bot]; skipped"
+              continue
+            fi
+
+            # The conclusion of the newest CI run on this exact commit. Reading the
+            # workflow run rather than individual checks means "every job passed"
+            # without needing an aggregate job to say so.
+            conclusion=$(gh api \
+              "repos/$REPO/actions/workflows/${CI_WORKFLOW}/runs?head_sha=${head_sha}&event=pull_request&per_page=1" \
+              --jq '.workflow_runs[0].conclusion // "pending"')
+
+            case "$conclusion" in
+              success) ;;
+              pending)
+                note "#${number}: CI has not finished on ${head_sha:0:7}"
+                [ "$age" -ge "$STALE_DAYS" ] && stuck=1 && note "#${number}: open ${age}d with no CI verdict"
+                continue
+                ;;
+              *)
+                note "#${number}: CI concluded '${conclusion}'; left open for a human"
+                if [ "$age" -ge "$STALE_DAYS" ]; then
+                  stuck=1
+                  note "#${number}: RED for ${age}d — this update is not landing"
+                fi
+                comment_once "$number" "<!-- auto-merge:failed:${head_sha} -->" \
+          "CI concluded \`${conclusion}\` on \`${head_sha:0:7}\`, so this was not merged into \`${DEPS_BRANCH}\`.
+
+          The gate leaves it open on purpose — a dependency that breaks the build is what it exists to catch. Fix it or close it; nothing else will move it." || true
+                continue
+                ;;
+            esac
+
+            # `mergeable` is computed in the background; null means "ask again".
+            # Rendered with tostring rather than `// "null"`, which would report a
+            # genuine false as null and burn the retries on an answer already given.
+            mergeable=null
+            for _ in 1 2 3; do
+              mergeable=$(gh api "repos/$REPO/pulls/${number}" --jq '.mergeable | tostring')
+              [ "$mergeable" != "null" ] && break
+              sleep 5
+            done
+
+            if [ "$mergeable" != "true" ]; then
+              note "#${number}: not cleanly mergeable (mergeable=${mergeable})"
+              comment_once "$number" "<!-- auto-merge:rebase:${head_sha} -->" "@dependabot rebase" \
+                && note "#${number}: asked Dependabot to rebase" || true
+              [ "$age" -ge "$STALE_DAYS" ] && stuck=1
+              continue
+            fi
+
+            # A pull request that edits a workflow file can only be merged while
+            # its head is level with the base. Behind it, GitHub composes the
+            # merged workflow file itself and refuses: "refusing to allow a GitHub
+            # App to create or update workflow ... without workflows permission".
+            #
+            # Both facts are read into variables first, for the SIGPIPE reason
+            # spelled out on comment_once: `gh ... | grep -q` under pipefail can
+            # report "no workflow files touched" for a pull request that touches
+            # nothing else, and the merge is then refused for the exact reason
+            # this check exists to avoid.
+            behind_by=$(gh api "repos/$REPO/compare/${DEPS_BRANCH}...${head_sha}" --jq '.behind_by')
+            changed=$(gh api --paginate "repos/$REPO/pulls/${number}/files?per_page=100" --jq '.[].filename')
+
+            if [ "$behind_by" -gt 0 ] && grep -q '^\.github/workflows/' <<<"$changed"; then
+              note "#${number}: edits a workflow and is ${behind_by} behind; a merge would be refused"
+              comment_once "$number" "<!-- auto-merge:rebase:${head_sha} -->" "@dependabot rebase" \
+                && note "#${number}: asked Dependabot to rebase" || true
+              [ "$age" -ge "$STALE_DAYS" ] && stuck=1
+              continue
+            fi
+
+            # --match-head-commit is the point of reading state fresh: CI passed on
+            # $head_sha, and between that run and this call the head can move (a
+            # Dependabot rebase, a push by anyone with write access). Without it the
+            # gate merges whatever the branch points at now, which nothing tested.
+            if gh pr merge "$number" \
+                --repo "$REPO" \
+                --squash \
+                --delete-branch \
+                --match-head-commit "$head_sha"; then
+              note "#${number}: merged ${head_sha:0:7} into ${DEPS_BRANCH}"
+              merged=$((merged + 1))
+            else
+              echo "::error::#${number} passed CI but could not be merged into ${DEPS_BRANCH}."
+              note "#${number}: MERGE FAILED after green CI — see the log"
+              # Not subject to STALE_DAYS: this one is the automation's own fault.
+              stuck=1
+            fi
+          done
+
+          # Security updates ignore `target-branch`. GitHub raises an advisory fix
+          # against the default branch whatever dependabot.yml says, so it never
+          # appears in the sweep above and can sit open indefinitely while routine
+          # bumps merge themselves. Nothing in a repository can redirect them; the
+          # least this can do is refuse to let them be invisible.
+          stranded=$(gh api --paginate \
+            "repos/$REPO/pulls?state=open&base=${BASE_BRANCH}&per_page=100" \
+            --jq '.[] | select(.user.login == "dependabot[bot]") | "\(.number)\t\(.created_at)\t\(.title)"')
+
+          if [ -n "$stranded" ]; then
+            echo ""
+            echo "::warning::Dependabot pull requests are open against ${BASE_BRANCH}, not ${DEPS_BRANCH}."
+            while IFS=$'\t' read -r n created t; do
+              a=$(age_days "$created")
+              note "on ${BASE_BRANCH} (security update, needs a human): #${n} ${t} — ${a}d old"
+              [ "$a" -ge "$STALE_DAYS" ] && stuck=1
+            done <<<"$stranded"
+          fi
+
+          if [ "$stuck" -ne 0 ]; then
+            echo "::error::Dependency updates are stuck. This run is red so somebody hears about it."
+          fi
+          exit "$stuck"
+
+      # A push made with GITHUB_TOKEN raises no events — GitHub suppresses them so
+      # a workflow cannot retrigger itself, and there is no exception for merges.
+      # So the merged result would never be built and the promotion would never be
+      # refreshed until the next schedule. workflow_dispatch is the documented
+      # exception: it always starts a run. The checks land on `deps`'s new head,
+      # which is also the promotion pull request's head, so they appear there.
+      - name: Build the merged result and refresh the promotion
+        if: always() && steps.sweep.outputs.merged != '0' && steps.sweep.outputs.merged != ''
+        run: |
+          gh workflow run "$CI_WORKFLOW" --repo "$REPO" --ref "$DEPS_BRANCH"
+          gh workflow run deps-promote.yml --repo "$REPO" --ref "$BASE_BRANCH"

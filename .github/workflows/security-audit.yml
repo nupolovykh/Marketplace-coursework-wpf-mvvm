@@ -1,0 +1,62 @@
+name: Security audit
+
+# Deliberately NOT part of CI.
+#
+# A vulnerability audit answers a question about the global advisory database,
+# not about the commit under test. A newly published advisory turns every open
+# pull request red at once — including the very bump that fixes it — and in a
+# repository where green CI is what merges updates, that stops the updates from
+# landing exactly when they matter most. Here it reports on a schedule and
+# blocks nothing.
+#
+# It is also the one workflow that speaks about `main` itself. Dependabot's
+# security updates ignore `target-branch` and never enter the `deps` flow, so a
+# red run here is the signal that main needs a human.
+
+on:
+  schedule:
+    - cron: "41 5 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  nuget:
+    name: nuget audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      # The WPF projects target net6.0-windows and cannot restore on Linux, so
+      # the audit runs over the projects that can. Their package graph is where
+      # the third-party surface actually lives; the WPF layer adds views.
+      - name: Restore the portable projects
+        run: |
+          for proj in Marketplace.Domain Marketplace.EntityFramework \
+                      Marketplace.Playground Marketplace.SmokeTest; do
+            dotnet restore "$proj" || exit 1
+          done
+
+      # `dotnet list package --vulnerable` reports findings on stdout and still
+      # exits 0, so the exit code has to come from reading its output.
+      - name: Audit
+        run: |
+          report=$(for proj in Marketplace.Domain Marketplace.EntityFramework \
+                               Marketplace.Playground Marketplace.SmokeTest; do
+            dotnet list "$proj" package --vulnerable --include-transitive
+          done)
+
+          echo "$report"
+
+          if grep -qiE '^\s*>' <<<"$report"; then
+            echo "::error::Vulnerable packages are present on the default branch."
+            exit 1
+          fi
+
+          echo "No vulnerable packages reported."
