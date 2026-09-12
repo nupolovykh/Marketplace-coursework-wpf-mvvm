@@ -43,16 +43,28 @@ commit on `deps` and the workflow resets nothing and turns red. The single
 exception is a commit that is provably `main`'s own amended-away tip (detected
 via `github.event.before` on the force-push), which is debris, not work.
 
-All four transitions are handled:
+Every state the two branches can be in is handled. *Adds content* below is one
+precise question: of the paths `deps` changed relative to the commit the two
+branches split from, is there one where `main` does not already hold `deps`'s
+content? It is answered by comparing blob SHAs in three trees — the split point,
+`main`'s tip and `deps`'s tip — because a tree is addressed by its own SHA and
+cannot be read stale, unlike the compare endpoint:
 
 | `main` vs `deps` | Cause | Action |
 |---|---|---|
 | identical | steady state | nothing |
-| `deps` ahead | updates collected | open/refresh the promotion PR |
-| `deps` behind | promotion merged with a merge commit | fast-forward `deps` |
-| diverged, no diff | promotion squash- or rebase-merged | reset `deps` |
+| ahead, adds content | updates collected | open/refresh the promotion PR |
+| ahead, adds nothing | one full cycle's leftover merge | reset `deps` |
+| behind | promotion merged with a merge commit | fast-forward `deps` |
+| diverged, adds nothing | promotion squash-merged, or `main` moved on | reset `deps` |
+| diverged, adds content, promotion open | `main` moved on under real bumps | merge `main` in through `update-branch`, keep the bumps |
+| diverged, adds content, no promotion | same, nothing to merge through | open the promotion as it stands |
 | diverged, amended tip | `git commit --amend` on `main` | reset `deps`, bumps re-raised |
 | diverged, real human commit | someone pushed to `deps` | refuse, run turns red |
+
+The `update-branch` row is the one that is easy to get wrong. Treating every
+divergence as a rewrite and re-cutting the branch means the update queue
+restarts from nothing on every single commit to `main`.
 
 ## Why there is no checkout
 
@@ -124,6 +136,32 @@ A green run genuinely means nothing needs attention.
   that edits a workflow and is behind its base cannot be merged by the gate, so
   it comments `@dependabot rebase` once and Dependabot, which has the
   permission, brings the head level.
+
+## The token
+
+`dependabot-auto-merge.yml` and `deps-promote.yml` authenticate as the repository
+secret `DEPS_PAT`. Nothing else does.
+
+That split is what makes a personal access token acceptable. Those two do no
+checkout at all — every step is an API call, so there is no working tree, no
+script on disk that a push to `deps` could poison, and no package restore that
+could read the environment. Grep for `actions/checkout` in either file and the
+count is zero. Adding a checkout step to a workflow holding `DEPS_PAT` hands the
+token to whatever the update being tested chooses to run.
+
+`GITHUB_TOKEN` was replaced because it may not write `.github/workflows/`, which
+left every action bump unmergeable whenever it sat behind its base, and it could
+not ask for help either: `@dependabot rebase` from `github-actions[bot]` is
+answered *"Sorry, only users with push access can use that command"*.
+
+## Why the screenshot job is fenced off from `deps`
+
+`ci.yml`'s `publish-screenshots` commits generated screenshots under a human
+name and pushes them to the ref it ran on. On `deps` that is exactly the commit
+the promotion's guard refuses to reset — correctly, because the guard cannot
+tell that commit from someone's real work. The job is therefore skipped when the
+target is `deps` or the pull request is Dependabot's. Loosening the guard
+instead would have removed the only thing protecting the branch contract.
 
 ## Repository settings this depends on
 
