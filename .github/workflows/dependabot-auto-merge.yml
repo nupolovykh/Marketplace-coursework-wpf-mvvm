@@ -5,7 +5,15 @@ name: Dependency auto-merge
 #
 # The merge cannot happen from the pull_request event: a run raised by Dependabot
 # gets a read-only token. workflow_run executes in the context of the default
-# branch with write access, and runs the copy of this file that lives there.
+# branch, and runs the copy of this file that lives there.
+#
+# Its write access comes from DEPS_PAT, not from GITHUB_TOKEN. GITHUB_TOKEN may
+# not write `.github/workflows/`, so it could not merge an action bump that sat
+# behind its base — GitHub refuses the merge — and it could not ask for help
+# either: `@dependabot rebase` from github-actions[bot] is answered "Sorry, only
+# users with push access can use that command". Every action bump was therefore
+# unmergeable. The price of the token is that this workflow must never check out
+# the repository; see the paragraph below.
 #
 # There is NO checkout anywhere in this workflow. Every step talks to the API.
 # That is the whole reason no `ref:` pin is needed: there is no working tree and
@@ -29,11 +37,10 @@ on:
     - cron: "37 6 * * 1"
   workflow_dispatch:
 
-permissions:
-  contents: write
-  pull-requests: write
-  # To start CI on `deps` and to hand off to the promotion workflow, below.
-  actions: write
+# Governs GITHUB_TOKEN, which this job does not use — every call authenticates
+# as DEPS_PAT, whose own scopes are the real limit. Kept at zero so the unused
+# token grants nothing.
+permissions: {}
 
 # Two sweeps at once would both read the same base and the second would merge
 # onto a branch that moved under it.
@@ -51,7 +58,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_TOKEN: ${{ secrets.DEPS_PAT }}
       REPO: ${{ github.repository }}
       DEPS_BRANCH: deps
       BASE_BRANCH: ${{ github.event.repository.default_branch || 'main' }}
@@ -245,14 +252,14 @@ jobs:
           fi
           exit "$stuck"
 
-      # A push made with GITHUB_TOKEN raises no events — GitHub suppresses them so
-      # a workflow cannot retrigger itself, and there is no exception for merges.
-      # So the merged result would never be built and the promotion would never be
-      # refreshed until the next schedule. workflow_dispatch is the documented
-      # exception: it always starts a run. The checks land on `deps`'s new head,
-      # which is also the promotion pull request's head, so they appear there.
-      - name: Build the merged result and refresh the promotion
+      # The promotion still has to be told, because it triggers on a push to the
+      # base branch and merging into `deps` is not one.
+      #
+      # CI is not dispatched here. A merge made with DEPS_PAT pushes `deps` as a
+      # real account, so the push event fires and CI runs on the new head by
+      # itself. Under GITHUB_TOKEN it did not — GitHub suppresses events from
+      # that token so a workflow cannot retrigger itself — which is why this step
+      # used to start both.
+      - name: Refresh the promotion
         if: always() && steps.sweep.outputs.merged != '0' && steps.sweep.outputs.merged != ''
-        run: |
-          gh workflow run "$CI_WORKFLOW" --repo "$REPO" --ref "$DEPS_BRANCH"
-          gh workflow run deps-promote.yml --repo "$REPO" --ref "$BASE_BRANCH"
+        run: gh workflow run deps-promote.yml --repo "$REPO" --ref "$BASE_BRANCH"
