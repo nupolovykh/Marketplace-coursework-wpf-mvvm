@@ -36,7 +36,7 @@ jobs:
             path: Marketplace.SmokeTest/Marketplace.SmokeTest.csproj
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 8.0.x
       - run: dotnet restore "${{ matrix.path }}"
@@ -49,7 +49,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 8.0.x
       - run: dotnet restore Marketplace.sln
@@ -65,7 +65,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 8.0.x
       - run: dotnet run --project Marketplace.SmokeTest/Marketplace.SmokeTest.csproj -c Release
@@ -83,7 +83,7 @@ jobs:
         screen: [authorization, registration, home, profile, statistics, delivery]
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 8.0.x
       - run: dotnet run --project Marketplace.Wpf.Screenshot/Marketplace.Wpf.Screenshot.csproj -c Release -- "${{ runner.temp }}/${{ matrix.screen }}.png" "${{ matrix.screen }}"
