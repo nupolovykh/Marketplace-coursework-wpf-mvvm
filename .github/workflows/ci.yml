@@ -99,6 +99,16 @@ jobs:
   publish-screenshots:
     name: publish screenshots to repo
     needs: [screenshot]
+    # Never write to the dependency branch or to a Dependabot pull request.
+    # This job commits under a human name and pushes to the ref it ran on, and
+    # `deps` is bot-only by contract: deps-promote.yml refuses to reset a branch
+    # carrying a commit that is not a bot's, and turns the run red. That refusal
+    # is correct, so the job has to stay off that path rather than the guard
+    # being loosened. Dependabot's own branches are excluded for the same reason
+    # — the commit would land on the head the gate is about to merge.
+    if: >-
+      (github.head_ref || github.ref_name) != 'deps' &&
+      github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     continue-on-error: true
     permissions:
