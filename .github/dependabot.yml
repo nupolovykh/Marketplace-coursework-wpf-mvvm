@@ -17,6 +17,24 @@
 version: 2
 
 updates:
+  # The one exception to "ungrouped", and it is not a preference. NU1605 is an
+  # error here, not a warning, so a reference that ends up lower than something
+  # else in the graph asks for it fails the restore outright. Two shapes of that
+  # were measured on this repository:
+  #
+  #   * one family member moving alone — Design 9.0.20 pulls Relational 9.0.20,
+  #     which requires EntityFrameworkCore >= 9.0.20, while the project still
+  #     pinned 8.0.30 (#23);
+  #   * the same package moving in one project but not the other — Extensions
+  #     .DependencyInjection went to 10.0.12 in Marketplace.EntityFramework and
+  #     stayed at 8.0.1 in Marketplace.Wpf, which references it (#31).
+  #
+  # Neither can go green alone, so ungrouped they are not "one blocked bump" —
+  # they are a permanently red queue. A group carries every occurrence in every
+  # project in a single pull request, which is the only shape that restores.
+  #
+  # EntityFrameworkCore and Extensions are one group rather than two because the
+  # first pulls the second: EF Core 9 demands Extensions >= 9.
   - package-ecosystem: "nuget"
     directory: "/"
     schedule:
@@ -26,6 +44,20 @@ updates:
     labels: ["dependencies"]
     commit-message:
       prefix: "build(deps)"
+    groups:
+      microsoft-data-and-hosting:
+        patterns:
+          - "Microsoft.EntityFrameworkCore*"
+          - "Microsoft.Extensions.*"
+    # Microsoft.EntityFrameworkCore 10.0.12 ships net10.0 assets only, and every
+    # project here targets net8.0, so a 10.x bump cannot restore no matter what
+    # it is grouped with. 9.x is the highest that runs, and the cap is by version
+    # rather than by update-type so that 8 -> 9 still lands. Lift it when the
+    # projects retarget; Extensions 10.x is unaffected because it still ships
+    # net8.0.
+    ignore:
+      - dependency-name: "Microsoft.EntityFrameworkCore*"
+        versions: [">= 10.0.0"]
 
   - package-ecosystem: "github-actions"
     directory: "/"
