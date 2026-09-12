@@ -118,7 +118,19 @@ jobs:
           # Blob SHAs come from the trees themselves. A tree is addressed by its
           # own SHA, so reading it cannot be stale once the refs are current.
           tree_of() { gh api "repos/$REPO/git/commits/$1" --jq '.tree.sha' 2>/dev/null || echo ""; }
-          tree_json() { gh api "repos/$REPO/git/trees/$1?recursive=1" 2>/dev/null || echo '{"truncated":true,"tree":[]}'; }
+
+          # Written to files, not passed as arguments. A recursive tree listing
+          # of a repository with a few thousand files does not fit in argv, and
+          # --argjson fails the whole step with "Argument list too long" —
+          # measured on Webdev-labprojects-js-ts-react, eleven lab projects.
+          # --slurpfile reads from the file instead, so the document arrives as
+          # a one-element array and is referenced as $b[0].
+          trees=$(mktemp -d)
+          trap 'rm -rf "$trees"' EXIT
+          tree_json() {
+            gh api "repos/$REPO/git/trees/$1?recursive=1" >"$2" 2>/dev/null \
+              || echo '{"truncated":true,"tree":[]}' >"$2"
+          }
 
           deps_sha=$(gh api "repos/$REPO/git/ref/heads/${DEPS_BRANCH}" --jq '.object.sha' 2>/dev/null || echo "")
           merge_base=$(jq -r '.merge_base_commit.sha // empty' <<<"$compare")
@@ -129,43 +141,47 @@ jobs:
             main_tree=$(tree_of "$base_sha")
             deps_tree=$(tree_of "$deps_sha")
             if [ -n "$split_tree" ] && [ -n "$main_tree" ] && [ -n "$deps_tree" ]; then
-              # A truncated listing means the answer is unknown. Say the branch
-              # adds content: that opens a promotion for a human to look at,
-              # rather than resetting a branch that might be holding something.
+              tree_json "$split_tree" "$trees/split.json"
+              tree_json "$main_tree"  "$trees/main.json"
+              tree_json "$deps_tree" "$trees/deps.json"
+
               # -r matters: without it jq prints a JSON string, quotes and all,
-              # and the comparison below never matches. That made every branch
+              # and the comparison below never matches — which made every branch
               # look like it still had something to promote, whatever the trees
-              # actually said.
+              # said. A truncated listing means the answer is unknown, so it
+              # counts as "adds content": that opens a promotion for a human
+              # rather than resetting a branch that might be holding something.
               verdict=$(jq -n -r \
-                --argjson b "$(tree_json "$split_tree")" \
-                --argjson m "$(tree_json "$main_tree")" \
-                --argjson d "$(tree_json "$deps_tree")" '
+                --slurpfile b "$trees/split.json" \
+                --slurpfile m "$trees/main.json" \
+                --slurpfile d "$trees/deps.json" '
                   def blobs: [ .tree[] | select(.type == "blob") | {key: .path, value: .sha} ] | from_entries;
-                  if ($b.truncated or $m.truncated or $d.truncated) then "content"
+                  if ($b[0].truncated or $m[0].truncated or $d[0].truncated) then "content"
                   else
-                    ($b | blobs) as $B | ($m | blobs) as $M | ($d | blobs) as $D
+                    ($b[0] | blobs) as $B | ($m[0] | blobs) as $M | ($d[0] | blobs) as $D
                     | ((($B | keys) + ($D | keys)) | unique)
                     | [ .[] | select($B[.] != $D[.]) ]
                     | if all(. as $p | $M[$p] == $D[$p]) then "nothing" else "content" end
                   end')
               [ "$verdict" = "nothing" ] && adds_nothing=true
+
               # The inputs, so a wrong verdict can be read off the log instead of
-              # reasoned about. Three tree SHAs and the paths that decided it.
+              # reasoned about: three tree SHAs and the paths that decided it.
               echo "::group::branch comparison inputs"
               echo "  split point ${merge_base} tree ${split_tree}"
               echo "  ${BASE_BRANCH}  ${base_sha} tree ${main_tree}"
               echo "  ${DEPS_BRANCH}  ${deps_sha} tree ${deps_tree}"
               echo "  verdict: ${verdict}"
-              jq -n \
-                --argjson b "$(tree_json "$split_tree")" \
-                --argjson m "$(tree_json "$main_tree")" \
-                --argjson d "$(tree_json "$deps_tree")" '
+              jq -n -r \
+                --slurpfile b "$trees/split.json" \
+                --slurpfile m "$trees/main.json" \
+                --slurpfile d "$trees/deps.json" '
                   def blobs: [ .tree[] | select(.type == "blob") | {key: .path, value: .sha} ] | from_entries;
-                  ($b | blobs) as $B | ($m | blobs) as $M | ($d | blobs) as $D
+                  ($b[0] | blobs) as $B | ($m[0] | blobs) as $M | ($d[0] | blobs) as $D
                   | ((($B | keys) + ($D | keys)) | unique)
                   | [ .[] | select($B[.] != $D[.]) ]
                   | .[] as $p
-                  | "  changed by deps: \($p)  split=\($B[$p] // "-" | .[0:8])  main=\($M[$p] // "-" | .[0:8])  deps=\($D[$p] // "-" | .[0:8])"' -r
+                  | "  changed by deps: \($p)  split=\($B[$p] // "-" | .[0:8])  main=\($M[$p] // "-" | .[0:8])  deps=\($D[$p] // "-" | .[0:8])"'
               echo "::endgroup::"
             fi
           fi
