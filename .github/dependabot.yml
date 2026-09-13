@@ -55,9 +55,27 @@ updates:
     # rather than by update-type so that 8 -> 9 still lands. Lift it when the
     # projects retarget; Extensions 10.x is unaffected because it still ships
     # net8.0.
+    #
+    # AutoMapper 14 removed the `AddAutoMapper(params Type[])` overload that
+    # AddMappingtHostBuilderExtensions.cs is written against, so 15.1.3 does not
+    # compile here (#40 failed on exactly that line). Taking it means rewriting
+    # the host builder and accepting AutoMapper's new commercial licensing, and
+    # this is a coursework desktop application that maps its own database
+    # entities.
+    #
+    # The cap is not free, and the honest version of it is this: 13.0.1 is the
+    # last release of the 13 line, GHSA-rvv3-g6hj-g44x is fixed only in 15.1.1
+    # and later, and no backport to 13.x exists — so this pin leaves that
+    # advisory permanently unfixed, and Dependabot will keep the alert open.
+    # What makes it acceptable is the shape of the vulnerability: uncontrolled
+    # recursion on self-referential object graphs, reachable only by mapping an
+    # attacker-controlled graph. Nothing here maps anything but its own
+    # entities. Lift the cap if that ever stops being true.
     ignore:
       - dependency-name: "Microsoft.EntityFrameworkCore*"
         versions: [">= 10.0.0"]
+      - dependency-name: "AutoMapper"
+        versions: [">= 14.0.0"]
 
   - package-ecosystem: "github-actions"
     directory: "/"
