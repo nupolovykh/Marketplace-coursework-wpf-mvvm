@@ -56,7 +56,10 @@ jobs:
       github.event_name != 'workflow_run' ||
       github.event.workflow_run.event == 'pull_request'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    # Long enough to outlast a spent GraphQL budget. GitHub refills it on the
+    # hour, merge_pr below waits for that refill rather than giving up, and a job
+    # that is killed mid-wait would put the pull request back where it was.
+    timeout-minutes: 75
     env:
       GH_TOKEN: ${{ secrets.DEPS_PAT }}
       REPO: ${{ github.repository }}
@@ -81,6 +84,7 @@ jobs:
           note() { summary+=("$1"); printf '   %s\n' "$1"; }
 
           finish() {
+            declare -F budget >/dev/null && echo "Budget on exit: $(budget)"
             echo "merged=${merged}" >>"$GITHUB_OUTPUT"
             if [ "${#summary[@]}" -gt 0 ]; then
               {
@@ -94,6 +98,75 @@ jobs:
 
           now=$(date -u +%s)
           age_days() { echo $(( (now - $(date -u -d "$1" +%s)) / 86400 )); }
+
+          # Which account this run is speaking as. Two things below turn on it:
+          # whether Dependabot will obey a command at all, and whether a marker
+          # already on a pull request counts as an ask this gate made.
+          me=$(gh api user --jq '.login')
+          echo "Authenticated as ${me}."
+
+          # What the account has left, read at both ends of the run. It costs
+          # nothing: /rate_limit is the one endpoint GitHub does not meter.
+          #
+          # It exists because the last stall was diagnosed by guesswork. Three
+          # green pull requests failed to merge with "API rate limit already
+          # exceeded for user ID", and nothing in the log said which budget had
+          # run out or who had spent it. REST and GraphQL are metered separately;
+          # the budget belongs to the account, not to the repository; and every
+          # token authenticating as that account draws on the same one. Two
+          # readings turn the next occurrence into a measurement instead of an
+          # argument.
+          budget() {
+            gh api rate_limit \
+              --jq '"REST \(.resources.core.remaining)/\(.resources.core.limit), GraphQL \(.resources.graphql.remaining)/\(.resources.graphql.limit)"' \
+              2>/dev/null || echo "unreadable"
+          }
+          echo "Budget on entry: $(budget)"
+
+          # Merge, and survive the account running out of GraphQL.
+          #
+          # `gh pr merge` is a GraphQL mutation, and when that budget is gone the
+          # merge is refused. The gate used to read the refusal as a verdict on
+          # the pull request: it went red and moved on, and since nothing
+          # re-raises an event for a pull request that has not changed, the next
+          # attempt was the weekly sweep. One exhausted hour cost a week.
+          #
+          # A spent budget is not an error, it is a wait. GitHub publishes when it
+          # refills, so wait for that and try again. The job is allowed to sit
+          # idle through it: `timeout-minutes` covers a full reset window, and in
+          # a public repository that runner time is free.
+          merge_pr() {
+            local number="$1" head_sha="$2" attempt out reset wait
+            for attempt in 1 2 3; do
+              if out=$(gh pr merge "$number" \
+                  --repo "$REPO" \
+                  --squash \
+                  --delete-branch \
+                  --match-head-commit "$head_sha" 2>&1); then
+                return 0
+              fi
+              printf '%s\n' "$out"
+
+              case "$out" in
+                *"rate limit"*|*"secondary rate"*|*"abuse detection"*) ;;
+                # Anything else is about this pull request and will not improve
+                # by being asked again.
+                *) return 1 ;;
+              esac
+
+              [ "$attempt" -eq 3 ] && return 1
+
+              reset=$(gh api rate_limit --jq '.resources.graphql.reset' 2>/dev/null || echo 0)
+              wait=$(( reset - $(date -u +%s) + 15 ))
+              # A secondary limit lifts in seconds and publishes no reset of its
+              # own, so the floor matters as much as the ceiling.
+              [ "$wait" -lt 30 ] && wait=30
+              [ "$wait" -gt 3600 ] && wait=3600
+              note "#${number}: GitHub is rate limiting this account; waiting ${wait}s"
+              sleep "$wait"
+            done
+            return 1
+          }
 
           # Post a comment at most once per (pull request, marker).
           #
@@ -111,6 +184,54 @@ jobs:
             gh api "repos/$REPO/issues/${number}/comments" -f "body=${body}
 
           ${marker}" >/dev/null
+          }
+
+          # Ask Dependabot to do something, and find out whether it agreed.
+          #
+          # Dependabot obeys a command only from an account with push access, and
+          # answers anyone else with "Sorry, only users with push access can use
+          # that command". This gate used to run under GITHUB_TOKEN, so every ask
+          # it ever made was refused — and because the marker recorded that an ask
+          # had happened rather than that it had been accepted, it never asked
+          # again. Two pull requests in Marketplace sat unmergeable for days
+          # behind a marker that documented a refusal.
+          #
+          # So: a marker counts only if this identity left it, which means a
+          # marker from an identity Dependabot rejected no longer silences
+          # anything. And a refused comment is deleted, which puts the ask back
+          # for the next sweep instead of leaving a record that it landed.
+          #
+          # An accepted command is answered with a force-push and no comment at
+          # all, so silence is the success case. A refusal arrives in seconds.
+          #
+          # 0 asked, 1 this identity already asked, 2 refused.
+          ask_dependabot() {
+            local number="$1" head_sha="$2" kind="$3" command="$4"
+            local marker="<!-- auto-merge:${kind}:${head_sha} -->" mine posted id created answer
+            mine=$(gh api --paginate "repos/$REPO/issues/${number}/comments?per_page=100" \
+              --jq ".[] | select(.user.login == \"${me}\") | .body")
+            if grep -qF "$marker" <<<"$mine"; then
+              return 1
+            fi
+
+            posted=$(gh api "repos/$REPO/issues/${number}/comments" -f "body=${command}
+
+          ${marker}" --jq '"\(.id) \(.created_at)"')
+            id=${posted%% *}
+            created=${posted#* }
+
+            for _ in 1 2; do
+              sleep 15
+              answer=$(gh api "repos/$REPO/issues/${number}/comments?per_page=100" \
+                --jq "[.[] | select(.user.login == \"dependabot[bot]\") | select(.created_at > \"${created}\") | .body] | join(\" \")")
+              case "$answer" in
+                *"push access"*|*"cannot be used"*)
+                  gh api --method DELETE "repos/$REPO/issues/comments/${id}" >/dev/null 2>&1 || true
+                  return 2
+                  ;;
+              esac
+            done
+            return 0
           }
 
           numbers=$(gh api --paginate \
@@ -157,7 +278,34 @@ jobs:
                 continue
                 ;;
               *)
-                note "#${number}: CI concluded '${conclusion}'; left open for a human"
+                # Red, but not necessarily this update's doing.
+                #
+                # CI runs on the merge of the pull request into the base, and two
+                # lockfile updates to the same directory merge without a textual
+                # conflict into a lockfile that describes neither of them. Webdev
+                # showed it plainly: a bump of @types/node failed with
+                # "npm ci ... Missing: yaml@2.9.1 from lock file", a package that
+                # bump never touched. Five pull requests were red for the same
+                # reason, and the gate was telling a human to fix each of them.
+                #
+                # A head that is behind its base has not been tested against what
+                # the base holds now. Dependabot regenerates the lockfile on
+                # recreate, so ask for that first, and judge the update on its own
+                # merits only once it is level with the base.
+                behind=$(gh api "repos/$REPO/compare/${DEPS_BRANCH}...${head_sha}" --jq '.behind_by' 2>/dev/null || echo 0)
+                if [ "${behind:-0}" -gt 0 ]; then
+                  note "#${number}: CI concluded '${conclusion}' while ${behind} behind ${DEPS_BRANCH}; rebuilding it before blaming it"
+                  rc=0
+                  ask_dependabot "$number" "$head_sha" recreate "@dependabot recreate" || rc=$?
+                  case "$rc" in
+                    0) note "#${number}: asked Dependabot to recreate" ;;
+                    2) note "#${number}: Dependabot refused a recreate asked for by ${me}"; stuck=1 ;;
+                  esac
+                  [ "$age" -ge "$STALE_DAYS" ] && stuck=1
+                  continue
+                fi
+
+                note "#${number}: CI concluded '${conclusion}' on a head level with ${DEPS_BRANCH}; left open for a human"
                 if [ "$age" -ge "$STALE_DAYS" ]; then
                   stuck=1
                   note "#${number}: RED for ${age}d — this update is not landing"
@@ -182,8 +330,12 @@ jobs:
 
             if [ "$mergeable" != "true" ]; then
               note "#${number}: not cleanly mergeable (mergeable=${mergeable})"
-              comment_once "$number" "<!-- auto-merge:rebase:${head_sha} -->" "@dependabot rebase" \
-                && note "#${number}: asked Dependabot to rebase" || true
+              rc=0
+              ask_dependabot "$number" "$head_sha" rebase "@dependabot rebase" || rc=$?
+              case "$rc" in
+                0) note "#${number}: asked Dependabot to rebase" ;;
+                2) note "#${number}: Dependabot refused a rebase asked for by ${me}"; stuck=1 ;;
+              esac
               [ "$age" -ge "$STALE_DAYS" ] && stuck=1
               continue
             fi
@@ -203,8 +355,12 @@ jobs:
 
             if [ "$behind_by" -gt 0 ] && grep -q '^\.github/workflows/' <<<"$changed"; then
               note "#${number}: edits a workflow and is ${behind_by} behind; a merge would be refused"
-              comment_once "$number" "<!-- auto-merge:rebase:${head_sha} -->" "@dependabot rebase" \
-                && note "#${number}: asked Dependabot to rebase" || true
+              rc=0
+              ask_dependabot "$number" "$head_sha" rebase "@dependabot rebase" || rc=$?
+              case "$rc" in
+                0) note "#${number}: asked Dependabot to rebase" ;;
+                2) note "#${number}: Dependabot refused a rebase asked for by ${me}"; stuck=1 ;;
+              esac
               [ "$age" -ge "$STALE_DAYS" ] && stuck=1
               continue
             fi
@@ -213,11 +369,7 @@ jobs:
             # $head_sha, and between that run and this call the head can move (a
             # Dependabot rebase, a push by anyone with write access). Without it the
             # gate merges whatever the branch points at now, which nothing tested.
-            if gh pr merge "$number" \
-                --repo "$REPO" \
-                --squash \
-                --delete-branch \
-                --match-head-commit "$head_sha"; then
+            if merge_pr "$number" "$head_sha"; then
               note "#${number}: merged ${head_sha:0:7} into ${DEPS_BRANCH}"
               merged=$((merged + 1))
             else
