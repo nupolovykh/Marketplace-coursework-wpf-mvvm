@@ -12,7 +12,7 @@ namespace Marketplace.Wpf.HostBuilders
 		{
 			host.ConfigureServices((services) =>
 			{
-				services.AddAutoMapper(typeof(OrganizationProfile));
+				services.AddAutoMapper(cfg => cfg.AddProfile<OrganizationProfile>());
 			});
 
 			return host;
