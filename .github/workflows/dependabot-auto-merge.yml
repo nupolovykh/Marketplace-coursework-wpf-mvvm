@@ -59,6 +59,14 @@ jobs:
     # Long enough to outlast a spent GraphQL budget. GitHub refills it on the
     # hour, merge_pr below waits for that refill rather than giving up, and a job
     # that is killed mid-wait would put the pull request back where it was.
+    #
+    # DEADLINE_SECONDS, not this, is what the script obeys. A job killed by
+    # `timeout-minutes` is reported as `cancelled`, and that conclusion lands on
+    # whatever commit the default branch points at — a red mark on an innocent
+    # commit, permanent, for a queue that was merely slow. Observed in Webdev:
+    # with a spent GraphQL budget and nine open updates, the per-update waits
+    # summed past 75 minutes and killed the job every time. The margin between
+    # the two numbers is what the rest of the sweep needs after the last merge.
     timeout-minutes: 75
     env:
       GH_TOKEN: ${{ secrets.DEPS_PAT }}
@@ -72,6 +80,9 @@ jobs:
       # unrelated commit on the default branch forever. A job summary or an
       # annotation on a green run would be indistinguishable from silence.
       STALE_DAYS: "14"
+      # The wall clock this script keeps for itself, comfortably inside
+      # `timeout-minutes`. Past it, waiting stops and the queue is reported.
+      DEADLINE_SECONDS: "3300"
     steps:
       - name: Merge Dependabot pull requests that passed CI
         id: sweep
@@ -80,9 +91,15 @@ jobs:
 
           merged=0
           stuck=0
+          out_of_time=0
           summary=()
 
           note() { summary+=("$1"); printf '   %s\n' "$1"; }
+
+          # Everything this job is allowed to spend, fixed once so that every
+          # later reading is against the same clock.
+          deadline=$(( $(date -u +%s) + DEADLINE_SECONDS ))
+          seconds_left() { echo $(( deadline - $(date -u +%s) )); }
 
           finish() {
             declare -F budget >/dev/null && echo "Budget on exit: $(budget)"
@@ -163,6 +180,16 @@ jobs:
               # own, so the floor matters as much as the ceiling.
               [ "$wait" -lt 30 ] && wait=30
               [ "$wait" -gt 3600 ] && wait=3600
+
+              # Waiting is only worth it if there is time to act afterwards.
+              # Sleeping past the deadline does not merge anything — it gets the
+              # job killed, and a killed job reports `cancelled` against the
+              # default branch's tip. Report the queue instead and come back.
+              if [ "$wait" -ge "$(seconds_left)" ]; then
+                note "#${number}: rate limited with $(seconds_left)s left; not waiting ${wait}s"
+                return 3
+              fi
+
               note "#${number}: GitHub is rate limiting this account; waiting ${wait}s"
               sleep "$wait"
             done
@@ -370,16 +397,34 @@ jobs:
             # $head_sha, and between that run and this call the head can move (a
             # Dependabot rebase, a push by anyone with write access). Without it the
             # gate merges whatever the branch points at now, which nothing tested.
-            if merge_pr "$number" "$head_sha"; then
-              note "#${number}: merged ${head_sha:0:7} into ${DEPS_BRANCH}"
-              merged=$((merged + 1))
-            else
-              echo "::error::#${number} passed CI but could not be merged into ${DEPS_BRANCH}."
-              note "#${number}: MERGE FAILED after green CI — see the log"
-              # Not subject to STALE_DAYS: this one is the automation's own fault.
-              stuck=1
-            fi
+            rc=0
+            merge_pr "$number" "$head_sha" || rc=$?
+            case "$rc" in
+              0)
+                note "#${number}: merged ${head_sha:0:7} into ${DEPS_BRANCH}"
+                merged=$((merged + 1))
+                ;;
+              3)
+                # Out of time, not out of luck. The update is still green and
+                # still mergeable; the next sweep picks it up with a fresh
+                # budget. Reporting it is what stops that from being silence.
+                note "#${number}: ran out of time before the rate limit lifted"
+                stuck=1
+                out_of_time=1
+                break
+                ;;
+              *)
+                echo "::error::#${number} passed CI but could not be merged into ${DEPS_BRANCH}."
+                note "#${number}: MERGE FAILED after green CI — see the log"
+                # Not subject to STALE_DAYS: this one is the automation's own fault.
+                stuck=1
+                ;;
+            esac
           done
+
+          if [ "${out_of_time:-0}" -ne 0 ]; then
+            note "sweep stopped early on its own deadline; the rest of the queue is untouched"
+          fi
 
           # Security updates ignore `target-branch`. GitHub raises an advisory fix
           # against the default branch whatever dependabot.yml says, so it never
