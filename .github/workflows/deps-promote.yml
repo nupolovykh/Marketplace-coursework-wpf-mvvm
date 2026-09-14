@@ -64,6 +64,44 @@ jobs:
         run: |
           set -euo pipefail
 
+          # A blocked promotion has to reach a human, but this workflow runs
+          # against the default branch, so failing it pins a red check to whatever
+          # commit that branch points at — permanently, because a check run cannot
+          # be deleted. The report goes into the same issue the gate uses, so one
+          # thread covers the whole pipeline, and it closes itself when a run gets
+          # through. If issues are unavailable the run still fails: silence is the
+          # one outcome this must never produce.
+          marker="<!-- dependency-queue-stuck -->"
+
+          find_report() {
+            local issues
+            issues=$(gh api --paginate "repos/$REPO/issues?state=open&per_page=100" \
+              --jq '.[] | select(.pull_request | not) | "\(.number)\t\(.body // "")"' 2>/dev/null || true)
+            awk -v m="$marker" -F'\t' 'index($0, m) {print $1; exit}' <<<"$issues"
+          }
+
+          report_blocked() {
+            local detail="$1" issue body
+            issue=$(find_report)
+            body="The dependency promotion is blocked.
+
+          ${detail}
+
+          Run: ${GITHUB_SERVER_URL}/${REPO}/actions/runs/${GITHUB_RUN_ID}
+
+          ${marker}"
+            if [ -n "$issue" ]; then
+              gh api --method PATCH "repos/$REPO/issues/${issue}" -f "body=${body}" >/dev/null \
+                && { echo "::warning::Promotion blocked; updated issue #${issue}."; return 0; }
+            else
+              issue=$(gh api "repos/$REPO/issues" -f "title=Dependency updates are stuck" \
+                -f "body=${body}" --jq '.number' 2>/dev/null) \
+                && { echo "::warning::Promotion blocked; opened issue #${issue}."; return 0; }
+            fi
+            echo "::error::Promotion blocked and the report could not be filed."
+            return 1
+          }
+
           owner="${REPO%%/*}"
           title="Dependency updates: promote \`${DEPS_BRANCH}\` to \`${BASE_BRANCH}\`"
 
@@ -275,7 +313,16 @@ jobs:
                   echo "$nonbot"
                   echo '```'
                 } >>"$GITHUB_STEP_SUMMARY"
-                exit 1
+                report_blocked "\`${DEPS_BRANCH}\` carries commits that are not from a bot, so it was not reset.
+
+          Nothing on \`${DEPS_BRANCH}\` is worth keeping — Dependabot re-raises every bump on its
+          next scan — so realign it and let the queue refill:
+
+          \`\`\`
+          git fetch origin ${BASE_BRANCH}
+          git push --force origin origin/${BASE_BRANCH}:${DEPS_BRANCH}
+          \`\`\`"
+                exit 0
               fi
 
               if [ "$adds_nothing" = true ]; then
@@ -334,8 +381,8 @@ jobs:
             ahead) ;;
 
             *)
-              echo "::error::Unexpected compare status '${status}'."
-              exit 1
+              report_blocked "The comparison between \`${BASE_BRANCH}\` and \`${DEPS_BRANCH}\` returned an unexpected status: \`${status}\`."
+              exit 0
               ;;
           esac
 
@@ -404,7 +451,12 @@ jobs:
                 echo "::error::Could not open the promotion pull request."
                 ;;
             esac
-            exit 1
+            report_blocked "The promotion pull request could not be opened, so ${ahead_by} update(s) sit on \`${DEPS_BRANCH}\` with no way out.
+
+          \`\`\`
+          ${output}
+          \`\`\`"
+            exit 0
           fi
 
           new_number=$(jq -r '.number' <<<"$output")
