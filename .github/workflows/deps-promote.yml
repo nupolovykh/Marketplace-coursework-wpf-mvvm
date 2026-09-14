@@ -73,11 +73,15 @@ jobs:
           # one outcome this must never produce.
           marker="<!-- dependency-queue-stuck -->"
 
+          # The marker is matched inside jq, against the body as one value. Reading
+          # the listing line by line does not work: an issue body is multi-line, the
+          # marker sits on a line of its own, and the first field of *that* line is
+          # the marker itself rather than a number — which then goes into the request
+          # path and comes back 404.
           find_report() {
-            local issues
-            issues=$(gh api --paginate "repos/$REPO/issues?state=open&per_page=100" \
-              --jq '.[] | select(.pull_request | not) | "\(.number)\t\(.body // "")"' 2>/dev/null || true)
-            awk -v m="$marker" -F'\t' 'index($0, m) {print $1; exit}' <<<"$issues"
+            gh api --paginate "repos/$REPO/issues?state=open&per_page=100" \
+              --jq ".[] | select(.pull_request | not) | select((.body // \"\") | contains(\"$marker\")) | .number" \
+              2>/dev/null | head -1
           }
 
           report_blocked() {
