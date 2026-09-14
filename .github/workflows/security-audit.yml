@@ -70,9 +70,14 @@ jobs:
           # check to whatever commit that branch points at — permanently, since a
           # check run cannot be deleted and the mark outlives the fix.
           marker="<!-- vulnerable-dependencies -->"
-          issues=$(gh api --paginate "repos/$GITHUB_REPOSITORY/issues?state=open&per_page=100" \
-            --jq '.[] | select(.pull_request | not) | "\(.number)\t\(.body // "")"' 2>/dev/null || true)
-          issue=$(awk -v m="$marker" -F'\t' 'index($0, m) {print $1; exit}' <<<"$issues")
+          # The marker is matched inside jq, against the body as one value. Reading
+          # the listing line by line does not work: an issue body is multi-line, the
+          # marker sits on a line of its own, and the first field of *that* line is
+          # the marker itself rather than a number — which then goes into the request
+          # path and comes back 404.
+          issue=$(gh api --paginate "repos/$GITHUB_REPOSITORY/issues?state=open&per_page=100" \
+            --jq ".[] | select(.pull_request | not) | select((.body // \"\") | contains(\"$marker\")) | .number" \
+            2>/dev/null | head -1)
 
           if [ "$affected" -gt 0 ]; then
             detail="${affected} package reference(s) carry an advisory."
