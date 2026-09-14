@@ -10,16 +10,18 @@ name: Security audit
 # blocks nothing.
 #
 # It is also the one workflow that speaks about `main` itself. Dependabot's
-# security updates ignore `target-branch` and never enter the `deps` flow, so a
-# red run here is the signal that main needs a human.
+# security updates ignore `target-branch` and never enter the `deps` flow, so
+# this report is the only place the whole picture is written down.
 
 on:
   schedule:
     - cron: "41 5 * * 1"
   workflow_dispatch:
 
+# GITHUB_TOKEN is enough here: the only thing this writes is the report issue.
 permissions:
   contents: read
+  issues: write
 
 jobs:
   nuget:
@@ -44,9 +46,16 @@ jobs:
           done
 
       # `dotnet list package --vulnerable` reports findings on stdout and still
-      # exits 0, so the exit code has to come from reading its output.
+      # exits 0, so the verdict has to come from reading its output.
       - name: Audit
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          # Explicit: the step's shell is `bash -e`, and this script handles its
+          # own failures rather than dying at the first one.
+          set +e
+          set -uo pipefail
+
           report=$(for proj in Marketplace.Domain Marketplace.EntityFramework \
                                Marketplace.Playground Marketplace.SmokeTest; do
             dotnet list "$proj" package --vulnerable --include-transitive
@@ -54,9 +63,43 @@ jobs:
 
           echo "$report"
 
-          if grep -qiE '^\s*>' <<<"$report"; then
-            echo "::error::Vulnerable packages are present on the default branch."
+          affected=$(grep -ciE '^\s*>' <<<"$report")
+
+          # The finding is an issue, not a failed run: this workflow runs on a
+          # schedule against the default branch, so a failure would pin a red
+          # check to whatever commit that branch points at — permanently, since a
+          # check run cannot be deleted and the mark outlives the fix.
+          marker="<!-- vulnerable-dependencies -->"
+          issues=$(gh api --paginate "repos/$GITHUB_REPOSITORY/issues?state=open&per_page=100" \
+            --jq '.[] | select(.pull_request | not) | "\(.number)\t\(.body // "")"' 2>/dev/null || true)
+          issue=$(awk -v m="$marker" -F'\t' 'index($0, m) {print $1; exit}' <<<"$issues")
+
+          if [ "$affected" -gt 0 ]; then
+            detail="${affected} package reference(s) carry an advisory."
+            body="${detail}
+
+          \`\`\`
+          $(grep -E '^\s*(>|Project)' <<<"$report")
+          \`\`\`
+
+          Run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+
+          ${marker}"
+            if [ -n "$issue" ]; then
+              gh api --method PATCH "repos/$GITHUB_REPOSITORY/issues/${issue}" -f "body=${body}" >/dev/null \
+                && { echo "::warning::${detail} Updated issue #${issue}."; exit 0; }
+            else
+              issue=$(gh api "repos/$GITHUB_REPOSITORY/issues" -f "title=Vulnerable dependencies" \
+                -f "body=${body}" --jq '.number' 2>/dev/null) \
+                && { echo "::warning::${detail} Opened issue #${issue}."; exit 0; }
+            fi
+            echo "::error::${detail} The report could not be filed, so this run fails instead."
             exit 1
           fi
 
           echo "No vulnerable packages reported."
+          if [ -n "$issue" ]; then
+            gh api --method PATCH "repos/$GITHUB_REPOSITORY/issues/${issue}" \
+              -f state=closed -f state_reason=completed >/dev/null 2>&1 || true
+            echo "Nothing left to report; closed issue #${issue}."
+          fi
