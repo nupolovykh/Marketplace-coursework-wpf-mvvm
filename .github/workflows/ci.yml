@@ -87,7 +87,7 @@ jobs:
         with:
           dotnet-version: 8.0.x
       - run: dotnet run --project Marketplace.Wpf.Screenshot/Marketplace.Wpf.Screenshot.csproj -c Release -- "${{ runner.temp }}/${{ matrix.screen }}.png" "${{ matrix.screen }}"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: screenshot-${{ matrix.screen }}
           path: ${{ runner.temp }}/${{ matrix.screen }}.png
