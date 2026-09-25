@@ -67,19 +67,25 @@ jobs:
           # A blocked promotion has to reach a human, but this workflow runs
           # against the default branch, so failing it pins a red check to whatever
           # commit that branch points at — permanently, because a check run cannot
-          # be deleted. The report goes into the same issue the gate uses, so one
-          # thread covers the whole pipeline, and it closes itself when a run gets
-          # through. If issues are unavailable the run still fails: silence is the
-          # one outcome this must never produce.
-          marker="<!-- dependency-queue-stuck -->"
+          # be deleted. The report goes into an issue instead. If issues are
+          # unavailable the run still fails: silence is the one outcome this must
+          # never produce.
+          #
+          # The issue is this workflow's own, with its own marker, and this
+          # workflow closes it on the first run that is not blocked. It used to
+          # share the auto-merge gate's marker and rely on the gate to close it,
+          # but the gate closes on "the queue is moving", which says nothing about
+          # the promotion: the gate closed it, the next run here found the
+          # promotion still blocked and opened a new one, every day.
+          marker="<!-- dependency-promotion-blocked -->"
+          blocked=0
 
+          # The marker is matched inside jq, against the body as one value. Reading
+          # the listing line by line does not work: an issue body is multi-line, the
+          # marker sits on a line of its own, and the first field of *that* line is
+          # the marker itself rather than a number — which then goes into the request
+          # path and comes back 404.
           find_report() {
-            local issues
-            # The marker is matched inside jq, against the body as one value. Reading
-            # the listing line by line does not work: an issue body is multi-line, the
-            # marker sits on a line of its own, and the first field of *that* line is
-            # the marker itself rather than a number — which then goes into the request
-            # path and comes back 404.
             gh api --paginate "repos/$REPO/issues?state=open&per_page=100" \
               --jq ".[] | select(.pull_request | not) | select((.body // \"\") | contains(\"$marker\")) | .number" \
               2>/dev/null | head -1
@@ -87,6 +93,7 @@ jobs:
 
           report_blocked() {
             local detail="$1" issue body
+            blocked=1
             issue=$(find_report)
             body="The dependency promotion is blocked.
 
@@ -99,13 +106,37 @@ jobs:
               gh api --method PATCH "repos/$REPO/issues/${issue}" -f "body=${body}" >/dev/null \
                 && { echo "::warning::Promotion blocked; updated issue #${issue}."; return 0; }
             else
-              issue=$(gh api "repos/$REPO/issues" -f "title=Dependency updates are stuck" \
+              issue=$(gh api "repos/$REPO/issues" -f "title=Dependency promotion is blocked" \
                 -f "body=${body}" --jq '.number' 2>/dev/null) \
                 && { echo "::warning::Promotion blocked; opened issue #${issue}."; return 0; }
             fi
             echo "::error::Promotion blocked and the report could not be filed."
             return 1
           }
+
+          resolve_report() {
+            local issue
+            issue=$(find_report || true)
+            [ -z "$issue" ] && return 0
+            gh api --method PATCH "repos/$REPO/issues/${issue}" \
+              -f state=closed -f state_reason=completed >/dev/null \
+              && echo "The promotion is no longer blocked; closed issue #${issue}." \
+              || echo "::warning::The promotion is no longer blocked, but issue #${issue} could not be closed."
+          }
+
+          # Every path below ends in its own `exit`, so the issue is resolved here
+          # once rather than at each of them. A run that exits non-zero, or that
+          # reported a block, leaves the issue alone.
+          trees=""
+          on_exit() {
+            local rc=$?
+            [ -n "$trees" ] && rm -rf "$trees"
+            if [ "$rc" -eq 0 ] && [ "$blocked" -eq 0 ]; then
+              resolve_report
+            fi
+            exit "$rc"
+          }
+          trap on_exit EXIT
 
           owner="${REPO%%/*}"
           title="Dependency updates: promote \`${DEPS_BRANCH}\` to \`${BASE_BRANCH}\`"
@@ -169,7 +200,6 @@ jobs:
           # --slurpfile reads from the file instead, so the document arrives as
           # a one-element array and is referenced as $b[0].
           trees=$(mktemp -d)
-          trap 'rm -rf "$trees"' EXIT
           tree_json() {
             gh api "repos/$REPO/git/trees/$1?recursive=1" >"$2" 2>/dev/null \
               || echo '{"truncated":true,"tree":[]}' >"$2"

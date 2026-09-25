@@ -74,14 +74,19 @@ poison, so a job holding `contents: write` can never be made to execute code
 that came from the branch it writes to. This is why no `ref:` pin is needed:
 the class of problem it defends against does not exist here.
 
-## Why updates are ungrouped
+## How updates are grouped
 
-Grouping trades away the property that matters most when nobody is watching.
-One pull request per bump means a bump that breaks the build blocks only itself
-and the rest still land. Inside a group, one bad member holds back every good
-one until a human splits it out. Dependabot rebases the losers of a lockfile
-race by itself, so the queue drains without help — measured on this repository:
-nine updates, two days, zero left open.
+Monthly, and per directory: one pull request carrying every minor and patch
+bump, and one pull request per major. Minor and patch bumps rarely break
+anything, so grouping them costs little and turns a weekly stream of single-bump
+pull requests into one a month. Majors stay separate, so a major that breaks the
+build blocks only itself while the group still lands.
+
+`Microsoft.EntityFrameworkCore*` and `Microsoft.Extensions.*` are one family
+group across all update types, listed before `minor-and-patch` so they match it
+first: NU1605 is an error here, and a family member moving alone cannot restore.
+EF Core stays below 10, which ships net10.0 assets only — see the comments in
+`.github/dependabot.yml`.
 
 ## Why the vulnerability audit is not in CI
 
@@ -89,31 +94,41 @@ It answers a question about the global advisory database, not about the commit
 under test. A newly published advisory turns every open pull request red at once
 — including the bump that fixes it — and in a repository where green CI is what
 merges updates, that stops updates from landing exactly when they matter most.
-It runs weekly in `security-audit.yml` and blocks nothing.
+It runs weekly in `security-audit.yml`, blocks nothing, and writes its findings
+into the run's summary and warnings rather than an issue. For NuGet it is the
+only place transitive advisories show up: without a lock file the dependency
+graph lists direct packages only, so Dependabot alerts cannot see them.
 
 ## How silence is broken
 
 An unattended repository's real failure mode is not a bad merge, it is a queue
-that quietly stops moving. The only notification that reaches anyone is a failed
-workflow run, which GitHub emails to the repository owner. So:
+that quietly stops moving. Failing the run is not an option for that: these
+workflows run against the default branch, so a red run pins a check to whatever
+commit `main` points at, permanently. Each problem goes into an issue that its
+own workflow opens and closes:
 
-- the weekly sweep **exits non-zero** when a Dependabot pull request has been
-  open and unmerged for 14 days, or when one passed CI and the merge was refused
-  (that one is the automation's own fault and fails immediately);
-- `deps-promote.yml` exits non-zero when the branch contract is violated;
-- `security-audit.yml` turns red on a new high-severity advisory.
+| Issue | Opened by | Opened when | Closed when |
+|---|---|---|---|
+| *Dependency updates are stuck* | the weekly sweep | a Dependabot pull request has sat unmerged for 14 days, or passed CI and the merge was refused | the first sweep that finds the queue moving |
+| *Dependency promotion is blocked* | `deps-promote.yml` | the branch contract is violated, or the promotion cannot be opened | the first promotion run that is not blocked |
 
-A green run genuinely means nothing needs attention.
+The two use different markers on purpose. They used to share one, and the sweep
+kept closing an issue the promotion was still blocked on, which the next
+promotion run reopened as a new issue — every day.
+
+A run turns red only when its issue cannot be filed. The issues are opened
+through `DEPS_PAT`, so under the owner's account: GitHub does not notify you of
+your own actions, and they show up in the Issues tab rather than in the inbox.
 
 ## Known limits
 
-- **Security updates never reach `deps`.** `target-branch` is a version-update
+- **Security updates are switched off.** `target-branch` is a version-update
   option; a fix raised from a Dependabot alert goes to the default branch
-  whatever `dependabot.yml` says. Nothing in a repository can redirect it. The
-  sweep lists those pull requests and turns red once they are 14 days old, so
-  they cannot be invisible — but a human merges them. This is also why the
-  branch is called `deps` and not `security`: security updates are the one kind
-  it does not carry.
+  whatever `dependabot.yml` says, and nothing in a repository can redirect it.
+  Left on, they would put bot commits on `main` past the promotion, so they are
+  disabled in the repository settings. Advisories still show in the Security tab
+  and in `security-audit.yml`'s summary, and the monthly version updates carry
+  most fixes through `deps` anyway.
 - **The gate is only as good as CI.** `CI` green on a package bump means the
   solution restores, builds on both runners and the smoke test passes. There is
   no coverage of the WPF views beyond the screenshot job, so a bump that changes
@@ -122,20 +137,23 @@ A green run genuinely means nothing needs attention.
 - **Actions are pinned to major tags, not commit SHAs.** A retargeted tag would
   execute in a job holding a write token. Pinning to SHAs closes that, and
   Dependabot still updates them; it is the obvious next hardening step.
-- **The promotion pull request carries a second, parked CI entry.** It is opened
-  by `GITHUB_TOKEN`, so GitHub registers a `pull_request` run for it and holds it
-  at `action_required` — *"1 workflow awaiting approval"*. It never turns green on
-  its own and there is no reason to approve it: checks attach to a commit, not to
-  a pull request, so the run this workflow dispatches on `deps`'s head is the real
-  one and shows up as the pull request's own green CI. **The merge itself is not
-  blocked** — the button is live and the banner says so. To make the extra entry
-  disappear, set a repository secret `DEPS_TOKEN` to a personal access token: the
-  pull request then comes from a real account, CI runs on it normally, and the
-  dispatch becomes unnecessary. Nothing requires it.
-- **`GITHUB_TOKEN` cannot write `.github/workflows/`.** A Dependabot pull request
-  that edits a workflow and is behind its base cannot be merged by the gate, so
-  it comments `@dependabot rebase` once and Dependabot, which has the
-  permission, brings the head level.
+- **The automation runs on a personal access token, not `GITHUB_TOKEN`.** See
+  *The token* below. Two limits disappeared with it and are recorded here so
+  nobody reintroduces them: `GITHUB_TOKEN` may not write `.github/workflows/`,
+  which left every action bump unmergeable whenever it sat behind its base; and
+  it could not ask for help either, because `@dependabot rebase` from
+  `github-actions[bot]` is answered *"Sorry, only users with push access can use
+  that command"*. The promotion also no longer parks a second CI entry at
+  `action_required`, because it is opened by a real account.
+- **A sweep can be cancelled while it is queued.** `concurrency` with
+  `cancel-in-progress: false` keeps exactly one run waiting per group; during a
+  burst of events the waiting one is cancelled by the next. Nothing is lost —
+  every sweep re-reads state from the API rather than from the event — so a
+  `cancelled` sweep in the run list is expected, not a fault.
+- **The sweep keeps its own clock.** It stops at `DEADLINE_SECONDS`, inside the
+  job's `timeout-minutes`, rather than waiting out a spent GraphQL budget until
+  the job is killed: a killed job is reported as `cancelled` against whatever
+  commit `main` points at.
 
 ## The token
 
@@ -167,12 +185,17 @@ instead would have removed the only thing protecting the branch contract.
 
 Not in the repository, so listed here:
 
-1. **Settings → Actions → General → Workflow permissions**: *Allow GitHub
+1. **Settings → Secrets and variables → Actions**: `DEPS_PAT` — see *The token*.
+   Without it both automation workflows fail immediately with 401.
+2. **Settings → Actions → General → Workflow permissions**: *Allow GitHub
    Actions to create and approve pull requests* — ticked. Without it the
    promotion pull request cannot be opened and the step fails with 403.
    (The read-only default for `GITHUB_TOKEN` is fine: each workflow requests
    what it needs via its own `permissions:` block.)
-2. **Settings → General → Pull Requests**: squash merging enabled.
+3. **Settings → General → Pull Requests**: squash merging enabled.
+4. **Settings → Advanced Security → Dependabot alerts**: enabled, so advisories
+   show in the Security tab. **Dependabot security updates**: disabled — they
+   target `main` directly and would bypass `deps`; see *Known limits*.
 
 ## Running it by hand
 
