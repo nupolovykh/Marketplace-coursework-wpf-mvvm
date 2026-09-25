@@ -2,22 +2,25 @@
 # once CI is green on that exact commit; the collected result reaches main only
 # through one promotion pull request that a human merges.
 #
-# Deliberately UNGROUPED. With one pull request per bump, a bump that breaks the
-# build blocks only itself and the rest still land. Inside a group, one bad
-# member holds back every good one, and nobody is watching to split it out.
+# Monthly, one pull request per directory for every minor and patch bump, and
+# one pull request per major. Minor and patch bumps rarely break anything, so
+# grouping them costs little and cuts the noise to one pull request a month.
+# Majors stay separate, so a major that breaks the build blocks only itself.
+# Packages that must move together get their own group across all update types;
+# a package matches the first group that lists it.
 #
 # 99 means "no limit". Every update lands on `deps` and never on main, and one
 # that fails CI stays an open pull request against that branch, where it blocks
 # nothing. The key cannot be dropped to mean "unlimited": omitting it applies
 # Dependabot's default of 5, and 0 switches version updates off altogether.
 #
-# Weekly, not daily: nothing here is urgent enough to justify seven times the
-# noise. Security advisories are the exception and they do not obey this file —
-# see docs/dependency-updates.md.
+# Dependabot security updates are switched off for this repository: they always
+# target main and would bypass `deps`. security-audit.yml reports advisories
+# instead — see docs/dependency-updates.md.
 version: 2
 
 updates:
-  # The one exception to "ungrouped", and it is not a preference. NU1605 is an
+  # A family group, and it is not a preference. NU1605 is an
   # error here, not a warning, so a reference that ends up lower than something
   # else in the graph asks for it fails the restore outright. Two shapes of that
   # were measured on this repository:
@@ -38,7 +41,7 @@ updates:
   - package-ecosystem: "nuget"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
     target-branch: "deps"
     open-pull-requests-limit: 99
     labels: ["dependencies"]
@@ -49,6 +52,9 @@ updates:
         patterns:
           - "Microsoft.EntityFrameworkCore*"
           - "Microsoft.Extensions.*"
+      minor-and-patch:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
     # Microsoft.EntityFrameworkCore 10.0.12 ships net10.0 assets only, and every
     # project here targets net8.0, so a 10.x bump cannot restore no matter what
     # it is grouped with. 9.x is the highest that runs, and the cap is by version
@@ -62,9 +68,13 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
     target-branch: "deps"
     open-pull-requests-limit: 99
     labels: ["dependencies"]
     commit-message:
       prefix: "ci(actions)"
+    groups:
+      minor-and-patch:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
