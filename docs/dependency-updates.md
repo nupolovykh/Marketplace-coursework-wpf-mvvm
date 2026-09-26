@@ -83,8 +83,9 @@ pull requests into one a month. Majors stay separate, so a major that breaks the
 build blocks only itself while the group still lands.
 
 `Microsoft.EntityFrameworkCore*` and `Microsoft.Extensions.*` are one family
-group across all update types, listed before `minor-and-patch` so they match it
-first: NU1605 is an error here, and a family member moving alone cannot restore.
+group across all update types, excluded from `minor-and-patch` so the two groups
+never edit the same line in one scan: NU1605 is an error here, and a family
+member moving alone cannot restore.
 EF Core stays below 10, which ships net10.0 assets only — see the comments in
 `.github/dependabot.yml`.
 
