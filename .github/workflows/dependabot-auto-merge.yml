@@ -301,6 +301,22 @@ jobs:
             case "$conclusion" in
               success) ;;
               pending)
+                # A pull request that conflicts with its base never gets a CI run:
+                # GitHub cannot build the merge ref, so "pending" would last until
+                # the stale report. Desktop hit it when two groups of one scan
+                # edited the same lines. `@dependabot rebase` answers "already
+                # up-to-date" there; only a recreate rebuilds it on the new base.
+                if [ "$(jq -r '.mergeable' <<<"$pr")" = "false" ]; then
+                  note "#${number}: conflicts with ${DEPS_BRANCH}, so CI cannot run on it"
+                  rc=0
+                  ask_dependabot "$number" "$head_sha" recreate "@dependabot recreate" || rc=$?
+                  case "$rc" in
+                    0) note "#${number}: asked Dependabot to recreate" ;;
+                    2) note "#${number}: Dependabot refused a recreate asked for by ${me}"; stuck=1 ;;
+                  esac
+                  [ "$age" -ge "$STALE_DAYS" ] && stuck=1
+                  continue
+                fi
                 note "#${number}: CI has not finished on ${head_sha:0:7}"
                 [ "$age" -ge "$STALE_DAYS" ] && stuck=1 && note "#${number}: open ${age}d with no CI verdict"
                 continue
@@ -309,12 +325,11 @@ jobs:
                 # Red, but not necessarily this update's doing.
                 #
                 # CI runs on the merge of the pull request into the base, and two
-                # lockfile updates to the same directory merge without a textual
-                # conflict into a lockfile that describes neither of them. Webdev
-                # showed it plainly: a bump of @types/node failed with
-                # "npm ci ... Missing: yaml@2.9.1 from lock file", a package that
-                # bump never touched. Five pull requests were red for the same
-                # reason, and the gate was telling a human to fix each of them.
+                # lockfile updates to the same directory can merge without a
+                # textual conflict into a lockfile that describes neither of them.
+                # (Webdev's "npm ci ... Missing: yaml@2.9.1 from lock file" looked
+                # like that and was not: Dependabot writes lockfiles with npm 11
+                # and CI ran npm 10. That was fixed in Webdev's ci.yml.)
                 #
                 # A head that is behind its base has not been tested against what
                 # the base holds now. Dependabot regenerates the lockfile on

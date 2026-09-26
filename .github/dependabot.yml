@@ -6,8 +6,9 @@
 # one pull request per major. Minor and patch bumps rarely break anything, so
 # grouping them costs little and cuts the noise to one pull request a month.
 # Majors stay separate, so a major that breaks the build blocks only itself.
-# Packages that must move together get their own group across all update types;
-# a package matches the first group that lists it.
+# Packages that must move together get their own group across all update types,
+# and minor-and-patch excludes their patterns, so two groups never raise the
+# same line in one scan (the second pull request would conflict).
 #
 # 99 means "no limit". Every update lands on `deps` and never on main, and one
 # that fails CI stays an open pull request against that branch, where it blocks
@@ -54,6 +55,7 @@ updates:
           - "Microsoft.Extensions.*"
       minor-and-patch:
         patterns: ["*"]
+        exclude-patterns: ["Microsoft.EntityFrameworkCore*", "Microsoft.Extensions.*"]
         update-types: ["minor", "patch"]
     # Microsoft.EntityFrameworkCore 10.0.12 ships net10.0 assets only, and every
     # project here targets net8.0, so a 10.x bump cannot restore no matter what
